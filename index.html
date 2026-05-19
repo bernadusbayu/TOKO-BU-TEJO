@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feeling Admin - Dark Mode</title>
+    <title>Feeling Admin - Accordion Dark Mode</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
         /* TEMA DARK MODE CUSTOM */
         body { 
-            background-color: #121212; /* Warna background utama yang sangat gelap */
-            color: #e0e0e0; /* Teks berwarna abu-abu terang / putih */
+            background-color: #121212; 
+            color: #e0e0e0; 
             padding: 15px 10px 90px 10px; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -17,11 +17,11 @@
         .title { color: #ffffff !important; }
         
         .form-section { 
-            background: #1e1e1e; /* Warna card agak terang sedikit dari background */
+            background: #1e1e1e; 
             padding: 15px; 
             border-radius: 12px; 
             margin-bottom: 15px; 
-            border: 1px solid #333; /* Border tipis */
+            border: 1px solid #333; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
         }
         
@@ -29,27 +29,24 @@
             font-weight: bold; 
             font-size: 0.85rem; 
             margin-bottom: 15px; 
-            color: #10B981; /* Warna hijau neon ala web referensi Anda */
+            color: #10B981; 
             border-bottom: 1px solid #333; 
             padding-bottom: 8px; 
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Styling Input dan Select agar gelap */
+        /* Styling Input */
         .input, .textarea, .select select {
             background-color: #2a2a2a !important;
             border-color: #444 !important;
             color: #ffffff !important;
         }
-        
         .input::placeholder, .textarea::placeholder { color: #888 !important; }
-        
         .input:focus, .textarea:focus, .select select:focus {
-            border-color: #10B981 !important; /* Hijau saat diklik */
+            border-color: #10B981 !important; 
             box-shadow: 0 0 0 0.125em rgba(16, 185, 129, 0.25) !important;
         }
-
         .label { color: #aaaaaa !important; }
 
         /* Custom Grid */
@@ -57,37 +54,48 @@
         .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 6px; }
         .grid-header { font-size: 0.6rem; font-weight: bold; text-align: center; color: #888; border-bottom: 1px solid #444; padding-bottom: 6px; margin-bottom: 10px; }
         
-        /* Footer & Tombol */
-        .sticky-footer { 
-            position: fixed; 
-            bottom: 0; left: 0; right: 0; 
-            background: #1e1e1e; 
-            padding: 15px; 
-            border-top: 1px solid #333; 
-            z-index: 100; 
-        }
-        
-        .button.is-primary {
-            background-color: #10B981 !important; /* Hijau terang */
-            color: #ffffff !important;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .button.is-primary:hover { background-color: #0ea5e9 !important; }
-
-        /* Input Khusus (Highlight di Dark Mode) */
+        /* Highlight Input Khusus */
         .highlight-input { 
-            background-color: #383800 !important; /* Kuning gelap / Olive */
-            color: #ffeb3b !important; /* Angka warna kuning terang */
+            background-color: #383800 !important; 
+            color: #ffeb3b !important; 
             border-color: #666 !important;
         }
 
-        /* Penyesuaian teks biasa */
-        .has-text-weight-bold { color: #ffffff !important; }
-        hr { background-color: #333 !important; }
+        /* --- ACCORDION UI (BUKA TUTUP) --- */
+        .acc-header {
+            background-color: #252525;
+            color: #10B981;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-left: 3px solid #10B981;
+            transition: background 0.3s;
+            text-transform: uppercase;
+        }
+        .acc-header:hover { background-color: #2f2f2f; }
+        .acc-icon { transition: transform 0.3s ease; font-size: 0.7rem; }
+        .acc-content {
+            display: none; /* Tertutup secara default */
+            padding: 5px 0 15px 0;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .acc-content.is-active { display: block; }
+        .acc-header.is-active .acc-icon { transform: rotate(180deg); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #1e1e1e; padding: 15px; border-top: 1px solid #333; z-index: 100; }
+        .button.is-primary { background-color: #10B981 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -129,58 +137,79 @@
 
         <div id="sec-a" class="form-section">
             <p class="section-title">PENJUALAN PILOT [A]</p>
-            <div class="grid-5-col grid-header"><div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div></div>
-            <div id="menu-list"></div>
+            
+            <div class="acc-header" onclick="toggleAcc('acc-menu', this)">
+                <span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-menu" class="acc-content">
+                <div class="grid-5-col grid-header"><div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div></div>
+                <div id="menu-list"></div>
+            </div>
 
-            <p class="is-size-7 mt-4" style="color: #10B981;"><strong>ADD ON & PENGELUARAN [OUT]</strong></p>
-            <div class="columns is-mobile is-multiline mt-1">
-                <div class="column is-4"><input class="input is-small" type="number" placeholder="Espr A"></div>
-                <div class="column is-4"><input class="input is-small" type="number" placeholder="Espr B"></div>
-                <div class="column is-4"><input class="input is-small" type="number" placeholder="Cup+Ice"></div>
-                <div class="column is-6"><input class="input is-small" type="text" placeholder="Item Keluar"></div>
-                <div class="column is-6"><input class="input is-small highlight-input" type="number" placeholder="Rp. Nominal"></div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-addon', this)">
+                <span>💸 ADD ON & PENGELUARAN OUT</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-addon" class="acc-content">
+                <div class="columns is-mobile is-multiline">
+                    <div class="column is-4"><label class="label is-size-7">Espr A</label><input class="input is-small" type="number" placeholder="0"></div>
+                    <div class="column is-4"><label class="label is-size-7">Espr B</label><input class="input is-small" type="number" placeholder="0"></div>
+                    <div class="column is-4"><label class="label is-size-7">Cup+Ice</label><input class="input is-small" type="number" placeholder="0"></div>
+                    <div class="column is-6"><label class="label is-size-7">Item Keluar</label><input class="input is-small" type="text" placeholder="Nama item"></div>
+                    <div class="column is-6"><label class="label is-size-7">Nominal Out</label><input class="input is-small highlight-input" type="number" placeholder="Rp"></div>
+                </div>
             </div>
         </div>
 
         <div id="sec-b" class="form-section">
             <p class="section-title">LAPORAN BAHAN BAKU [B]</p>
             
-            <p class="is-size-7 mb-2" style="color: #10B981;"><strong>GRAMASI UTAMA</strong></p>
-            <div class="columns is-mobile is-multiline" id="gramasi-list"></div>
+            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)">
+                <span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-gramasi" class="acc-content">
+                <div class="columns is-mobile is-multiline" id="gramasi-list"></div>
+            </div>
 
-            <hr>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)">
+                <span>🍾 SYRUP REQUEST</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-syrup" class="acc-content">
+                <div class="grid-3-col grid-header"><div>FLAVOR</div><div>.Btl</div><div>%</div></div>
+                <div id="syrup-list"></div>
+            </div>
 
-            <div class="columns">
-                <div class="column is-6">
-                    <p class="is-size-7 mb-2" style="color: #10B981;"><strong>SYRUP REQUEST</strong></p>
-                    <div class="grid-3-col grid-header"><div>FLAVOR</div><div>.Btl</div><div>%</div></div>
-                    <div id="syrup-list"></div>
-                </div>
-                <div class="column is-6">
-                    <p class="is-size-7 mb-2" style="color: #10B981;"><strong>WASTE STOCK [.Gr]</strong></p>
-                    <div class="grid-3-col grid-header"><div>ITEM'S</div><div>S1</div><div>S2</div></div>
-                    <div id="waste-list"></div>
-                </div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)">
+                <span>🗑️ WASTE STOCK [.Gr]</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-waste" class="acc-content">
+                <div class="grid-3-col grid-header"><div>ITEM'S</div><div>S1</div><div>S2</div></div>
+                <div id="waste-list"></div>
             </div>
         </div>
 
         <div id="sec-c" class="form-section">
             <p class="section-title">LAPORAN KEUANGAN [C]</p>
-            <div class="field">
-                <label class="label is-size-7">SALDO AWAL KASIR (Office)</label>
-                <input class="input is-small" type="number" placeholder="Rp 200.000">
+            
+            <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)">
+                <span>💰 RINCIAN KEUANGAN</span><span class="acc-icon">▼</span>
             </div>
-            <div class="field">
-                <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
-                <input class="input is-small" type="number" placeholder="Rp 0">
-            </div>
-            <div class="field">
-                <label class="label is-size-7">CASH AKTUAL (Uang di Wallet)</label>
-                <input class="input is-small highlight-input" type="number" placeholder="Rp 0">
-            </div>
-            <div class="field">
-                <label class="label is-size-7">CATATAN / NOTES</label>
-                <textarea class="textarea is-small" placeholder="Tulis rincian kendala jika ada..."></textarea>
+            <div id="acc-keuangan" class="acc-content">
+                <div class="field">
+                    <label class="label is-size-7">SALDO AWAL KASIR (Office)</label>
+                    <input class="input is-small" type="number" placeholder="Rp 200.000">
+                </div>
+                <div class="field">
+                    <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
+                    <input class="input is-small" type="number" placeholder="Rp 0">
+                </div>
+                <div class="field">
+                    <label class="label is-size-7">CASH AKTUAL (Uang di Wallet)</label>
+                    <input class="input is-small highlight-input" type="number" placeholder="Rp 0">
+                </div>
+                <div class="field">
+                    <label class="label is-size-7">CATATAN / NOTES</label>
+                    <textarea class="textarea is-small" placeholder="Tulis rincian kendala jika ada..."></textarea>
+                </div>
             </div>
         </div>
 
@@ -190,25 +219,23 @@
     </form>
 
     <script>
-        // Data Arrays
+        // Data Arrays Generator (Sama dengan sebelumnya)
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         const gramasiList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "UHT", "ESPRESSO", "KR-G (%)", "KR-S (%)", "S-CAR (.Btl)", "AREN (.Pck)", "MILO (.Pcs)", "ES BATU (%)", "CLEO (%)"];
         const syrupList = ["FL. CAR", "FL. BSC", "FL. IRS", "FL. HAZ", "FL. VAN", "FL. PIS"];
         const wasteList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "KR-G", "KR-S", "UHT", ".SPRO"];
 
-        // Generators
-        menus.forEach(m => {
-            document.getElementById('menu-list').innerHTML += `<div class="grid-5-col"><div style="font-size: 0.65rem; color:#e0e0e0;">${m}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`;
-        });
-        gramasiList.forEach(g => {
-            document.getElementById('gramasi-list').innerHTML += `<div class="column is-4-tablet is-6-mobile py-1"><label class="label is-size-7 mb-1">${g}</label><input class="input is-small" type="number" placeholder="0"></div>`;
-        });
-        syrupList.forEach(s => {
-            document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${s}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`;
-        });
-        wasteList.forEach(w => {
-            document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${w}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`;
-        });
+        menus.forEach(m => { document.getElementById('menu-list').innerHTML += `<div class="grid-5-col"><div style="font-size: 0.65rem; color:#e0e0e0;">${m}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
+        gramasiList.forEach(g => { document.getElementById('gramasi-list').innerHTML += `<div class="column is-4-tablet is-6-mobile py-1"><label class="label is-size-7 mb-1">${g}</label><input class="input is-small" type="number" placeholder="0"></div>`; });
+        syrupList.forEach(s => { document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${s}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
+        wasteList.forEach(w => { document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${w}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
+
+        // Fungsi Buka Tutup Accordion
+        function toggleAcc(contentId, headerElement) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('is-active');
+            headerElement.classList.toggle('is-active');
+        }
 
         // Update Station
         function updateSt() {
@@ -221,7 +248,7 @@
             opts.forEach(o => { let el = document.createElement("option"); el.value=o; el.text=o; s.appendChild(el); });
         }
 
-        // Toggle Sections
+        // Toggle Sections berdasarkan Kategori Cek In / Out
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
