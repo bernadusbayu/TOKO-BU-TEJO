@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feeling Admin - Accordion Dark Mode</title>
+    <title>Feeling Admin - Full Accordion Dark Mode</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
-        /* TEMA DARK MODE CUSTOM */
+        /* TEMA DARK MODE CUSTOM - SENADA DENGAN WEB KEUANGAN */
         body { 
             background-color: #121212; 
             color: #e0e0e0; 
@@ -36,7 +36,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Styling Input */
+        /* Styling Input & Dropdown */
         .input, .textarea, .select select {
             background-color: #2a2a2a !important;
             border-color: #444 !important;
@@ -49,10 +49,16 @@
         }
         .label { color: #aaaaaa !important; }
 
-        /* Custom Grid */
-        .grid-5-col { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 5px; align-items: center; margin-bottom: 8px; }
+        /* Custom Grid Penjualan Menu (6 Kolom: Menu + 5 Tipe Input) */
+        .grid-6-col { 
+            display: grid; 
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr 1fr; 
+            gap: 4px; 
+            align-items: center; 
+            margin-bottom: 8px; 
+        }
         .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 6px; }
-        .grid-header { font-size: 0.6rem; font-weight: bold; text-align: center; color: #888; border-bottom: 1px solid #444; padding-bottom: 6px; margin-bottom: 10px; }
+        .grid-header { font-size: 0.55rem; font-weight: bold; text-align: center; color: #888; border-bottom: 1px solid #444; padding-bottom: 6px; margin-bottom: 10px; }
         
         /* Highlight Input Khusus */
         .highlight-input { 
@@ -60,8 +66,12 @@
             color: #ffeb3b !important; 
             border-color: #666 !important;
         }
+        .input-hkp {
+            background-color: #1a3a2a !important; /* Hijau tua tipis untuk membedakan HKP */
+            color: #10B981 !important;
+        }
 
-        /* --- ACCORDION UI (BUKA TUTUP) --- */
+        /* ACCORDION UI (BUKA TUTUP MODERN) */
         .acc-header {
             background-color: #252525;
             color: #10B981;
@@ -81,7 +91,7 @@
         .acc-header:hover { background-color: #2f2f2f; }
         .acc-icon { transition: transform 0.3s ease; font-size: 0.7rem; }
         .acc-content {
-            display: none; /* Tertutup secara default */
+            display: none; 
             padding: 5px 0 15px 0;
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -93,7 +103,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Footer */
+        /* Footer Sticky & Tombol */
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #1e1e1e; padding: 15px; border-top: 1px solid #333; z-index: 100; }
         .button.is-primary { background-color: #10B981 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
@@ -107,19 +117,22 @@
             <p class="section-title">INFO OPERASIONAL</p>
             <div class="columns is-mobile is-multiline">
                 <div class="column is-6"><label class="label is-size-7">Regional</label>
-                    <div class="select is-fullwidth is-small"><select id="reg" onchange="updateSt()"><option>Pilih...</option><option>Banjarbaru</option><option>Banjarmasin</option><option>Martapura</option></select></div>
+                    <div class="select is-fullwidth is-small"><select id="reg" name="regional" onchange="updateSt()"><option value="">Pilih...</option><option>Banjarbaru</option><option>Banjarmasin</option><option>Martapura</option></select></div>
                 </div>
                 <div class="column is-6"><label class="label is-size-7">Station</label>
-                    <div class="select is-fullwidth is-small"><select id="st"><option>-</option></select></div>
+                    <div class="select is-fullwidth is-small"><select id="st" name="station"><option>-</option></select></div>
                 </div>
-                <div class="column is-6"><label class="label is-size-7">Nama Pilot</label><input class="input is-small" type="text" placeholder="Ketik nama..."></div>
-                <div class="column is-6"><label class="label is-size-7">Staff Office</label><input class="input is-small" type="text" placeholder="Ketik nama..."></div>
+                <div class="column is-6"><label class="label is-size-7">Nama Pilot</label><input class="input is-small" type="text" name="pilot" placeholder="Ketik nama..."></div>
+                <div class="column is-6"><label class="label is-size-7">Staff Office</label><input class="input is-small" type="text" name="office" placeholder="Ketik nama..."></div>
                 <div class="column is-6"><label class="label is-size-7">Shift</label>
-                    <div class="select is-fullwidth is-small"><select><option>Shift 1</option><option>Shift 2</option></select></div>
+                    <div class="select is-fullwidth is-small"><select name="shift"><option>Shift 1</option><option>Shift 2</option></select></div>
+                </div>
+                <div class="column is-6"><label class="label is-size-7">Tanggal Laporan</label>
+                    <input class="input is-small highlight-input" type="number" name="tanggal" placeholder="1-31" min="1" max="31" required>
                 </div>
                 <div class="column is-6"><label class="label is-size-7">Kategori Input</label>
                     <div class="select is-fullwidth is-small">
-                        <select id="kat" onchange="toggleSec()">
+                        <select id="kat" name="kategori" onchange="toggleSec()">
                             <option value="CEK IN">CEK IN</option>
                             <option value="SD-1">SD-1</option>
                             <option value="SD-2">SD-2</option>
@@ -128,9 +141,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="column is-12">
+                <div class="column is-6">
                     <label class="label is-size-7" id="label-cup">Jumlah Cup (Awal)</label>
-                    <input class="input is-small highlight-input" type="number" id="input-cup" placeholder="0">
+                    <input class="input is-small highlight-input" type="number" name="input_cup" placeholder="0">
                 </div>
             </div>
         </div>
@@ -142,7 +155,14 @@
                 <span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span>
             </div>
             <div id="acc-menu" class="acc-content">
-                <div class="grid-5-col grid-header"><div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div></div>
+                <div class="grid-6-col grid-header">
+                    <div>MENU</div>
+                    <div>CUP CS</div>
+                    <div>CUP QR</div>
+                    <div>TML CS</div>
+                    <div>TML QR</div>
+                    <div>HKP</div>
+                </div>
                 <div id="menu-list"></div>
             </div>
 
@@ -151,11 +171,11 @@
             </div>
             <div id="acc-addon" class="acc-content">
                 <div class="columns is-mobile is-multiline">
-                    <div class="column is-4"><label class="label is-size-7">Espr A</label><input class="input is-small" type="number" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Espr B</label><input class="input is-small" type="number" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Cup+Ice</label><input class="input is-small" type="number" placeholder="0"></div>
-                    <div class="column is-6"><label class="label is-size-7">Item Keluar</label><input class="input is-small" type="text" placeholder="Nama item"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nominal Out</label><input class="input is-small highlight-input" type="number" placeholder="Rp"></div>
+                    <div class="column is-4"><label class="label is-size-7">Espr A</label><input class="input is-small" type="number" name="espr_a" placeholder="0"></div>
+                    <div class="column is-4"><label class="label is-size-7">Espr B</label><input class="input is-small" type="number" name="espr_b" placeholder="0"></div>
+                    <div class="column is-4"><label class="label is-size-7">Cup+Ice</label><input class="input is-small" type="number" name="cup_ice" placeholder="0"></div>
+                    <div class="column is-6"><label class="label is-size-7">Item Keluar</label><input class="input is-small" type="text" name="item_out" placeholder="Nama item"></div>
+                    <div class="column is-6"><label class="label is-size-7">Nominal Out</label><input class="input is-small highlight-input" type="number" name="nominal_out" placeholder="Rp"></div>
                 </div>
             </div>
         </div>
@@ -196,19 +216,19 @@
             <div id="acc-keuangan" class="acc-content">
                 <div class="field">
                     <label class="label is-size-7">SALDO AWAL KASIR (Office)</label>
-                    <input class="input is-small" type="number" placeholder="Rp 200.000">
+                    <input class="input is-small" type="number" name="saldo_awal" placeholder="Rp 200.000">
                 </div>
                 <div class="field">
                     <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
-                    <input class="input is-small" type="number" placeholder="Rp 0">
+                    <input class="input is-small" type="number" name="cash_to_cashier" placeholder="Rp 0">
                 </div>
                 <div class="field">
                     <label class="label is-size-7">CASH AKTUAL (Uang di Wallet)</label>
-                    <input class="input is-small highlight-input" type="number" placeholder="Rp 0">
+                    <input class="input is-small highlight-input" type="number" name="cash_aktual" placeholder="Rp 0">
                 </div>
                 <div class="field">
                     <label class="label is-size-7">CATATAN / NOTES</label>
-                    <textarea class="textarea is-small" placeholder="Tulis rincian kendala jika ada..."></textarea>
+                    <textarea class="textarea is-small" name="notes" placeholder="Tulis rincian kendala jika ada..."></textarea>
                 </div>
             </div>
         </div>
@@ -219,25 +239,68 @@
     </form>
 
     <script>
-        // Data Arrays Generator (Sama dengan sebelumnya)
+        // Data Master Arrays
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         const gramasiList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "UHT", "ESPRESSO", "KR-G (%)", "KR-S (%)", "S-CAR (.Btl)", "AREN (.Pck)", "MILO (.Pcs)", "ES BATU (%)", "CLEO (%)"];
         const syrupList = ["FL. CAR", "FL. BSC", "FL. IRS", "FL. HAZ", "FL. VAN", "FL. PIS"];
         const wasteList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "KR-G", "KR-S", "UHT", ".SPRO"];
 
-        menus.forEach(m => { document.getElementById('menu-list').innerHTML += `<div class="grid-5-col"><div style="font-size: 0.65rem; color:#e0e0e0;">${m}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
-        gramasiList.forEach(g => { document.getElementById('gramasi-list').innerHTML += `<div class="column is-4-tablet is-6-mobile py-1"><label class="label is-size-7 mb-1">${g}</label><input class="input is-small" type="number" placeholder="0"></div>`; });
-        syrupList.forEach(s => { document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${s}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
-        wasteList.forEach(w => { document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size: 0.7rem; color:#e0e0e0;">${w}</div><input class="input is-small" type="number" placeholder="0"><input class="input is-small" type="number" placeholder="0"></div>`; });
+        // LOOP GENERATOR KOTAK INPUT (Otomatis mendaftarkan atribut 'name')
+        
+        // 1. Penjualan Menu (Update 5 kotak input angka termasuk HKP)
+        menus.forEach(m => {
+            const safeName = m.toLowerCase().replace(/ /g, "_");
+            document.getElementById('menu-list').innerHTML += `
+                <div class="grid-6-col">
+                    <div style="font-size: 0.6rem; color:#e0e0e0; line-height: 1.2; font-weight: 500;">${m}</div>
+                    <input class="input is-small px-1" type="number" name="${safeName}_cup_cs" placeholder="0">
+                    <input class="input is-small px-1" type="number" name="${safeName}_cup_qr" placeholder="0">
+                    <input class="input is-small px-1" type="number" name="${safeName}_tml_cs" placeholder="0">
+                    <input class="input is-small px-1" type="number" name="${safeName}_tml_qr" placeholder="0">
+                    <input class="input is-small px-1 input-hkp" type="number" name="${safeName}_hkp" placeholder="0">
+                </div>`;
+        });
 
-        // Fungsi Buka Tutup Accordion
+        // 2. Gramasi Bahan Baku
+        gramasiList.forEach(g => {
+            const safeName = g.toLowerCase().replace(/ /g, "_").replace(/[\(\)%]/g, "");
+            document.getElementById('gramasi-list').innerHTML += `
+                <div class="column is-4-tablet is-6-mobile py-1">
+                    <label class="label is-size-7 mb-1">${g}</label>
+                    <input class="input is-small" type="number" name="gramasi_${safeName}" placeholder="0">
+                </div>`;
+        });
+
+        // 3. Syrup Request
+        syrupList.forEach(s => {
+            const safeName = s.toLowerCase().replace(/[^a-z0-9]/g, "_");
+            document.getElementById('syrup-list').innerHTML += `
+                <div class="grid-3-col">
+                    <div style="font-size: 0.7rem; color:#e0e0e0;">${s}</div>
+                    <input class="input is-small px-1" type="number" name="syrup_${safeName}_btl" placeholder="Btl">
+                    <input class="input is-small px-1" type="number" name="syrup_${safeName}_pct" placeholder="%">
+                </div>`;
+        });
+
+        // 4. Waste Stock
+        wasteList.forEach(w => {
+            const safeName = w.toLowerCase().replace(/[^a-z0-9]/g, "_");
+            document.getElementById('waste-list').innerHTML += `
+                <div class="grid-3-col">
+                    <div style="font-size: 0.7rem; color:#e0e0e0;">${w}</div>
+                    <input class="input is-small px-1" type="number" name="waste_${safeName}_s1" placeholder="S1">
+                    <input class="input is-small px-1" type="number" name="waste_${safeName}_s2" placeholder="S2">
+                </div>`;
+        });
+
+        // FUNGSI LOGIKA ACCORDION (BUKA TUTUP)
         function toggleAcc(contentId, headerElement) {
             const content = document.getElementById(contentId);
             content.classList.toggle('is-active');
             headerElement.classList.toggle('is-active');
         }
 
-        // Update Station
+        // UPDATE DROPDOWN STATION BERDASARKAN REGIONAL
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
@@ -248,7 +311,7 @@
             opts.forEach(o => { let el = document.createElement("option"); el.value=o; el.text=o; s.appendChild(el); });
         }
 
-        // Toggle Sections berdasarkan Kategori Cek In / Out
+        // TOGGLE SECTIONS (Sembunyi/Muncul Berdasarkan Kategori)
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
@@ -257,11 +320,18 @@
             else if (k.startsWith("SD")) labelCup.innerText = "Jumlah Cup (Add On)";
             else if (k === "CEK OUT") labelCup.innerText = "Jumlah Cup (Kembali / Rjct)";
 
+            // Bagian A dan C hanya dibutuhkan saat Cek Out akhir operasional
             document.getElementById('sec-a').style.display = (k === "CEK OUT") ? "block" : "none";
             document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
         }
         
         toggleSec();
+
+        // Placeholder Handle Submit Form
+        document.getElementById('mainForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form Berhasil Ter-Submit (Uji Coba Tampilan Selesai). Kode UI Anda sudah siap!');
+        });
     </script>
 </body>
 </html>
