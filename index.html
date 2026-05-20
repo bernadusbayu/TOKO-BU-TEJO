@@ -49,7 +49,7 @@
         }
         .label { color: #aaaaaa !important; }
 
-        /* Custom Grid Penjualan Menu (6 Kolom Presisi + HKP) */
+        /* Custom Grid Penjualan Menu (6 Kolom) */
         .grid-6-col { 
             display: grid; 
             grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr 1fr; 
@@ -71,7 +71,7 @@
             color: #10B981 !important;
         }
 
-        /* ACCORDION UI (BUKA TUTUP MODERN) */
+        /* ACCORDION UI */
         .acc-header {
             background-color: #252525;
             color: #10B981;
@@ -103,11 +103,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Footer Sticky & Tombol Kirim */
+        /* Footer Sticky & Tombol */
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #1e1e1e; padding: 15px; border-top: 1px solid #333; z-index: 100; }
         .button.is-primary { background-color: #10B981 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Overlay Loading Screen */
         #loadingOverlay {
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center;
@@ -135,7 +134,7 @@
                     <div class="select is-fullwidth is-small"><select id="st" name="station" required><option value="">-</option></select></div>
                 </div>
                 <div class="column is-6"><label class="label is-size-7">Nama Pilot</label><input class="input is-small" type="text" name="pilot" placeholder="Nama Pilot" required></div>
-                <div class="column is-6"><label class="label is-size-7">Staff Office</label><input class="input is-small" type="text" name="office" placeholder="Nama Staff"></div>
+                <div class="column is-6"><label class="label is-size-7">[*Office] P.I.C OFFICE</label><input class="input is-small" type="text" name="office" placeholder="Nama Staff"></div>
                 <div class="column is-6"><label class="label is-size-7">Shift</label>
                     <div class="select is-fullwidth is-small"><select name="shift"><option>Shift 1</option><option>Shift 2</option></select></div>
                 </div>
@@ -251,16 +250,20 @@
             </div>
             <div id="acc-keuangan" class="acc-content">
                 <div class="field mb-3">
-                    <label class="label is-size-7">SALDO AWAL KASIR (Office)</label>
-                    <input class="input is-small" type="number" name="saldo_awal" placeholder="Rp 200.000">
+                    <label class="label is-size-7">[*Office] SALDO AWAL KASIR</label>
+                    <input class="input is-small" type="number" name="office_saldo_awal" placeholder="Rp 0">
+                </div>
+                <div class="field mb-3">
+                    <label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label>
+                    <input class="input is-small highlight-input" type="number" name="office_total_qris_all" placeholder="Rp 0">
                 </div>
                 <div class="field mb-3">
                     <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
                     <input class="input is-small" type="number" name="cash_to_cashier" placeholder="Rp 0">
                 </div>
                 <div class="field">
-                    <label class="label is-size-7">CATATAN / NOTES OPERASIONAL</label>
-                    <textarea class="textarea is-small" name="notes" placeholder="Tulis kendala mesin, listrik, atau varian habis jika ada..."></textarea>
+                    <label class="label is-size-7">NOTES</label>
+                    <textarea class="textarea is-small" name="notes" placeholder="Tulis rincian catatan..."></textarea>
                 </div>
             </div>
         </div>
@@ -271,15 +274,11 @@
     </form>
 
     <script>
-        // Data Master Arrays
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         const gramasiList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "UHT", "ESPRESSO", "KR-G (%)", "KR-S (%)", "S-CAR (.Btl)", "AREN (.Pck)", "MILO (.Pcs)", "ES BATU (%)", "CLEO (%)"];
         const syrupList = ["FL. CAR", "FL. BSC", "FL. IRS", "FL. HAZ", "FL. VAN", "FL. PIS"];
         const wasteList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "KR-G", "KR-S", "UHT", ".SPRO"];
 
-        // GENERATOR MATRIKS INPUT FORM otomatis mendaftarkan atribut 'name'
-        
-        // 1. Penjualan Menu (5 Kotak Input Angka per Baris Menu)
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
             document.getElementById('menu-list').innerHTML += `
@@ -293,7 +292,6 @@
                 </div>`;
         });
 
-        // 2. Gramasi Bahan Baku
         gramasiList.forEach(g => {
             const safeName = g.toLowerCase().replace(/ /g, "_").replace(/[\(\)%]/g, "").replace(/\./g, "");
             document.getElementById('gramasi-list').innerHTML += `
@@ -303,7 +301,6 @@
                 </div>`;
         });
 
-        // 3. Syrup Request
         syrupList.forEach(s => {
             const safeName = s.toLowerCase().replace(/[^a-z0-9]/g, "_");
             document.getElementById('syrup-list').innerHTML += `
@@ -314,7 +311,6 @@
                 </div>`;
         });
 
-        // 4. Waste Stock
         wasteList.forEach(w => {
             const safeName = w.toLowerCase().replace(/[^a-z0-9]/g, "_");
             document.getElementById('waste-list').innerHTML += `
@@ -325,14 +321,12 @@
                 </div>`;
         });
 
-        // LOGIKA ACCORDION (OPEN / CLOSE)
         function toggleAcc(contentId, headerElement) {
             const content = document.getElementById(contentId);
             content.classList.toggle('is-active');
             headerElement.classList.toggle('is-active');
         }
 
-        // AUTO DROPDOWN STATION SESUAI REGIONAL
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
@@ -343,7 +337,6 @@
             opts.forEach(o => { let el = document.createElement("option"); el.value=o; el.text=o; s.appendChild(el); });
         }
 
-        // LOGIKA VISIBILITAS FORM BERDASARKAN KATEGORI DATA
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
@@ -352,19 +345,16 @@
             else if (k.startsWith("SD")) labelCup.innerText = "Jumlah Cup (Add On)";
             else if (k === "CEK OUT") labelCup.innerText = "Jumlah Cup (Kembali / Rjct)";
 
-            // Penjualan Menu [A] dan Keuangan [C] hanya divalidasi keluar saat CEK OUT
             document.getElementById('sec-a').style.display = (k === "CEK OUT") ? "block" : "none";
             document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
         }
         
         toggleSec();
 
-        // PENGIRIMAN DATA KE BACKEND GOOGLE APPS SCRIPT
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
             
-            // Mengirimkan objek formulir langsung ke fungsi backend Apps Script
             google.script.run
                 .withSuccessHandler(function(response) {
                     document.getElementById('loadingOverlay').style.display = 'none';
