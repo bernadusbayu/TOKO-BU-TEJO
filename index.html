@@ -6,7 +6,7 @@
     <title>Feeling Daily System - Station Record</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
-        /* TEMA DARK MODE UTUH */
+        /* TEMA DARK MODE TOTAL */
         body { 
             background-color: #121212; 
             color: #e0e0e0; 
@@ -49,7 +49,7 @@
         }
         .label { color: #aaaaaa !important; }
 
-        /* Custom Grid Penjualan Menu (6 Kolom Presisi) */
+        /* Custom Grid Penjualan Menu (6 Kolom Presisi + HKP) */
         .grid-6-col { 
             display: grid; 
             grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr 1fr; 
@@ -71,7 +71,7 @@
             color: #10B981 !important;
         }
 
-        /* ACCORDION UI (BUKA TUTUP) */
+        /* ACCORDION UI (BUKA TUTUP MODERN) */
         .acc-header {
             background-color: #252525;
             color: #10B981;
@@ -103,11 +103,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Footer Sticky & Tombol */
+        /* Footer Sticky & Tombol Kirim */
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #1e1e1e; padding: 15px; border-top: 1px solid #333; z-index: 100; }
         .button.is-primary { background-color: #10B981 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Overlay Loading */
+        /* Overlay Loading Screen */
         #loadingOverlay {
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center;
@@ -200,6 +200,20 @@
                     <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 2</label><input class="input is-small highlight-input" type="number" name="nominal_out_2" placeholder="Rp"></div>
                 </div>
             </div>
+
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-cash-tip', this)">
+                <span>💵 CASH AKTUAL & TIP PILOT</span><span class="acc-icon">▼</span>
+            </div>
+            <div id="acc-cash-tip" class="acc-content">
+                <div class="field mb-3">
+                    <label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label>
+                    <input class="input is-small highlight-input" type="number" name="cash_aktual_kasir" placeholder="Rp 0">
+                </div>
+                <div class="field mb-3">
+                    <label class="label is-size-7">TIP PILOT</label>
+                    <input class="input is-small highlight-input" type="number" name="tip_pilot" placeholder="Rp 0">
+                </div>
+            </div>
         </div>
 
         <div id="sec-b" class="form-section">
@@ -233,7 +247,7 @@
             <p class="section-title">LAPORAN KEUANGAN [C]</p>
             
             <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)">
-                <span>💰 RINCIAN KEUANGAN & TIP</span><span class="acc-icon">▼</span>
+                <span>💰 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span>
             </div>
             <div id="acc-keuangan" class="acc-content">
                 <div class="field mb-3">
@@ -243,14 +257,6 @@
                 <div class="field mb-3">
                     <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
                     <input class="input is-small" type="number" name="cash_to_cashier" placeholder="Rp 0">
-                </div>
-                <div class="field mb-3">
-                    <label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label>
-                    <input class="input is-small highlight-input" type="number" name="cash_aktual_kasir" placeholder="Rp 0">
-                </div>
-                <div class="field mb-3">
-                    <label class="label is-size-7">TIP PILOT</label>
-                    <input class="input is-small highlight-input" type="number" name="tip_pilot" placeholder="Rp 0">
                 </div>
                 <div class="field">
                     <label class="label is-size-7">CATATAN / NOTES OPERASIONAL</label>
@@ -271,9 +277,9 @@
         const syrupList = ["FL. CAR", "FL. BSC", "FL. IRS", "FL. HAZ", "FL. VAN", "FL. PIS"];
         const wasteList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "KR-G", "KR-S", "UHT", ".SPRO"];
 
-        // GENERATOR MATRIKS INPUT FORM
+        // GENERATOR MATRIKS INPUT FORM otomatis mendaftarkan atribut 'name'
         
-        // 1. Penjualan Menu (5 Input Angka per Baris Menu)
+        // 1. Penjualan Menu (5 Kotak Input Angka per Baris Menu)
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
             document.getElementById('menu-list').innerHTML += `
@@ -287,7 +293,7 @@
                 </div>`;
         });
 
-        // 2. Gramasi Laporan Bahan Baku
+        // 2. Gramasi Bahan Baku
         gramasiList.forEach(g => {
             const safeName = g.toLowerCase().replace(/ /g, "_").replace(/[\(\)%]/g, "").replace(/\./g, "");
             document.getElementById('gramasi-list').innerHTML += `
@@ -326,7 +332,7 @@
             headerElement.classList.toggle('is-active');
         }
 
-        // AUTO DROPDOWN STATION SESUAI REGIONAL REGION
+        // AUTO DROPDOWN STATION SESUAI REGIONAL
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
