@@ -355,18 +355,27 @@
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
             
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert(response);
-                    document.getElementById('mainForm').reset();
-                    toggleSec();
-                })
-                .withFailureHandler(function(error) {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Gagal mengirim: " + error.message);
-                })
-                .simpanDataDariWeb(this); 
+            // Ubah form menjadi objek JSON
+            var formData = new FormData(this);
+            var object = {};
+            formData.forEach((value, key) => object[key] = value);
+            
+            // GANTI google.script.run dengan FETCH
+            fetch('https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec', {
+                method: 'POST',
+                mode: 'no-cors', // Penting untuk bypass CORS
+                cache: 'no-cache',
+                body: JSON.stringify(object)
+            })
+            .then(response => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert("Data berhasil dikirim!");
+                this.reset();
+            })
+            .catch(error => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert("Gagal: " + error);
+            });
         });
     </script>
 </body>
