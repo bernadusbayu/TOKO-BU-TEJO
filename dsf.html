@@ -183,7 +183,7 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
         
-        /* GLASS FLOATING HOME BUTTON */
+        /* GLASS FLOATING NAV BUTTONS */
         .home-btn {
             position: absolute;
             top: 20px; left: 16px;
@@ -209,6 +209,34 @@
             background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
             border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .print-trigger-btn {
+            position: absolute;
+            top: 20px; right: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #3b82f6;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+        .print-trigger-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-color: rgba(59, 130, 246, 0.4);
             transform: translateY(-1px);
         }
         
@@ -249,19 +277,29 @@
             font-size: 0.65rem;
             color: #444;
         }
+
+        /* MODAL CUSTOM STYLING */
+        .modal-card {
+            border-radius: 16px !important;
+            overflow: hidden;
+            border: 1px solid #333;
+            background: #1e1e1e !important;
+        }
+        .modal-card-head { background-color: #252525 !important; border-bottom: 1px solid #333 !important; }
+        .modal-card-foot { background-color: #252525 !important; border-top: 1px solid #333 !important; justify-content: flex-end; }
+        .modal-card-title { color: #fff !important; font-weight: 800; font-size: 1rem; }
     </style>
 </head>
 <body>
 
     <div class="glow-bg"></div>
 
-    <a href="index.html" class="home-btn">
-        <span>🏠</span> HOME
-    </a>
+    <a href="index.html" class="home-btn"><span>🏠</span> HOME</a>
+    <button type="button" class="print-trigger-btn" onclick="openPrintModal()"><span>🖨️</span> CETAK</button>
 
     <div id="loadingOverlay">
         <div class="custom-loader mb-4"></div>
-        <span>Memproses & Menyimpan Data Ke Spreadsheet...</span>
+        <span>Memproses Koneksi Cloud...</span>
     </div>
 
     <h1 class="title is-4 has-text-centered mb-5 title-spacing">📋 DAILY STATION RECORD</h1>
@@ -324,19 +362,13 @@
         <div id="sec-a" class="form-section" style="display:none;">
             <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
             
-            <div class="acc-header" onclick="toggleAcc('acc-menu', this)">
-                <span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header" onclick="toggleAcc('acc-menu', this)"><span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span></div>
             <div id="acc-menu" class="acc-content">
-                <div class="grid-6-col grid-header">
-                    <div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div><div>HKP</div>
-                </div>
+                <div class="grid-6-col grid-header"><div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div><div>HKP</div></div>
                 <div id="menu-list"></div>
             </div>
 
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-addon', this)">
-                <span>💸 ADD ON & PENGELUARAN OUT</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-addon', this)"><span>💸 ADD ON & PENGELUARAN OUT</span><span class="acc-icon">▼</span></div>
             <div id="acc-addon" class="acc-content">
                 <div class="columns is-mobile is-multiline">
                     <div class="column is-12 py-1"><p class="is-size-7" style="color:#10B981; font-weight:bold;">ADD ON VIA CASH (CS)</p></div>
@@ -357,88 +389,83 @@
                 </div>
             </div>
 
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-cash-tip', this)">
-                <span>💵 CASH AKTUAL & TIP PILOT</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-cash-tip', this)"><span>💵 CASH AKTUAL & TIP PILOT</span><span class="acc-icon">▼</span></div>
             <div id="acc-cash-tip" class="acc-content">
-                <div class="field mb-3">
-                    <label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label>
-                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="cash_aktual_kasir" placeholder="Rp 0">
-                </div>
-                <div class="field mb-3">
-                    <label class="label is-size-7">TIP PILOT</label>
-                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="tip_pilot" placeholder="Rp 0">
-                </div>
+                <div class="field mb-3"><label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="cash_aktual_kasir" placeholder="Rp 0"></div>
+                <div class="field mb-3"><label class="label is-size-7">TIP PILOT</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="tip_pilot" placeholder="Rp 0"></div>
             </div>
         </div>
 
         <div id="sec-b" class="form-section">
             <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
-            
-            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)">
-                <span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span>
-            </div>
-            <div id="acc-gramasi" class="acc-content">
-                <div class="columns is-mobile is-multiline" id="gramasi-list"></div>
-            </div>
-
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)">
-                <span>🍾 SYRUP REQUEST</span><span class="acc-icon">▼</span>
-            </div>
-            <div id="acc-syrup" class="acc-content">
-                <div class="grid-3-col grid-header"><div>FLAVOR</div><div>.Btl</div><div>%</div></div>
-                <div id="syrup-list"></div>
-            </div>
-
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)">
-                <span>🗑️ WASTE STOCK [.Gr]</span><span class="acc-icon">▼</span>
-            </div>
-            <div id="acc-waste" class="acc-content">
-                <div class="grid-3-col grid-header"><div>ITEM'S</div><div>S1</div><div>S2</div></div>
-                <div id="waste-list"></div>
-            </div>
+            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)"><span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span></div>
+            <div id="acc-gramasi" class="acc-content"><div class="columns is-mobile is-multiline" id="gramasi-list"></div></div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST</span><span class="acc-icon">▼</span></div>
+            <div id="acc-syrup" class="acc-content"><div class="grid-3-col grid-header"><div>FLAVOR</div><div>.Btl</div><div>%</div></div><div id="syrup-list"></div></div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK [.Gr]</span><span class="acc-icon">▼</span></div>
+            <div id="acc-waste" class="acc-content"><div class="grid-3-col grid-header"><div>ITEM'S</div><div>S1</div><div>S2</div></div><div id="waste-list"></div></div>
         </div>
 
         <div id="sec-c" class="form-section" style="display:none;">
             <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
-            
-            <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)">
-                <span>💎 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)"><span>💎 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span></div>
             <div id="acc-keuangan" class="acc-content">
-                <div class="field mb-3">
-                    <label class="label is-size-7">[*Office] SALDO AWAL KASIR</label>
-                    <input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0">
-                </div>
-                <div class="field mb-3">
-                    <label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label>
-                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0">
-                </div>
-                <div class="field mb-3">
-                    <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
-                    <input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0">
-                </div>
-                <div class="field">
-                    <label class="label is-size-7">NOTES</label>
-                    <textarea class="textarea is-small" name="notes" placeholder="Tulis rincian catatan..."></textarea>
-                </div>
+                <div class="field mb-3"><label class="label is-size-7">[*Office] SALDO AWAL KASIR</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0"></div>
+                <div class="field mb-3"><label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0"></div>
+                <div class="field mb-3"><label class="label is-size-7">CASH TO CASHIER (Besok)</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0"></div>
+                <div class="field"><label class="label is-size-7">NOTES</label><textarea class="textarea is-small" name="notes" placeholder="Tulis rincian catatan..."></textarea></div>
             </div>
         </div>
 
-        <div class="brand-footer">
-            Powered by <strong>Senada CreatLabs</strong>
-            <span>Digital Harmony | Innovative Creation</span>
-        </div>
+        <div class="brand-footer">Powered by <strong>Senada CreatLabs</strong><span>Digital Harmony | Innovative Creation</span></div>
 
-        <div class="sticky-footer">
-            <button type="submit" class="button is-primary is-fullwidth">KIRIM DATA KE SPREADSHEET</button>
-        </div>
+        <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth">KIRIM DATA KE SPREADSHEET</button></div>
     </form>
 
+    <div id="printModal" class="modal">
+        <div class="modal-background" onclick="closePrintModal()"></div>
+        <div class="modal-card px-3 py-5 mx-2" style="max-width:440px; width:100%;">
+            <header class="modal-card-head">
+                <p class="modal-card-title">🖨️ REVIEW & PRINT RECORD</p>
+                <button class="delete" aria-label="close" onclick="closePrintModal()"></button>
+            </header>
+            <section class="modal-card-body" style="background:#1e1e1e; color:#fff;">
+                <div class="field mb-3">
+                    <label class="label is-size-7">Regional</label>
+                    <div class="select is-fullwidth is-small">
+                        <select id="print-reg" onchange="updatePrintSt()">
+                            <option value="">Pilih...</option>
+                            <option value="Banjarbaru">Banjarbaru</option>
+                            <option value="Banjarmasin">Banjarmasin</option>
+                            <option value="Martapura">Martapura</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field mb-3">
+                    <label class="label is-size-7">Station</label>
+                    <div class="select is-fullwidth is-small"><select id="print-st"><option value="">-</option></select></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="label is-size-7">Tanggal Laporan (1-31)</label>
+                    <input id="print-tanggal" class="input is-small highlight-input" type="number" min="1" max="31" placeholder="Pilih Tgl">
+                </div>
+                <button type="button" class="button is-info is-small is-fullwidth" onclick="fetchDataLaporan()" style="font-weight:700;">🔍 AMBIL DATA SPREADSHEET</button>
+
+                <div id="previewArea" class="mt-4" style="display:none; border-top:1px dashed #444; padding-top:15px;">
+                    <label class="label is-size-7 has-text-success mb-2">📄 PRINTER LIVE STRUK PREVIEW:</label>
+                    <div id="previewContent" style="background:#0f1115; padding:12px; border-radius:10px; font-size:0.7rem; font-family:monospace; color:#34d399; max-height:220px; overflow-y:auto; border:1px solid #333; white-space:pre;"></div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button id="printBtn" class="button is-success is-small" onclick="executePrint()" style="display:none; font-weight:700;">🖨️ CETAK SEKARANG</button>
+                <button class="button is-small is-dark" onclick="closePrintModal()">BATAL</button>
+            </footer>
+        </div>
+    </div>
+
     <script>
-        // DATA MASTER ARRAY MUTLAK (Tanpa Merubah Struktur)
+        // DATA ARRAYS MUTLAK SINKRONISASI
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
-        
         const gramasiList = [
             { label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" },
             { label: "M-MA", key: "m-ma" }, { label: "M-RE", key: "m-re" }, { label: "UHT", key: "uht" },
@@ -446,166 +473,125 @@
             { label: "S-CAR (.Btl)", key: "s-car_btl" }, { label: "AREN (.Pck)", key: "aren_pck" },
             { label: "MILO (.Pcs)", key: "milo_pcs" }, { label: "ES BATU (%)", key: "es_batu_" }, { label: "CLEO (%)", key: "cleo_" }
         ];
+        const syrupList = [{ label: "FL. CAR", key: "fl__car" }, { label: "FL. BSC", key: "fl__bsc" }, { label: "FL. IRS", key: "fl__irs" }, { label: "FL. HAZ", key: "fl__haz" }, { label: "FL. VAN", key: "fl__van" }, { label: "FL. PIS", key: "fl__pis" }];
+        const wasteList = [{ label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" }, { label: "M-MA", key: "m-ma" }, { label: "M-RE", key: "m-re" }, { label: "KR-G", key: "kr-g" }, { label: "KR-S", key: "kr-s" }, { label: "UHT", key: "uht" }, { label: ".SPRO", key: "_spro" }];
 
-        const syrupList = [
-            { label: "FL. CAR", key: "fl__car" }, { label: "FL. BSC", key: "fl__bsc" }, { label: "FL. IRS", key: "fl__irs" },
-            { label: "FL. HAZ", key: "fl__haz" }, { label: "FL. VAN", key: "fl__van" }, { label: "FL. PIS", key: "fl__pis" }
-        ];
-
-        const wasteList = [
-            { label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" },
-            { label: "M-MA", key: "m-ma" }, { label: "M-RE", key: "m-re" }, { label: "KR-G", key: "kr-g" },
-            { label: "KR-S", key: "kr-s" }, { label: "UHT", key: "uht" }, { label: ".SPRO", key: "_spro" }
-        ];
-
-        // INJEKSI MATRIKS INPUT SECARA DINAMIS
+        // DYNAMIC WEB GENERATOR
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
-            document.getElementById('menu-list').innerHTML += `
-                <div class="grid-6-col">
-                    <div style="font-size: 0.65rem; color:#f1f5f9; line-height: 1.2; font-weight: 600;">${m}</div>
-                    <input class="input is-small px-1" type="number" name="${safeName}_cup_cs" placeholder="0">
-                    <input class="input is-small px-1" type="number" name="${safeName}_cup_qr" placeholder="0">
-                    <input class="input is-small px-1" type="number" name="${safeName}_tml_cs" placeholder="0">
-                    <input class="input is-small px-1" type="number" name="${safeName}_tml_qr" placeholder="0">
-                    <input class="input is-small px-1 input-hkp" type="number" name="${safeName}_hkp" placeholder="0">
-                </div>`;
+            document.getElementById('menu-list').innerHTML += `<div class="grid-6-col"><div style="font-size:0.65rem; color:#f1f5f9; font-weight:600;">${m}</div><input class="input is-small px-1" type="number" name="${safeName}_cup_cs" placeholder="0"><input class="input is-small px-1" type="number" name="${safeName}_cup_qr" placeholder="0"><input class="input is-small px-1" type="number" name="${safeName}_tml_cs" placeholder="0"><input class="input is-small px-1" type="number" name="${safeName}_tml_qr" placeholder="0"><input class="input is-small px-1 input-hkp" type="number" name="${safeName}_hkp" placeholder="0"></div>`;
         });
+        gramasiList.forEach(g => { document.getElementById('gramasi-list').innerHTML += `<div class="column is-4-tablet is-6-mobile py-1"><label class="label is-size-7 mb-1">${g.label}</label><input class="input is-small" type="number" name="gramasi_${g.key}" placeholder="0"></div>`; });
+        syrupList.forEach(s => { document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; color:#e2e8f0; font-weight:500;">${s.label}</div><input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl"><input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%"></div>`; });
+        wasteList.forEach(w => { document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; color:#e2e8f0; font-weight:500;">${w.label}</div><input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1"><input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2"></div>`; });
 
-        gramasiList.forEach(g => {
-            document.getElementById('gramasi-list').innerHTML += `
-                <div class="column is-4-tablet is-6-mobile py-1">
-                    <label class="label is-size-7 mb-1">${g.label}</label>
-                    <input class="input is-small" type="number" name="gramasi_${g.key}" placeholder="0">
-                </div>`;
-        });
-
-        styleSyrupList = () => {
-            syrupList.forEach(s => {
-                document.getElementById('syrup-list').innerHTML += `
-                    <div class="grid-3-col">
-                        <div style="font-size: 0.75rem; color:#e2e8f0; font-weight:500;">${s.label}</div>
-                        <input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl">
-                        <input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%">
-                    </div>`;
-            });
-        };
-        styleSyrupList();
-
-        styleWasteList = () => {
-            wasteList.forEach(w => {
-                document.getElementById('waste-list').innerHTML += `
-                    <div class="grid-3-col">
-                        <div style="font-size: 0.75rem; color:#e2e8f0; font-weight:500;">${w.label}</div>
-                        <input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1">
-                        <input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2">
-                    </div>`;
-            });
-        };
-        styleWasteList();
-
-        // LOGIKA AKORDION UI
-        function toggleAcc(contentId, headerElement) {
-            const content = document.getElementById(contentId);
-            content.classList.toggle('is-active');
-            headerElement.classList.toggle('is-active');
-        }
-
-        // TRANSLATOR NAMA DROPDOWN KE TAB SPREADSHEET MURNI
-        function updateSt() {
-            const r = document.getElementById('reg').value;
-            const s = document.getElementById('st');
-            s.innerHTML = "";
-            let data = [];
-            
-            if (r === "Banjarbaru") {
-                for(let i=1; i<=10; i++) data.push({val: "BJB-" + i, text: "Station " + i});
-                data.push({val: "BJB-Heritage", text: "Station Heritage"});
-            } else if (r === "Banjarmasin") {
-                for(let i=1; i<=10; i++) data.push({val: "BJM-" + i, text: "Station " + i});
-            } else if (r === "Martapura") {
-                for(let i=1; i<=6; i++) data.push({val: "MTP-" + i, text: "Station " + i});
-            } else {
-                data.push({val: "", text: "-"});
-            }
-
-            data.forEach(item => { 
-                let el = document.createElement("option"); 
-                el.value = item.val;   
-                el.text = item.text;   
-                s.appendChild(el); 
-            });
-        }
-
-        // LOGIKA KATEGORI TOGGLE VISIBILITAS FIELD
-        function toggleSec() {
-            const k = document.getElementById('kat').value;
-            const labelCup = document.getElementById('label-cup');
-            
-            if (k === "CEK IN") labelCup.innerText = "Jumlah Cup (Awal)";
-            else if (k.startsWith("SD")) labelCup.innerText = "Jumlah Cup (Add On)";
-            else if (k === "CEK OUT") labelCup.innerText = "Jumlah Cup (Kembali / Rjct)";
-
-            document.getElementById('sec-a').style.display = (k === "CEK OUT") ? "block" : "none";
-            document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
-        }
+        function toggleAcc(id, el) { document.getElementById(id).classList.toggle('is-active'); el.classList.toggle('is-active'); }
+        function toggleSec() { const k = document.getElementById('kat').value; const l = document.getElementById('label-cup'); if (k === "CEK IN") l.innerText = "Jumlah Cup (Awal)"; else if (k.startsWith("SD")) l.innerText = "Jumlah Cup (Add On)"; else if (k === "CEK OUT") l.innerText = "Jumlah Cup (Kembali / Rjct)"; document.getElementById('sec-a').style.display = (k === "CEK OUT") ? "block" : "none"; document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none"; }
         
-        // INTERAKTIF LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN
-        function initMoneyFormatter() {
-            document.querySelectorAll('.input-uang').forEach(function(input) {
-                input.addEventListener('input', function(e) {
-                    let value = this.value.replace(/[^0-9]/g, '');
-                    if (value !== '') {
-                        this.value = parseInt(value, 10).toLocaleString('en-US');
-                    } else {
-                        this.value = '';
-                    }
-                });
-            });
+        // DROPDOWN TRANSLATORS MECHANISM
+        function setupDropdown(regId, stId) {
+            const r = document.getElementById(regId).value; const s = document.getElementById(stId); s.innerHTML = ""; let d = [];
+            if (r === "Banjarbaru") { for(let i=1; i<=10; i++) d.push({val: "BJB-" + i, text: "Station " + i}); d.push({val: "BJB-Heritage", text: "Station Heritage"}); }
+            else if (r === "Banjarmasin") { for(let i=1; i<=10; i++) d.push({val: "BJM-" + i, text: "Station " + i}); }
+            else if (r === "Martapura") { for(let i=1; i<=6; i++) d.push({val: "MTP-" + i, text: "Station " + i}); }
+            else { d.push({val: "", text: "-"}); }
+            d.forEach(item => { let el = document.createElement("option"); el.value = item.val; el.text = item.text; s.appendChild(el); });
         }
-        initMoneyFormatter();
+        function updateSt() { setupDropdown('reg', 'st'); }
+        function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
 
-        // RUN UI AWAL
-        toggleSec();
+        // MONEY FIELD VISUAL AUTO-FORMAT
+        document.querySelectorAll('.input-uang').forEach(input => {
+            input.addEventListener('input', function() {
+                let v = this.value.replace(/[^0-9]/g, '');
+                this.value = v !== '' ? parseInt(v, 10).toLocaleString('en-US') : '';
+            });
+        });
 
-        // FETCH FORM SUBMIT TRANSMISSION ENGINE
-        document.getElementById('mainForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // GATEWAY WEBAAP PRODUCTION TARGET URL
+        const globalUrl = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
+
+        // ACTION MODAL NAVIGATION
+        function openPrintModal() { document.getElementById('printModal').classList.add('is-active'); }
+        function closePrintModal() { document.getElementById('printModal').classList.remove('is-active'); document.getElementById('previewArea').style.display='none'; document.getElementById('printBtn').style.display='none'; }
+
+        // ENGINE PENARIKAN DATA SPREADSHEET (READ DATA VIA GET)
+        function fetchDataLaporan() {
+            const st = document.getElementById('print-st').value;
+            const tgl = document.getElementById('print-tanggal').value;
+            if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
+            
             document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            var formData = new FormData(this);
-            var object = {};
-            
+            fetch(`${globalUrl}?station=${st}&tanggal=${tgl}`)
+            .then(res => res.json())
+            .then(res => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                if(res.status === "Sukses") {
+                    const d = res.data;
+                    let formatStruk = `
+========================================
+         FEELING DAILY SYSTEM
+       * STATION RECORD REPORT *
+========================================
+STATION : ${d.station}
+TANGGAL : Tgl-${d.tanggal}
+----------------------------------------
+[A. OPERASIONAL TIM]
+PILOT SHIFT 1 : ${d.pilot_s1 || '-'}
+PILOT SHIFT 2 : ${d.pilot_s2 || '-'}
+P.I.C OFFICE  : ${d.office || '-'}
+
+[B. KEUANGAN FISIK KASIR]
+CASH AKTUAL S1 : Rp ${Number(d.cash_aktual_s1 || 0).toLocaleString('en-US')}
+CASH AKTUAL S2 : Rp ${Number(d.cash_aktual_s2 || 0).toLocaleString('en-US')}
+TIP PILOT S1   : Rp ${Number(d.tip_pilot_s1 || 0).toLocaleString('en-US')}
+TIP PILOT S2   : Rp ${Number(d.tip_pilot_s2 || 0).toLocaleString('en-US')}
+
+[C. AKUNTANSI KANTOR]
+SALDO AWAL     : Rp ${Number(d.office_saldo_awal || 0).toLocaleString('en-US')}
+TOTAL QRIS ALL : Rp ${Number(d.office_total_qris_all || 0).toLocaleString('en-US')}
+CASH TO CASHIER: Rp ${Number(d.cash_to_cashier || 0).toLocaleString('en-US')}
+
+[D. CATATAN / NOTES]
+${d.notes || '-'}
+----------------------------------------
+Printed via Senada CreatLabs System
+========================================`;
+                    document.getElementById('previewContent').innerText = formatStruk;
+                    document.getElementById('previewArea').style.display = 'block';
+                    document.getElementById('printBtn').style.display = 'inline-block';
+                } else {
+                    alert("Gagal menarik data: " + res.message);
+                }
+            }).catch(e => { document.getElementById('loadingOverlay').style.display = 'none'; alert("Error Transmisi Cloud: " + e); });
+        }
+
+        // ENGINE CETAK DAN PRINT KE PERANGKAT/STRUK/PDF
+        function executePrint() {
+            const content = document.getElementById('previewContent').innerText;
+            const w = window.open('', '_blank');
+            w.document.write('<html><head><title>Print Laporan DSF</title><style>body{font-family:monospace; font-size:12px; white-space:pre; padding:10px; line-height:1.3; color:#000;}</style></head><body>');
+            w.document.write(content);
+            w.document.write('</body></html>');
+            w.document.close();
+            setTimeout(() => { w.print(); w.close(); }, 300);
+        }
+
+        // ENGINE POST (PENGIRIMAN DATA)
+        toggleSec();
+        document.getElementById('mainForm').addEventListener('submit', function(e) {
+            e.preventDefault(); document.getElementById('loadingOverlay').style.display = 'flex';
+            var formData = new FormData(this); var object = {};
             formData.forEach((value, key) => {
                 if(value) {
                     let inputElement = document.querySelector(`[name="${key}"]`);
-                    if (inputElement && inputElement.classList.contains('input-uang')) {
-                        object[key] = value.replace(/,/g, ''); 
-                    } else {
-                        object[key] = value;
-                    }
+                    if (inputElement && inputElement.classList.contains('input-uang')) { object[key] = value.replace(/,/g, ''); } 
+                    else { object[key] = value; }
                 }
             });
-            
-            // WEB APP JALUR UTAMA AKTIF APPS SCRIPT SPREADSHEET
-            const url = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
-
-            fetch(url, {
-                method: 'POST',
-                mode: 'no-cors', 
-                body: JSON.stringify(object)
-            })
-            .then(() => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Data berhasil diproses ke Spreadsheet!");
-                this.reset();
-                updateSt(); 
-                toggleSec(); 
-            })
-            .catch(error => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Kendala Transmisi Jaringan: " + error);
-            });
+            fetch(globalUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(object) })
+            .then(() => { document.getElementById('loadingOverlay').style.display = 'none'; alert("Data berhasil diproses ke Spreadsheet!"); this.reset(); updateSt(); toggleSec(); })
+            .catch(error => { document.getElementById('loadingOverlay').style.display = 'none'; alert("Kendala Transmisi Jaringan: " + error); });
         });
     </script>
 </body>
