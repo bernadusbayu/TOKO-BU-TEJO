@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal System Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        /* TEMA DARK MODE */
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .title-header { 
+            color: #ffffff; 
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle-header {
+            color: #10B981;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .menu-container {
+            width: 100%;
+            max-width: 400px; /* Ukuran pas untuk HP dan Rapi di Laptop */
+        }
+
+        /* Styling Tombol Menu */
+        .menu-btn {
+            display: block;
+            background: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #333;
+            border-left: 5px solid #10B981;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-btn:hover {
+            background: #252525;
+            border-color: #10B981;
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .menu-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .menu-desc {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .icon-arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #10B981;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="title-header is-size-3">MAIN PORTAL</h1>
+    <p class="subtitle-header">Pilih sistem operasional Anda</p>
+
+    <div class="menu-container">
+        
+        <a href="dsf.html" class="menu-btn">
+            <div class="menu-title">📋 DSF System</div>
+            <div class="menu-desc">Daily Station Record & Financial</div>
+            <span class="icon-arrow">→</span>
+        </a>
+
+        <a href="stockist-hq.html" class="menu-btn" style="border-left-color: #3b82f6;">
+            <div class="menu-title">🏢 STOCKIST HQ</div>
+            <div class="menu-desc">Headquarters Inventory Management</div>
+            <span class="icon-arrow" style="color: #3b82f6;">→</span>
+        </a>
+
+        <a href="stockist-sq.html" class="menu-btn" style="border-left-color: #f59e0b;">
+            <div class="menu-title">🏬 STOCKIST SQ</div>
+            <div class="menu-desc">Sub-Quarter Inventory System</div>
+            <span class="icon-arrow" style="color: #f59e0b;">→</span>
+        </a>
+
+    </div>
+
+</body>
+</html>
