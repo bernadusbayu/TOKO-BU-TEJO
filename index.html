@@ -119,7 +119,7 @@
 
     <div id="loadingOverlay">
         <div class="loader is-loading mb-3" style="width: 40px; height: 40px; border-width: 4px;"></div>
-        <span>Memproses & Menyimpan Data...</span>
+        <span>Memproses & Menyimpan Data Ke Spreadsheet...</span>
     </div>
 
     <h1 class="title is-4 has-text-centered mb-5">📋 DAILY STATION RECORD</h1>
@@ -209,9 +209,9 @@
                     
                     <div class="column is-12 py-1 mt-3" style="border-top: 1px dashed #444;"><p class="is-size-7" style="color:#e0a800; font-weight:bold;">PENGELUARAN STATION [OUT]</p></div>
                     <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 1</label><input class="input is-small" type="text" name="item_out_1" placeholder="Item 1"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 1</label><input class="input is-small highlight-input" type="number" name="nominal_out_1" placeholder="Rp"></div>
+                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 1</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="nominal_out_1" placeholder="Rp"></div>
                     <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 2</label><input class="input is-small" type="text" name="item_out_2" placeholder="Item 2"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 2</label><input class="input is-small highlight-input" type="number" name="nominal_out_2" placeholder="Rp"></div>
+                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 2</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="nominal_out_2" placeholder="Rp"></div>
                 </div>
             </div>
 
@@ -221,11 +221,11 @@
             <div id="acc-cash-tip" class="acc-content">
                 <div class="field mb-3">
                     <label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label>
-                    <input class="input is-small highlight-input" type="number" name="cash_aktual_kasir" placeholder="Rp 0">
+                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="cash_aktual_kasir" placeholder="Rp 0">
                 </div>
                 <div class="field mb-3">
                     <label class="label is-size-7">TIP PILOT</label>
-                    <input class="input is-small highlight-input" type="number" name="tip_pilot" placeholder="Rp 0">
+                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="tip_pilot" placeholder="Rp 0">
                 </div>
             </div>
         </div>
@@ -266,15 +266,15 @@
             <div id="acc-keuangan" class="acc-content">
                 <div class="field mb-3">
                     <label class="label is-size-7">[*Office] SALDO AWAL KASIR</label>
-                    <input class="input is-small" type="number" name="office_saldo_awal" placeholder="Rp 0">
+                    <input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0">
                 </div>
                 <div class="field mb-3">
                     <label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label>
-                    <input class="input is-small highlight-input" type="number" name="office_total_qris_all" placeholder="Rp 0">
+                    <input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0">
                 </div>
                 <div class="field mb-3">
                     <label class="label is-size-7">CASH TO CASHIER (Besok)</label>
-                    <input class="input is-small" type="number" name="cash_to_cashier" placeholder="Rp 0">
+                    <input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0">
                 </div>
                 <div class="field">
                     <label class="label is-size-7">NOTES</label>
@@ -289,13 +289,29 @@
     </form>
 
     <script>
-        // Data Master Arrays
+        // DATA MASTER UTAMA (Sinkron Total dengan Database Code.gs)
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
-        const gramasiList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "UHT", "ESPRESSO", "KR-G (%)", "KR-S (%)", "S-CAR (.Btl)", "AREN (.Pck)", "MILO (.Pcs)", "ES BATU (%)", "CLEO (%)"];
-        const syrupList = ["FL. CAR", "FL. BSC", "FL. IRS", "FL. HAZ", "FL. VAN", "FL. PIS"];
-        const wasteList = ["M-GE", "M-AR", "M-CO", "M-MA", "M-RE", "KR-G", "KR-S", "UHT", ".SPRO"];
+        
+        const gramasiList = [
+            { label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" },
+            { label: "M-MA", key: "m-ma" }, { label: "M-RE", key: "m-re" }, { label: "UHT", key: "uht" },
+            { label: "ESPRESSO", key: "espresso" }, { label: "KR-G (%)", key: "kr-g_" }, { label: "KR-S (%)", key: "kr-s_" },
+            { label: "S-CAR (.Btl)", key: "s-car_btl" }, { label: "AREN (.Pck)", key: "aren_pck" },
+            { label: "MILO (.Pcs)", key: "milo_pcs" }, { label: "ES BATU (%)", key: "es_batu_" }, { label: "CLEO (%)", key: "cleo_" }
+        ];
 
-        // GENERATOR MATRIKS INPUT
+        const syrupList = [
+            { label: "FL. CAR", key: "fl__car" }, { label: "FL. BSC", key: "fl__bsc" }, { label: "FL. IRS", key: "fl__irs" },
+            { label: "FL. HAZ", key: "fl__haz" }, { label: "FL. VAN", key: "fl__van" }, { label: "FL. PIS", key: "fl__pis" }
+        ];
+
+        const wasteList = [
+            { label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" },
+            { label: "M-MA", key: "m-ma" }, { label: "M-RE", key: "m-re" }, { label: "KR-G", key: "kr-g" },
+            { label: "KR-S", key: "kr-s" }, { label: "UHT", key: "uht" }, { label: ".SPRO", key: "_spro" }
+        ];
+
+        // DYNAMIC DOM INJECTION
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
             document.getElementById('menu-list').innerHTML += `
@@ -310,42 +326,39 @@
         });
 
         gramasiList.forEach(g => {
-            const safeName = g.toLowerCase().replace(/ /g, "_").replace(/[\(\)%]/g, "").replace(/\./g, "");
             document.getElementById('gramasi-list').innerHTML += `
                 <div class="column is-4-tablet is-6-mobile py-1">
-                    <label class="label is-size-7 mb-1">${g}</label>
-                    <input class="input is-small" type="number" name="gramasi_${safeName}" placeholder="0">
+                    <label class="label is-size-7 mb-1">${g.label}</label>
+                    <input class="input is-small" type="number" name="gramasi_${g.key}" placeholder="0">
                 </div>`;
         });
 
         syrupList.forEach(s => {
-            const safeName = s.toLowerCase().replace(/[^a-z0-9]/g, "_");
             document.getElementById('syrup-list').innerHTML += `
                 <div class="grid-3-col">
-                    <div style="font-size: 0.7rem; color:#e0e0e0;">${s}</div>
-                    <input class="input is-small px-1" type="number" name="syrup_${safeName}_btl" placeholder="Btl">
-                    <input class="input is-small px-1" type="number" name="syrup_${safeName}_pct" placeholder="%">
+                    <div style="font-size: 0.7rem; color:#e0e0e0;">${s.label}</div>
+                    <input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl">
+                    <input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%">
                 </div>`;
         });
 
         wasteList.forEach(w => {
-            const safeName = w.toLowerCase().replace(/[^a-z0-9]/g, "_");
             document.getElementById('waste-list').innerHTML += `
                 <div class="grid-3-col">
-                    <div style="font-size: 0.7rem; color:#e0e0e0;">${w}</div>
-                    <input class="input is-small px-1" type="number" name="waste_${safeName}_s1" placeholder="S1">
-                    <input class="input is-small px-1" type="number" name="waste_${safeName}_s2" placeholder="S2">
+                    <div style="font-size: 0.7rem; color:#e0e0e0;">${w.label}</div>
+                    <input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1">
+                    <input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2">
                 </div>`;
         });
 
-        // ACCORDION LOGIC
+        // ACCORDION TOGGLE MECHANISM
         function toggleAcc(contentId, headerElement) {
             const content = document.getElementById(contentId);
             content.classList.toggle('is-active');
             headerElement.classList.toggle('is-active');
         }
 
-        // DROPDOWN STATION TRANSLATOR (Mapping nama web ke nama sheet asli)
+        // STATION TRANSLATOR DROPDOWN (Menterjemahkan teks web ke Kode Tab Spreadsheet asli)
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
@@ -365,13 +378,13 @@
 
             data.forEach(item => { 
                 let el = document.createElement("option"); 
-                el.value = item.val;   // Data kode rahasia yang masuk ke spreadsheet
-                el.text = item.text;   // Tulisan yang dilihat kasir
+                el.value = item.val;   // Dikirim rahasia ke Code.gs (ex: BJB-1)
+                el.text = item.text;   // Dibaca oleh Kru Kasir (ex: Station 1)
                 s.appendChild(el); 
             });
         }
 
-        // TOGGLE VISIBILITY KATEGORI
+        // TOGGLE VISIBILITY KATEGORI LAPORAN
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
@@ -384,38 +397,59 @@
             document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
         }
         
-        // Inisialisasi awal UI
+        // FITUR LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN (MONEY VISUAL FORMATTER)
+        document.querySelectorAll('.input-uang').forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                let value = this.value.replace(/[^0-9]/g, '');
+                if (value !== '') {
+                    this.value = parseInt(value, 10).toLocaleString('en-US');
+                } else {
+                    this.value = '';
+                }
+            });
+        });
+
+        // INISIALISASI STRUKTUR UI
         toggleSec();
 
-        // FUNGSI PENGIRIMAN DATA VIA FETCH
+        // LOGIKA INTERKOM PENGIRIMAN DATA (FETCH ENGINE)
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
             
             var formData = new FormData(this);
             var object = {};
+            
             formData.forEach((value, key) => {
-                if(value) object[key] = value; // Hanya masukkan key yang ada isinya
+                if(value) {
+                    let inputElement = document.querySelector(`[name="${key}"]`);
+                    // Jika elemen bertipe mata uang, hapus koma agar masuk sebagai angka murni
+                    if (inputElement && inputElement.classList.contains('input-uang')) {
+                        object[key] = value.replace(/,/g, ''); 
+                    } else {
+                        object[key] = value;
+                    }
+                }
             });
             
-            // URL TERTANAM LANGSUNG KE APPS SCRIPT ANDA
+            // WEB APP URL TARGET UTAMA
             const url = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
 
             fetch(url, {
                 method: 'POST',
-                mode: 'no-cors', // Penting untuk melewati blokir CORS dari GitHub
+                mode: 'no-cors', 
                 body: JSON.stringify(object)
             })
-            .then(response => {
+            .then(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert("Data berhasil diproses ke Spreadsheet!");
                 this.reset();
-                updateSt(); // Reset dropdown
-                toggleSec(); // Reset tampilan section
+                updateSt(); 
+                toggleSec(); 
             })
             .catch(error => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Gagal mengirim koneksi: " + error);
+                alert("Kendala Jaringan Web: " + error);
             });
         });
     </script>
