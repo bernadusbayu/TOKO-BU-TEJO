@@ -12,6 +12,7 @@
             color: #e0e0e0; 
             padding: 15px 10px 90px 10px; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
         }
         
         .title { color: #ffffff !important; }
@@ -113,16 +114,51 @@
             background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center;
             flex-direction: column; color: #10B981; font-weight: bold;
         }
+
+        /* TOMBOL HOME KEMBALI KAMPUS */
+        .home-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #1e1e1e;
+            color: #10B981;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .home-btn:hover {
+            background: #252525;
+            color: #ffffff;
+            border-color: #10B981;
+        }
+        
+        /* Pencegahan tabrakan header judul visual form */
+        .title-spacing {
+            margin-top: 50px !important; 
+        }
     </style>
 </head>
 <body>
+
+    <a href="index.html" class="home-btn">
+        <span>🏠</span> HOME
+    </a>
 
     <div id="loadingOverlay">
         <div class="loader is-loading mb-3" style="width: 40px; height: 40px; border-width: 4px;"></div>
         <span>Memproses & Menyimpan Data Ke Spreadsheet...</span>
     </div>
 
-    <h1 class="title is-4 has-text-centered mb-5">📋 DAILY STATION RECORD</h1>
+    <h1 class="title is-4 has-text-centered mb-5 title-spacing">📋 DAILY STATION RECORD</h1>
 
     <form id="mainForm">
         <div class="form-section">
@@ -289,7 +325,7 @@
     </form>
 
     <script>
-        // DATA MASTER UTAMA (Sinkron Total dengan Database Code.gs)
+        // DATA MASTER ARRAY UNTUK GENERATOR INPUT (Sinkron Penuh dengan database Google)
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         
         const gramasiList = [
@@ -311,7 +347,7 @@
             { label: "KR-S", key: "kr-s" }, { label: "UHT", key: "uht" }, { label: ".SPRO", key: "_spro" }
         ];
 
-        // DYNAMIC DOM INJECTION
+        // DYNAMIC HTML GENERATOR LOOP
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
             document.getElementById('menu-list').innerHTML += `
@@ -351,14 +387,14 @@
                 </div>`;
         });
 
-        // ACCORDION TOGGLE MECHANISM
+        // MANAGEMENT ACCORDION UI
         function toggleAcc(contentId, headerElement) {
             const content = document.getElementById(contentId);
             content.classList.toggle('is-active');
             headerElement.classList.toggle('is-active');
         }
 
-        // STATION TRANSLATOR DROPDOWN (Menterjemahkan teks web ke Kode Tab Spreadsheet asli)
+        // STATION TRANSLATOR DROPDOWN (Penerjemah Pilihan Web ke Kode Tab Database Asli)
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
@@ -378,13 +414,13 @@
 
             data.forEach(item => { 
                 let el = document.createElement("option"); 
-                el.value = item.val;   // Dikirim rahasia ke Code.gs (ex: BJB-1)
-                el.text = item.text;   // Dibaca oleh Kru Kasir (ex: Station 1)
+                el.value = item.val;   // Value kode lembar kerja (ex: BJB-1)
+                el.text = item.text;   // Label dibaca kasir (ex: Station 1)
                 s.appendChild(el); 
             });
         }
 
-        // TOGGLE VISIBILITY KATEGORI LAPORAN
+        // MANAGEMENT VISIBILITY KATEGORI LAPORAN
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
@@ -397,7 +433,7 @@
             document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
         }
         
-        // FITUR LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN (MONEY VISUAL FORMATTER)
+        // INTERAKTIF LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN (MONEY VISUAL FORMATTER)
         document.querySelectorAll('.input-uang').forEach(function(input) {
             input.addEventListener('input', function(e) {
                 let value = this.value.replace(/[^0-9]/g, '');
@@ -409,10 +445,10 @@
             });
         });
 
-        // INISIALISASI STRUKTUR UI
+        // INISIALISASI STRUKTUR VISUAL UI AWAL
         toggleSec();
 
-        // LOGIKA INTERKOM PENGIRIMAN DATA (FETCH ENGINE)
+        // LOGIKA KONEKSI TRANSAKSI DATA (FETCH ENGINE CORP)
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -423,7 +459,7 @@
             formData.forEach((value, key) => {
                 if(value) {
                     let inputElement = document.querySelector(`[name="${key}"]`);
-                    // Jika elemen bertipe mata uang, hapus koma agar masuk sebagai angka murni
+                    // Jika terdeteksi input uang, bersihkan karakter koma agar masuk angka murni ke rumus database
                     if (inputElement && inputElement.classList.contains('input-uang')) {
                         object[key] = value.replace(/,/g, ''); 
                     } else {
@@ -432,24 +468,24 @@
                 }
             });
             
-            // WEB APP URL TARGET UTAMA
+            // GOOGLE APPS SCRIPT WEB APP GATEWAY URL TARGET
             const url = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
 
             fetch(url, {
                 method: 'POST',
-                mode: 'no-cors', 
+                mode: 'no-cors', // Melewati barikade kebijakan CORS keamanan browser
                 body: JSON.stringify(object)
             })
             .then(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert("Data berhasil diproses ke Spreadsheet!");
                 this.reset();
-                updateSt(); 
-                toggleSec(); 
+                updateSt(); // Reset Dropdown Station
+                toggleSec(); // Sinkronisasi ulang field visual kategori
             })
             .catch(error => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Kendala Jaringan Web: " + error);
+                alert("Kendala Transmisi Jaringan: " + error);
             });
         });
     </script>
