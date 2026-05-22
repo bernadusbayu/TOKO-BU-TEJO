@@ -5,164 +5,270 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feeling Daily System - Station Record</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* TEMA DARK MODE TOTAL */
+        /* TEMA ULTRA MODERN DARK & NEOMORPHIC GLASS */
         body { 
-            background-color: #121212; 
-            color: #e0e0e0; 
-            padding: 15px 10px 90px 10px; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f1115; 
+            color: #e2e8f0; 
+            padding: 20px 12px 100px 12px; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
             position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
         
-        .title { color: #ffffff !important; }
+        .title { 
+            color: #ffffff !important; 
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* ORNAMEN CAHAYA LATAR (AMBIENT GLOW) */
+        .glow-bg {
+            position: absolute;
+            top: 5%; left: 50%;
+            transform: translateX(-50%);
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
         
+        /* KARTU FORM - GLASSMORPHISM */
         .form-section { 
-            background: #1e1e1e; 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin-bottom: 15px; 
-            border: 1px solid #333; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 20px 16px; 
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); 
+            position: relative;
+            z-index: 10;
         }
         
         .section-title { 
-            font-weight: bold; 
+            font-weight: 800; 
             font-size: 0.85rem; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             color: #10B981; 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 8px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+            padding-bottom: 10px; 
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Styling Input & Dropdown */
+        /* MODERNISE INPUT FIELDS & DROPDOWNS */
         .input, .textarea, .select select {
-            background-color: #2a2a2a !important;
-            border-color: #444 !important;
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
             color: #ffffff !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
         }
-        .input::placeholder, .textarea::placeholder { color: #888 !important; }
+        .input::placeholder, .textarea::placeholder { color: #555861 !important; }
+        
         .input:focus, .textarea:focus, .select select:focus {
             border-color: #10B981 !important; 
-            box-shadow: 0 0 0 0.125em rgba(16, 185, 129, 0.25) !important;
+            background-color: rgba(255, 255, 255, 0.07) !important;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.25) !important;
         }
-        .label { color: #aaaaaa !important; }
+        .label { color: #94a3b8 !important; font-weight: 600; }
 
-        /* Custom Grid Penjualan Menu (6 Kolom Presisi) */
+        /* GRID STRUKTUR PENJUALAN MENU PRESTISIUS */
         .grid-6-col { 
             display: grid; 
-            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr 1fr; 
-            gap: 4px; 
+            grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr; 
+            gap: 6px; 
             align-items: center; 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
         }
-        .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 6px; }
-        .grid-header { font-size: 0.55rem; font-weight: bold; text-align: center; color: #888; border-bottom: 1px solid #444; padding-bottom: 6px; margin-bottom: 10px; }
+        .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; }
+        .grid-header { 
+            font-size: 0.6rem; 
+            font-weight: 800; 
+            text-align: center; 
+            color: #64748b; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+            padding-bottom: 8px; 
+            margin-bottom: 12px; 
+            letter-spacing: 0.5px;
+        }
         
-        /* Highlight Input Khusus */
+        /* WARNA SOROT HIGHLIGHT INDIKATOR */
         .highlight-input { 
-            background-color: #383800 !important; 
-            color: #ffeb3b !important; 
-            border-color: #666 !important;
+            background-color: rgba(245, 158, 11, 0.08) !important; 
+            color: #fbbf24 !important; 
+            border-color: rgba(245, 158, 11, 0.25) !important;
+            font-weight: 700;
+        }
+        .highlight-input:focus {
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.25) !important;
         }
         .input-hkp {
-            background-color: #1a3a2a !important;
-            color: #10B981 !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            color: #34d399 !important;
+            border-color: rgba(16, 185, 129, 0.25) !important;
+            font-weight: 700;
         }
 
-        /* ACCORDION UI */
+        /* PREMIUM ACCORDION COLLAPSE SYSTEM */
         .acc-header {
-            background-color: #252525;
-            color: #10B981;
-            padding: 10px 15px;
-            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.02);
+            color: #ffffff;
+            padding: 14px 18px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 0.75rem;
+            font-weight: 700;
+            font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            border-left: 3px solid #10B981;
-            transition: background 0.3s;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #10B981;
+            transition: all 0.3s ease;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .acc-header:hover { background-color: #2f2f2f; }
-        .acc-icon { transition: transform 0.3s ease; font-size: 0.7rem; }
+        .acc-header:hover { 
+            background-color: rgba(255, 255, 255, 0.05); 
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .acc-icon { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: #10B981; font-size: 0.65rem; }
         .acc-content {
             display: none; 
-            padding: 5px 0 15px 0;
-            animation: fadeIn 0.3s ease-in-out;
+            padding: 8px 4px 18px 4px;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         .acc-content.is-active { display: block; }
         .acc-header.is-active .acc-icon { transform: rotate(180deg); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Footer Sticky & Tombol Kirim */
-        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #1e1e1e; padding: 15px; border-top: 1px solid #333; z-index: 100; }
-        .button.is-primary { background-color: #10B981 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        /* Overlay Loading Screen */
-        #loadingOverlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center;
-            flex-direction: column; color: #10B981; font-weight: bold;
+        /* STICKY FOOTER GLASS UI */
+        .sticky-footer { 
+            position: fixed; 
+            bottom: 0; left: 0; right: 0; 
+            background: rgba(15, 17, 21, 0.60); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.05); 
+            z-index: 100; 
         }
-
-        /* TOMBOL HOME KEMBALI KAMPUS */
+        .button.is-primary { 
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; 
+            color: #ffffff !important; 
+            font-weight: 700; 
+            border: none; 
+            border-radius: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+        .button.is-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* GLASS FLOATING HOME BUTTON */
         .home-btn {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #1e1e1e;
+            top: 20px; left: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #10B981;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 10px 16px;
+            border-radius: 12px;
             text-decoration: none;
             font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
             z-index: 150;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            letter-spacing: 0.5px;
         }
         .home-btn:hover {
-            background: #252525;
+            background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
-            border-color: #10B981;
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
         }
         
-        /* Pencegahan tabrakan header judul visual form */
-        .title-spacing {
-            margin-top: 50px !important; 
+        .title-spacing { margin-top: 55px !important; }
+
+        /* LOADING SCREEN OVERLAY BLUR */
+        #loadingOverlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 200; 
+            justify-content: center; align-items: center; flex-direction: column; 
+            color: #10B981; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px;
+        }
+        .custom-loader {
+            border: 4px solid rgba(16, 185, 129, 0.1);
+            border-left-color: #10B981;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* WATERMARK / FOOTER SENADA CREATLABS */
+        .brand-footer {
+            margin-top: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+        .brand-footer strong {
+            color: #10B981;
+            font-weight: 800;
+        }
+        .brand-footer span {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.65rem;
+            color: #444;
         }
     </style>
 </head>
 <body>
+
+    <div class="glow-bg"></div>
 
     <a href="index.html" class="home-btn">
         <span>🏠</span> HOME
     </a>
 
     <div id="loadingOverlay">
-        <div class="loader is-loading mb-3" style="width: 40px; height: 40px; border-width: 4px;"></div>
+        <div class="custom-loader mb-4"></div>
         <span>Memproses & Menyimpan Data Ke Spreadsheet...</span>
     </div>
 
     <h1 class="title is-4 has-text-centered mb-5 title-spacing">📋 DAILY STATION RECORD</h1>
 
-    <form id="mainForm">
+    <form id="mainForm" class="content-wrapper">
         <div class="form-section">
-            <p class="section-title">INFO OPERASIONAL</p>
+            <p class="section-title"><span>📝</span> INFO OPERASIONAL</p>
             <div class="columns is-mobile is-multiline">
                 <div class="column is-6">
                     <label class="label is-size-7">Regional</label>
@@ -216,7 +322,7 @@
         </div>
 
         <div id="sec-a" class="form-section" style="display:none;">
-            <p class="section-title">PENJUALAN PILOT [A]</p>
+            <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
             
             <div class="acc-header" onclick="toggleAcc('acc-menu', this)">
                 <span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span>
@@ -243,7 +349,7 @@
                     <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="espr_b_qr" placeholder="0"></div>
                     <div class="column is-4"><label class="label is-size-7">Cup+Ice (QR)</label><input class="input is-small" type="number" name="cup_ice_qr" placeholder="0"></div>
                     
-                    <div class="column is-12 py-1 mt-3" style="border-top: 1px dashed #444;"><p class="is-size-7" style="color:#e0a800; font-weight:bold;">PENGELUARAN STATION [OUT]</p></div>
+                    <div class="column is-12 py-1 mt-3" style="border-top: 1px dashed rgba(255,255,255,0.1);"><p class="is-size-7" style="color:#f59e0b; font-weight:bold;">PENGELUARAN STATION [OUT]</p></div>
                     <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 1</label><input class="input is-small" type="text" name="item_out_1" placeholder="Item 1"></div>
                     <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 1</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="nominal_out_1" placeholder="Rp"></div>
                     <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 2</label><input class="input is-small" type="text" name="item_out_2" placeholder="Item 2"></div>
@@ -267,7 +373,7 @@
         </div>
 
         <div id="sec-b" class="form-section">
-            <p class="section-title">LAPORAN BAHAN BAKU [B]</p>
+            <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
             
             <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)">
                 <span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span>
@@ -294,10 +400,10 @@
         </div>
 
         <div id="sec-c" class="form-section" style="display:none;">
-            <p class="section-title">LAPORAN KEUANGAN [C]</p>
+            <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
             
             <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)">
-                <span>💰 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span>
+                <span>💎 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span>
             </div>
             <div id="acc-keuangan" class="acc-content">
                 <div class="field mb-3">
@@ -319,13 +425,18 @@
             </div>
         </div>
 
+        <div class="brand-footer">
+            Powered by <strong>Senada CreatLabs</strong>
+            <span>Digital Harmony | Innovative Creation</span>
+        </div>
+
         <div class="sticky-footer">
             <button type="submit" class="button is-primary is-fullwidth">KIRIM DATA KE SPREADSHEET</button>
         </div>
     </form>
 
     <script>
-        // DATA MASTER ARRAY UNTUK GENERATOR INPUT (Sinkron Penuh dengan database Google)
+        // DATA MASTER ARRAY MUTLAK (Tanpa Merubah Struktur)
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         
         const gramasiList = [
@@ -347,12 +458,12 @@
             { label: "KR-S", key: "kr-s" }, { label: "UHT", key: "uht" }, { label: ".SPRO", key: "_spro" }
         ];
 
-        // DYNAMIC HTML GENERATOR LOOP
+        // INJEKSI MATRIKS INPUT SECARA DINAMIS
         menus.forEach(m => {
             const safeName = m.toLowerCase().replace(/ /g, "_");
             document.getElementById('menu-list').innerHTML += `
                 <div class="grid-6-col">
-                    <div style="font-size: 0.6rem; color:#e0e0e0; line-height: 1.2; font-weight: 500;">${m}</div>
+                    <div style="font-size: 0.65rem; color:#f1f5f9; line-height: 1.2; font-weight: 600;">${m}</div>
                     <input class="input is-small px-1" type="number" name="${safeName}_cup_cs" placeholder="0">
                     <input class="input is-small px-1" type="number" name="${safeName}_cup_qr" placeholder="0">
                     <input class="input is-small px-1" type="number" name="${safeName}_tml_cs" placeholder="0">
@@ -369,32 +480,38 @@
                 </div>`;
         });
 
-        syrupList.forEach(s => {
-            document.getElementById('syrup-list').innerHTML += `
-                <div class="grid-3-col">
-                    <div style="font-size: 0.7rem; color:#e0e0e0;">${s.label}</div>
-                    <input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl">
-                    <input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%">
-                </div>`;
-        });
+        styleSyrupList = () => {
+            syrupList.forEach(s => {
+                document.getElementById('syrup-list').innerHTML += `
+                    <div class="grid-3-col">
+                        <div style="font-size: 0.75rem; color:#e2e8f0; font-weight:500;">${s.label}</div>
+                        <input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl">
+                        <input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%">
+                    </div>`;
+            });
+        };
+        styleSyrupList();
 
-        wasteList.forEach(w => {
-            document.getElementById('waste-list').innerHTML += `
-                <div class="grid-3-col">
-                    <div style="font-size: 0.7rem; color:#e0e0e0;">${w.label}</div>
-                    <input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1">
-                    <input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2">
-                </div>`;
-        });
+        styleWasteList = () => {
+            wasteList.forEach(w => {
+                document.getElementById('waste-list').innerHTML += `
+                    <div class="grid-3-col">
+                        <div style="font-size: 0.75rem; color:#e2e8f0; font-weight:500;">${w.label}</div>
+                        <input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1">
+                        <input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2">
+                    </div>`;
+            });
+        };
+        styleWasteList();
 
-        // MANAGEMENT ACCORDION UI
+        // LOGIKA AKORDION UI
         function toggleAcc(contentId, headerElement) {
             const content = document.getElementById(contentId);
             content.classList.toggle('is-active');
             headerElement.classList.toggle('is-active');
         }
 
-        // STATION TRANSLATOR DROPDOWN (Penerjemah Pilihan Web ke Kode Tab Database Asli)
+        // TRANSLATOR NAMA DROPDOWN KE TAB SPREADSHEET MURNI
         function updateSt() {
             const r = document.getElementById('reg').value;
             const s = document.getElementById('st');
@@ -414,13 +531,13 @@
 
             data.forEach(item => { 
                 let el = document.createElement("option"); 
-                el.value = item.val;   // Value kode lembar kerja (ex: BJB-1)
-                el.text = item.text;   // Label dibaca kasir (ex: Station 1)
+                el.value = item.val;   
+                el.text = item.text;   
                 s.appendChild(el); 
             });
         }
 
-        // MANAGEMENT VISIBILITY KATEGORI LAPORAN
+        // LOGIKA KATEGORI TOGGLE VISIBILITAS FIELD
         function toggleSec() {
             const k = document.getElementById('kat').value;
             const labelCup = document.getElementById('label-cup');
@@ -433,22 +550,25 @@
             document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none";
         }
         
-        // INTERAKTIF LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN (MONEY VISUAL FORMATTER)
-        document.querySelectorAll('.input-uang').forEach(function(input) {
-            input.addEventListener('input', function(e) {
-                let value = this.value.replace(/[^0-9]/g, '');
-                if (value !== '') {
-                    this.value = parseInt(value, 10).toLocaleString('en-US');
-                } else {
-                    this.value = '';
-                }
+        // INTERAKTIF LIVE AUTO-FORMAT KOMA NOMINAL RIBUAN
+        function initMoneyFormatter() {
+            document.querySelectorAll('.input-uang').forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^0-9]/g, '');
+                    if (value !== '') {
+                        this.value = parseInt(value, 10).toLocaleString('en-US');
+                    } else {
+                        this.value = '';
+                    }
+                });
             });
-        });
+        }
+        initMoneyFormatter();
 
-        // INISIALISASI STRUKTUR VISUAL UI AWAL
+        // RUN UI AWAL
         toggleSec();
 
-        // LOGIKA KONEKSI TRANSAKSI DATA (FETCH ENGINE CORP)
+        // FETCH FORM SUBMIT TRANSMISSION ENGINE
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -459,7 +579,6 @@
             formData.forEach((value, key) => {
                 if(value) {
                     let inputElement = document.querySelector(`[name="${key}"]`);
-                    // Jika terdeteksi input uang, bersihkan karakter koma agar masuk angka murni ke rumus database
                     if (inputElement && inputElement.classList.contains('input-uang')) {
                         object[key] = value.replace(/,/g, ''); 
                     } else {
@@ -468,20 +587,20 @@
                 }
             });
             
-            // GOOGLE APPS SCRIPT WEB APP GATEWAY URL TARGET
+            // WEB APP JALUR UTAMA AKTIF APPS SCRIPT SPREADSHEET
             const url = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
 
             fetch(url, {
                 method: 'POST',
-                mode: 'no-cors', // Melewati barikade kebijakan CORS keamanan browser
+                mode: 'no-cors', 
                 body: JSON.stringify(object)
             })
             .then(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert("Data berhasil diproses ke Spreadsheet!");
                 this.reset();
-                updateSt(); // Reset Dropdown Station
-                toggleSec(); // Sinkronisasi ulang field visual kategori
+                updateSt(); 
+                toggleSec(); 
             })
             .catch(error => {
                 document.getElementById('loadingOverlay').style.display = 'none';
