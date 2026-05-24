@@ -26,9 +26,10 @@
         .input:focus, .textarea:focus, .select select:focus { border-color: #10B981 !important; background-color: rgba(255, 255, 255, 0.07) !important; box-shadow: 0 0 14px rgba(16, 185, 129, 0.25) !important; }
         .label { color: #94a3b8 !important; font-weight: 600; }
         
-        .grid-6-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 10px; }
+        /* GRID KHUSUS SUB FORM INPUT PARALEL */
+        .grid-11-col { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; gap: 4px; align-items: center; margin-bottom: 8px; }
         .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; }
-        .grid-header { font-size: 0.6rem; font-weight: 800; text-align: center; color: #64748b; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .grid-header-main { font-size: 0.55rem; font-weight: 800; text-align: center; color: #64748b; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 6px; margin-bottom: 10px; letter-spacing: 0.5px; }
         
         .highlight-input { background-color: rgba(245, 158, 11, 0.08) !important; color: #fbbf24 !important; border-color: rgba(245, 158, 11, 0.25) !important; font-weight: 700; }
         .highlight-input:focus { border-color: #f59e0b !important; box-shadow: 0 0 14px rgba(245, 158, 11, 0.25) !important; }
@@ -37,11 +38,7 @@
         .acc-header { background-color: rgba(255, 255, 255, 0.02); color: #ffffff; padding: 14px 18px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #10B981; transition: all 0.3s ease; text-transform: uppercase; }
         .acc-header:hover { background-color: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
         .acc-icon { transition: transform 0.4s ease; color: #10B981; font-size: 0.65rem; }
-        .acc-content { display: none; padding: 8px 4px 18px 4px; animation: slideDown 0.3s ease forwards; }
-        .acc-content.is-active { display: block; }
-        .acc-header.is-active .acc-icon { transform: rotate(180deg); }
-        
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .acc-content { display: block; padding: 8px 4px 18px 4px; }
         
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.60); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 100; }
         .button.is-primary { background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; color: #ffffff !important; font-weight: 700; border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
@@ -52,7 +49,9 @@
         .home-btn:hover, .print-trigger-btn:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
         
         .title-spacing { margin-top: 55px !important; }
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 999999; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
+        
+        /* MASTER FIX LAYER UTAMA LAYER TERDEPAN UNTUK BUFFER LOADING DAN MODAL POPUP */
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 99999 !important; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
         .custom-loader { border: 4px solid rgba(16, 185, 129, 0.1); border-left-color: #10B981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -63,8 +62,6 @@
         .modal-card-head { background-color: #252525 !important; border-bottom: 1px solid #333 !important; }
         .modal-card-foot { background-color: #252525 !important; border-top: 1px solid #333 !important; justify-content: flex-end; padding-bottom: 20px; }
         .modal-card-title { color: #fff !important; font-weight: 800; font-size: 1rem; }
-        
-        /* FIX: MEMAKSA MODAL TAMPIL PALING DEPAN AGAR TIDAK TERTUTUP STICKY FOOTER */
         .modal { z-index: 9999 !important; }
     </style>
 </head>
@@ -76,12 +73,13 @@
 
     <div id="loadingOverlay">
         <div class="custom-loader mb-4"></div>
-        <span>Memproses Koneksi Cloud...</span>
+        <span>Memproses Transmisi Cloud Database...</span>
     </div>
 
     <h1 class="title is-4 has-text-centered mb-5 title-spacing">📋 DAILY STATION RECORD</h1>
 
     <form id="mainForm" class="content-wrapper">
+        
         <div class="form-section">
             <p class="section-title"><span>📝</span> INFO OPERASIONAL</p>
             <div class="columns is-mobile is-multiline">
@@ -102,129 +100,122 @@
                         <select id="st" name="station" required><option value="">-</option></select>
                     </div>
                 </div>
-                <div class="column is-6">
-                    <label class="label is-size-7">Nama Pilot</label>
-                    <input class="input is-small" type="text" name="pilot" placeholder="Nama Pilot" required>
-                </div>
-                <div class="column is-6">
-                    <label class="label is-size-7">[*Office] P.I.C OFFICE</label>
-                    <input class="input is-small" type="text" name="office" placeholder="Nama Staff">
-                </div>
-                <div class="column is-6">
-                    <label class="label is-size-7">Shift</label>
-                    <div class="select is-fullwidth is-small">
-                        <select name="shift">
-                            <option value="Shift 1">Shift 1</option>
-                            <option value="Shift 2">Shift 2</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <label class="label is-size-7">Tanggal Laporan (1-31)</label>
-                    <input class="input is-small highlight-input" type="number" name="tanggal" placeholder="Pilih Tgl" min="1" max="31" required>
-                </div>
-                <div class="column is-6">
-                    <label class="label is-size-7">Kategori Input</label>
-                    <div class="select is-fullwidth is-small">
-                        <select id="kat" name="kategori" onchange="toggleSec()">
-                            <option value="CEK IN">CEK IN</option>
-                            <option value="SD-1">SD-1</option>
-                            <option value="SD-2">SD-2</option>
-                            <option value="SD-3">SD-3</option>
-                            <option value="CEK OUT">CEK OUT</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <label class="label is-size-7" id="label-cup">Jumlah Cup (Awal)</label>
-                    <input class="input is-small highlight-input" type="number" name="input_cup" placeholder="0">
-                </div>
+                <div class="column is-6"><label class="label is-size-7">Nama Pilot (Shift 1)</label><input class="input is-small" type="text" name="pilot_s1" placeholder="Pilot Shift 1" required></div>
+                <div class="column is-6"><label class="label is-size-7">Nama Pilot (Shift 2)</label><input class="input is-small" type="text" name="pilot_s2" placeholder="Pilot Shift 2" required></div>
+                <div class="column is-6"><label class="label is-size-7">[*Office] P.I.C OFFICE</label><input class="input is-small" type="text" name="office" placeholder="Nama PIC Staff"></div>
+                <div class="column is-6"><label class="label is-size-7">Tanggal Laporan (1-31)</label><input class="input is-small highlight-input" type="number" name="tanggal" placeholder="Pilih Tgl" min="1" max="31" required></div>
             </div>
         </div>
 
-        <div id="sec-a" class="form-section" style="display:none;">
-            <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
+        <div id="sec-a" class="form-section">
+            <p class="section-title"><span>📊</span> PENJUALAN PILOT [A] (SHIFT 1 & SHIFT 2 PARALEL)</p>
             
-            <div class="acc-header" onclick="toggleAcc('acc-menu', this)">
-                <span>🛒 DAFTAR PENJUALAN MENU</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header"><span>🛒 MATRIKS PENJUALAN MENU UTAMA</span></div>
             <div id="acc-menu" class="acc-content">
-                <div class="grid-6-col grid-header">
-                    <div>MENU</div><div>CUP CS</div><div>CUP QR</div><div>TML CS</div><div>TML QR</div><div>HKP</div>
+                <div class="grid-11-col grid-header-main">
+                    <div>MENU UTAMA</div>
+                    <div style="background:#044c33; color:#fff;">S1 CS</div><div style="background:#044c33; color:#fff;">S1 QR</div><div style="background:#044c33; color:#fff;">S1 T-C</div><div style="background:#044c33; color:#fff;">S1 T-Q</div><div style="background:#044c33; color:#fff;">S1 HKP</div>
+                    <div style="background:#1d3557; color:#fff;">S2 CS</div><div style="background:#1d3557; color:#fff;">S2 QR</div><div style="background:#1d3557; color:#fff;">S2 T-C</div><div style="background:#1d3557; color:#fff;">S2 T-Q</div><div style="background:#1d3557; color:#fff;">S2 HKP</div>
                 </div>
                 <div id="menu-list"></div>
             </div>
 
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-addon', this)">
-                <span>💸 ADD ON & PENGELUARAN OUT</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header mt-3"><span>💸 ADD ON & PENGELUARAN (S1 & S2)</span></div>
             <div id="acc-addon" class="acc-content">
                 <div class="columns is-mobile is-multiline">
-                    <div class="column is-12 py-1"><p class="is-size-7" style="color:#10B981; font-weight:bold;">ADD ON VIA CASH (CS)</p></div>
-                    <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="espr_a_cs" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="espr_b_cs" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Cup+Ice (CS)</label><input class="input is-small" type="number" name="cup_ice_cs" placeholder="0"></div>
+                    <div class="column is-6" style="border-right: 1px dashed rgba(255,255,255,0.1);">
+                        <p class="is-size-7 has-text-centered mb-2" style="color:#10B981; font-weight:bold; background:rgba(16,185,129,0.1); padding:2px;">WADAH INPUT SHIFT 1</p>
+                        <div class="columns is-mobile is-multiline">
+                            <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s1_espr_a_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s1_espr_b_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s1_cup_ice_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s1_espr_a_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s1_espr_b_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s1_cup_ice_qr" placeholder="0"></div>
+                            <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s1_item_out_1" placeholder="Item 1"></div>
+                            <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_1" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s1_item_out_2" placeholder="Item 2"></div>
+                            <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_2" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s1_cash_aktual" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_tip" placeholder="Rp"></div>
+                        </div>
+                    </div>
                     
-                    <div class="column is-12 py-1 mt-2"><p class="is-size-7" style="color:#10B981; font-weight:bold;">ADD ON VIA QRIS (QR)</p></div>
-                    <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="espr_a_qr" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="espr_b_qr" placeholder="0"></div>
-                    <div class="column is-4"><label class="label is-size-7">Cup+Ice (QR)</label><input class="input is-small" type="number" name="cup_ice_qr" placeholder="0"></div>
-                    
-                    <div class="column is-12 py-1 mt-3" style="border-top: 1px dashed rgba(255,255,255,0.1);"><p class="is-size-7" style="color:#f59e0b; font-weight:bold;">PENGELUARAN STATION [OUT]</p></div>
-                    <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 1</label><input class="input is-small" type="text" name="item_out_1" placeholder="Item 1"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 1</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="nominal_out_1" placeholder="Rp"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nama Item Keluar 2</label><input class="input is-small" type="text" name="item_out_2" placeholder="Item 2"></div>
-                    <div class="column is-6"><label class="label is-size-7">Nominal Rp Out 2</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="nominal_out_2" placeholder="Rp"></div>
+                    <div class="column is-6">
+                        <p class="is-size-7 has-text-centered mb-2" style="color:#3b82f6; font-weight:bold; background:rgba(59,130,246,0.1); padding:2px;">WADAH INPUT SHIFT 2</p>
+                        <div class="columns is-mobile is-multiline">
+                            <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s2_espr_a_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s2_espr_b_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s2_cup_ice_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s2_espr_a_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s2_espr_b_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s2_cup_ice_qr" placeholder="0"></div>
+                            <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s2_item_out_1" placeholder="Item 1"></div>
+                            <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_1" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s2_item_out_2" placeholder="Item 2"></div>
+                            <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_2" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s2_cash_aktual" placeholder="Rp"></div>
+                            <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_tip" placeholder="Rp"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-cash-tip', this)">
-                <span>💵 CASH AKTUAL & TIP PILOT</span><span class="acc-icon">▼</span>
-            </div>
-            <div id="acc-cash-tip" class="acc-content">
-                <div class="field mb-3"><label class="label is-size-7">CASH AKTUAL KASIR (Uang Fisik Kasir)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="cash_aktual_kasir" placeholder="Rp 0"></div>
-                <div class="field mb-3"><label class="label is-size-7">TIP PILOT</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="tip_pilot" placeholder="Rp 0"></div>
             </div>
         </div>
 
         <div id="sec-b" class="form-section">
             <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
-            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)"><span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span></div>
-            <div id="acc-gramasi" class="acc-content"><div class="columns is-mobile is-multiline" id="gramasi-list"></div></div>
             
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST</span><span class="acc-icon">▼</span></div>
-            <div id="acc-syrup" class="acc-content"><div class="grid-3-col grid-header"><div>FLAVOR</div><div>.Btl</div><div>%</div></div><div id="syrup-list"></div></div>
-            
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK [.Gr]</span><span class="acc-icon">▼</span></div>
-            <div id="acc-waste" class="acc-content"><div class="grid-3-col grid-header"><div>ITEM'S</div><div>S1</div><div>S2</div></div><div id="waste-list"></div></div>
-        </div>
+            <div class="field mb-4" style="background: rgba(16,185,129,0.05); padding:12px; border-radius:10px; border:1px solid rgba(16,185,129,0.2);">
+                <label class="label is-size-7 has-text-success">KATEGORI PERGESERAN LOGISTIK (KONDISI INPUTAN):</label>
+                <div class="select is-fullwidth is-small">
+                    <select id="kat" name="kategori" onchange="adjustCupLabel()" required>
+                        <option value="CEK IN">CEK IN (Target Kolom W)</option>
+                        <option value="SD-1">SD-1 (Target Kolom X)</option>
+                        <option value="SD-2">SD-2 (Target Kolom Y)</option>
+                        <option value="SD-3">SD-3 (Target Kolom Z)</option>
+                        <option value="CEK OUT">CEK OUT (Target Kolom AA)</option>
+                    </select>
+                </div>
+            </div>
 
-        <div id="sec-c" class="form-section" style="display:none;">
-            <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
-            <div class="acc-header" onclick="toggleAcc('acc-keuangan', this)"><span>💎 RINCIAN KEUANGAN KANTOR</span><span class="acc-icon">▼</span></div>
-            <div id="acc-keuangan" class="acc-content">
-                <div class="field mb-3"><label class="label is-size-7">[*Office] SALDO AWAL KASIR</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0"></div>
-                <div class="field mb-3"><label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0"></div>
-                <div class="field mb-3"><label class="label is-size-7">CASH TO CASHIER (Besok)</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0"></div>
-                <div class="field"><label class="label is-size-7">NOTES</label><textarea class="textarea is-small" name="notes" placeholder="Tulis rincian catatan..."></textarea></div>
+            <div class="columns is-mobile is-multiline">
+                <div class="column is-12"><label class="label is-size-7 id-label-cup" id="label-cup">Jumlah Cup (Awal - Cek In)</label><input class="input is-small highlight-input" type="number" name="input_cup" placeholder="0"></div>
+            </div>
+
+            <div class="acc-header mt-3"><span>⚖️ GRAMASI UTAMA</span></div>
+            <div id="gramasi-list" class="columns is-mobile is-multiline p-2"></div>
+            
+            <div class="acc-header mt-2"><span>🍾 SYRUP REQUEST (FLAVOR MATRIKS)</span></div>
+            <div id="acc-syrup" class="acc-content">
+                <div class="grid-3-col grid-header-main"><div>FLAVOR INVENTORY</div><div>JUMLAH .BTL</div><div>PERSENTASE %</div></div>
+                <div id="syrup-list"></div>
+            </div>
+            
+            <div class="acc-header mt-2"><span>🗑️ WASTE STOCK BLOCK (.GR)</span></div>
+            <div id="acc-waste" class="acc-content">
+                <div class="grid-3-col grid-header-main"><div>ITEM INVENTORY</div><div>WASTE SHIFT 1</div><div>WASTE SHIFT 2</div></div>
+                <div id="waste-list"></div>
             </div>
         </div>
 
-        <div class="brand-footer">
-            Powered by <strong>Senada CreatLabs</strong><br>
-            <span>Digital Harmony | Innovative Creation</span>
+        <div id="sec-c" class="form-section">
+            <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
+            <div class="field mb-3"><label class="label is-size-7">[*Office] SALDO AWAL KASIR</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0"></div>
+            <div class="field mb-3"><label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0"></div>
+            <div class="field mb-3"><label class="label is-size-7">CASH TO CASHIER (Setoran Esok Hari)</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0"></div>
+            <div class="field"><label class="label is-size-7">NOTES / CATATAN KHUSUS LAPORAN</label><textarea class="textarea is-small" name="notes" placeholder="Tulis rincian catatan kasir harian..."></textarea></div>
         </div>
-        <div class="sticky-footer">
-            <button type="submit" class="button is-primary is-fullwidth">KIRIM DATA KE SPREADSHEET</button>
-        </div>
+
+        <div class="brand-footer">Powered by <strong>Senada CreatLabs</strong><br><span>Digital Harmony | Innovative Creation</span></div>
+        <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth">KIRIM DATA DATA KE SPREADSHEET</button></div>
     </form>
 
     <div id="printModal" class="modal">
         <div class="modal-background" onclick="closePrintModal()"></div>
-        <div class="modal-card px-3 py-5 mx-2" style="max-width:800px; width:100%;">
+        <div class="modal-card px-3 py-5 mx-2" style="max-width:850px; width:100%;">
             <header class="modal-card-head">
-                <p class="modal-card-title">🖨️ FULL REPORT REVIEW</p>
-                <button class="delete" aria-label="close" onclick="closePrintModal()"></button>
+                <p class="modal-card-title">🖨️ FULL REPORT REVIEW DOCUMENT</p>
+                <button type="button" class="delete" aria-label="close" onclick="closePrintModal()"></button>
             </header>
             <section class="modal-card-body" style="background:#1e1e1e; color:#fff;">
                 <div class="columns is-mobile is-multiline mb-2">
@@ -241,9 +232,7 @@
                     </div>
                     <div class="column is-4">
                         <label class="label is-size-7">Station</label>
-                        <div class="select is-fullwidth is-small">
-                            <select id="print-st"><option value="">-</option></select>
-                        </div>
+                        <div class="select is-fullwidth is-small"><select id="print-st"><option value="">-</option></select></div>
                     </div>
                     <div class="column is-4">
                         <label class="label is-size-7">Tanggal</label>
@@ -253,20 +242,19 @@
                 <button type="button" class="button is-info is-small is-fullwidth" onclick="fetchDataLaporan()" style="font-weight:700;">🔍 BUAT DOKUMEN LAPORAN LENGKAP</button>
 
                 <div id="previewArea" class="mt-4" style="display:none; border-top:1px dashed #444; padding-top:15px;">
-                    <div style="padding: 10px; max-height: 45vh; overflow-y: auto; background:#fff; border-radius:10px;">
+                    <div style="padding: 10px; max-height: 52vh; overflow-y: auto; background:#fff; border-radius:10px;">
                         <div id="previewContent"></div>
                     </div>
                 </div>
             </section>
             <footer class="modal-card-foot">
-                <button id="printBtn" class="button is-success is-small" onclick="executePrint()" style="display:none; font-weight:700;">🖨️ CETAK DOKUMEN</button>
-                <button class="button is-small is-dark" onclick="closePrintModal()">BATAL</button>
+                <button id="printBtn" type="button" class="button is-success is-small" onclick="executePrint()" style="display:none; font-weight:700;">🖨️ CETAK DOKUMEN</button>
+                <button type="button" class="button is-small is-dark" onclick="closePrintModal()">BATAL</button>
             </footer>
         </div>
     </div>
 
     <script>
-        // DATA MASTER
         const menus = ["OUR FEELING", "BE CAREFEELS", "HAPPY FEALS", "CHOCOFEELS", "GREENFEELS", "RED DEVEELS", "PEACE FUELS", "RUSHFEELS", "NUTFEELS", "VANFEELS", "MOCCAFEELS", "BLACKFEELS"];
         const gramasiList = [
             { label: "M-GE", key: "m-ge" }, { label: "M-AR", key: "m-ar" }, { label: "M-CO", key: "m-co" }, { label: "M-MA", key: "m-ma" }, 
@@ -284,16 +272,21 @@
             { label: ".SPRO", key: "_spro" }
         ];
 
-        // INJEKSI HTML OTOMATIS KE FORM
+        // INJEKSI MATRIKS INPUT GRID SECARA PARALEL BERDAMPINGAN S1 & S2
         menus.forEach(function(m) { 
             const safeName = m.toLowerCase().replace(/ /g, "_"); 
-            let htmlStr = '<div class="grid-6-col">';
-            htmlStr += '<div style="font-size:0.65rem; color:#f1f5f9; font-weight:600;">' + m + '</div>';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_cup_cs" placeholder="0">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_cup_qr" placeholder="0">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_tml_cs" placeholder="0">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_tml_qr" placeholder="0">';
-            htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + safeName + '_hkp" placeholder="0">';
+            let htmlStr = '<div class="grid-11-col">';
+            htmlStr += '<div style="font-size:0.62rem; color:#f1f5f9; font-weight:600; line-height:1.2;">' + m + '</div>';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_cs" placeholder="CS">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_qr" placeholder="QR">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_tc" placeholder="C">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_tq" placeholder="Q">';
+            htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + safeName + '_s1_hkp" placeholder="HKP">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_cs" placeholder="CS">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_qr" placeholder="QR">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_tc" placeholder="C">';
+            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_tq" placeholder="Q">';
+            htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + safeName + '_s2_hkp" placeholder="HKP">';
             htmlStr += '</div>';
             document.getElementById('menu-list').innerHTML += htmlStr; 
         });
@@ -324,23 +317,15 @@
             document.getElementById('waste-list').innerHTML += htmlStr; 
         });
 
-        // LOGIKA TAMPILAN
-        function toggleAcc(id, el) { 
-            document.getElementById(id).classList.toggle('is-active'); 
-            el.classList.toggle('is-active'); 
+        // LOGIKA INTERAKTIF PERUBAHAN LABEL CUP
+        function adjustCupLabel() {
+            const k = document.getElementById('kat').value;
+            const l = document.getElementById('label-cup');
+            if (k === "CEK IN") l.innerText = "Jumlah Cup (Awal - Cek In)";
+            else if (k.indexOf("SD") > -1) l.innerText = "Jumlah Cup (Tambahan / Add-On " + k + ")";
+            else if (k === "CEK OUT") l.innerText = "Jumlah Cup (Kembali / Reject - Cek Out)";
         }
 
-        function toggleSec() { 
-            const k = document.getElementById('kat').value; 
-            const l = document.getElementById('label-cup'); 
-            if (k === "CEK IN") l.innerText = "Jumlah Cup (Awal)"; 
-            else if (k.startsWith("SD")) l.innerText = "Jumlah Cup (Add On)"; 
-            else if (k === "CEK OUT") l.innerText = "Jumlah Cup (Kembali / Rjct)"; 
-            
-            document.getElementById('sec-a').style.display = (k === "CEK OUT") ? "block" : "none"; 
-            document.getElementById('sec-c').style.display = (k === "CEK OUT") ? "block" : "none"; 
-        }
-        
         function setupDropdown(regId, stId) { 
             const r = document.getElementById(regId).value; 
             const s = document.getElementById(stId); 
@@ -367,7 +352,6 @@
         function updateSt() { setupDropdown('reg', 'st'); } 
         function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
 
-        // FORMAT ANGKA
         document.querySelectorAll('.input-uang').forEach(function(input) { 
             input.addEventListener('input', function() { 
                 let v = this.value.replace(/[^0-9]/g, ''); 
@@ -375,12 +359,9 @@
             }); 
         });
 
-        // ============================================
-        // 🔗 URL WEB APP GOOGLE SCRIPT ANDA
-        // ============================================
+        // API WEB APP ENDPOINT TARGET URL
         const globalUrl = "https://script.google.com/macros/s/AKfycbzsZXHYIdOH54wu5201XnzGWfLv_wau_UU4PWeOlknIUaW4NIxOM7T8xu3rIEpLY0L81g/exec";
 
-        // LOGIKA MODAL CETAK
         function openPrintModal() { document.getElementById('printModal').classList.add('is-active'); }
         function closePrintModal() { 
             document.getElementById('printModal').classList.remove('is-active'); 
@@ -388,11 +369,10 @@
             document.getElementById('printBtn').style.display='none'; 
         }
 
-        // MENARIK DATA & MEMBUAT DOKUMEN HTML UNTUK CETAK
+        // GENERATOR RENDER FORM LAPORAN LENGKAP UTUH BERLATAR PUTIH FORMAL
         function fetchDataLaporan() {
             const st = document.getElementById('print-st').value; 
             const tgl = document.getElementById('print-tanggal').value;
-            
             if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
             
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -404,59 +384,55 @@
                 if(res.status === "Sukses") {
                     const d = res.data;
                     
-                    // GENERATOR ROW TABEL MENU
                     let menuRows = '';
                     d.menus.forEach(function(m) {
-                        menuRows += '<tr style="border-bottom:1px solid #eee;">';
-                        menuRows += '<td style="padding:4px; font-weight:600;">' + m.name + '</td>';
-                        menuRows += '<td style="text-align:center;">' + (m.s1_cs||'') + '</td><td style="text-align:center;">' + (m.s1_qr||'') + '</td><td style="text-align:center;">' + (m.s1_tc||'') + '</td><td style="text-align:center;">' + (m.s1_tq||'') + '</td><td style="text-align:center; color:#10B981;">' + (m.s1_hkp||'') + '</td>';
-                        menuRows += '<td style="text-align:center; background:#fafafa;">' + (m.s2_cs||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_qr||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tc||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tq||'') + '</td><td style="text-align:center; color:#10B981; background:#fafafa;">' + (m.s2_hkp||'') + '</td>';
+                        menuRows += '<tr style="border-bottom:1px solid #eee; font-size:0.68rem;">';
+                        menuRows += '<td style="padding:5px; font-weight:600; border-right:1px solid #ddd;">' + m.name + '</td>';
+                        menuRows += '<td style="text-align:center;">' + (m.s1_cs||'') + '</td><td style="text-align:center;">' + (m.s1_qr||'') + '</td><td style="text-align:center;">' + (m.s1_tc||'') + '</td><td style="text-align:center;">' + (m.s1_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; border-right:1px solid #ddd;">' + (m.s1_hkp||'') + '</td>';
+                        menuRows += '<td style="text-align:center; background:#fafafa;">' + (m.s2_cs||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_qr||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tc||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; background:#fafafa;">' + (m.s2_hkp||'') + '</td>';
                         menuRows += '</tr>';
                     });
 
-                    // GENERATOR ROW TABEL LOGISTIK
                     let bbRows = '';
                     d.gramasi.forEach(function(g, i) {
                         let syrName = d.syrup[i] ? d.syrup[i].name : '';
                         let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : '';
                         let syrPct = d.syrup[i] ? (d.syrup[i].pct||'') : '';
-                        
                         let wstName = d.waste[i] ? d.waste[i].name : '';
                         let wstS1 = d.waste[i] ? (d.waste[i].s1||'') : '';
                         let wstS2 = d.waste[i] ? (d.waste[i].s2||'') : '';
 
-                        bbRows += '<tr style="border-bottom:1px solid #eee;">';
-                        bbRows += '<td style="padding:4px; font-weight:600;">' + g.name + '</td><td style="text-align:center;">' + (g.in||'') + '</td><td style="text-align:center; background:#fafafa;">' + (g.out||'') + '</td>';
-                        bbRows += '<td style="padding:4px; font-weight:600;">' + syrName + '</td><td style="text-align:center;">' + syrBtl + '</td><td style="text-align:center; background:#fafafa;">' + syrPct + '</td>';
-                        bbRows += '<td style="padding:4px; font-weight:600;">' + wstName + '</td><td style="text-align:center;">' + wstS1 + '</td><td style="text-align:center; background:#fafafa;">' + wstS2 + '</td>';
+                        bbRows += '<tr style="border-bottom:1px solid #eee; font-size:0.68rem;">';
+                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + g.name + '</td><td style="text-align:center;">' + (g.in||'') + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + (g.out||'') + '</td>';
+                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + syrName + '</td><td style="text-align:center;">' + syrBtl + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + syrPct + '</td>';
+                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + wstName + '</td><td style="text-align:center;">' + wstS1 + '</td><td style="text-align:center; background:#fafafa;">' + wstS2 + '</td>';
                         bbRows += '</tr>';
                     });
 
-                    // FORMAT KESELURUHAN DOKUMEN CETAK
                     let formatForm = `
                     <div style="background-color: #ffffff; color: #1e1e1e; font-family: 'Plus Jakarta Sans', sans-serif; padding: 24px; border-radius: 12px; border: 1px solid #e0e0e0; max-width: 100%; margin: 0 auto; font-size:0.75rem;">
                       
                       <div style="text-align: center; border-bottom: 3px double #10B981; padding-bottom: 12px; margin-bottom: 16px;">
-                        <h2 style="color: #10B981; font-weight: 800; font-size: 1.5rem; margin: 0; letter-spacing: 2px;">FEELING</h2>
-                        <p style="color: #333333; font-weight: 700; font-size: 0.9rem; margin: 2px 0;">DAILY STATION RECORD (FULL REPORT)</p>
-                        <table style="width:100%; margin-top:10px; font-weight:600; text-align:left;">
+                        <h2 style="color: #10B981; font-weight: 800; font-size: 1.6rem; margin: 0; letter-spacing: 2px;">FEELING</h2>
+                        <p style="color: #333333; font-weight: 700; font-size: 0.95rem; margin: 2px 0;">DAILY STATION RECORD (FULL COMPREHENSIVE REPORT)</p>
+                        <table style="width:100%; margin-top:10px; font-weight:600; text-align:left; font-size:0.75rem;">
                             <tr><td width="15%">STATION</td><td width="35%">: <span style="color:#000;">${d.station}</span></td><td width="15%">P.I.C OFFICE</td><td width="35%">: <span style="color:#000;">${d.office || '-'}</span></td></tr>
-                            <tr><td>TANGGAL</td><td>: <span style="color:#000;">${d.tanggal}</span></td><td>PILOT S1/S2</td><td>: <span style="color:#000;">${d.pilot_s1 || '-'} / ${d.pilot_s2 || '-'}</span></td></tr>
+                            <tr><td>TANGGAL</td><td>: <span style="color:#000;">Tgl - ${d.tanggal}</span></td><td>PILOT S1 / S2</td><td>: <span style="color:#000;">${d.pilot_s1 || '-'} / ${d.pilot_s2 || '-'}</span></td></tr>
                         </table>
                       </div>
 
                       <div style="margin-bottom: 16px;">
-                        <h3 style="background:#1e1e1e; color:#fff; padding:4px 8px; font-size:0.8rem; margin-bottom:0;">[A] RINCIAN PENJUALAN MENU</h3>
-                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.7rem;">
+                        <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[A] MATRIKS RINCIAN PENJUALAN MENU</h3>
+                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc;">
                           <thead>
-                            <tr style="background:#f0f0f0; border-bottom:1px solid #ccc;">
-                              <th rowspan="2" style="border:1px solid #ccc; padding:4px;">DAFTAR MENU</th>
-                              <th colspan="5" style="border:1px solid #ccc; padding:4px; text-align:center;">SHIFT 1</th>
-                              <th colspan="5" style="border:1px solid #ccc; padding:4px; text-align:center;">SHIFT 2</th>
+                            <tr style="background:#f0f0f0; border-bottom:1px solid #ccc; font-size:0.68rem;">
+                              <th rowspan="2" style="border:1px solid #ccc; padding:6px; text-align:center;">DAFTAR MENU KATEGORI</th>
+                              <th colspan="5" style="border:1px solid #ccc; padding:4px; text-align:center; background:#e8f5e9;">SHIFT 1 (S1)</th>
+                              <th colspan="5" style="border:1px solid #ccc; padding:4px; text-align:center; background:#e3f2fd;">SHIFT 2 (S2)</th>
                             </tr>
-                            <tr style="background:#fafafa; border-bottom:1px solid #ccc;">
-                              <th style="border:1px solid #ccc;">CS</th><th style="border:1px solid #ccc;">QR</th><th style="border:1px solid #ccc;">TML-C</th><th style="border:1px solid #ccc;">TML-Q</th><th style="border:1px solid #ccc;">HKP</th>
-                              <th style="border:1px solid #ccc;">CS</th><th style="border:1px solid #ccc;">QR</th><th style="border:1px solid #ccc;">TML-C</th><th style="border:1px solid #ccc;">TML-Q</th><th style="border:1px solid #ccc;">HKP</th>
+                            <tr style="background:#fafafa; border-bottom:1px solid #ccc; font-size:0.65rem;">
+                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">TML-C</th><th style="border:1px solid #ccc; text-align:center;">TML-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
+                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">TML-C</th><th style="border:1px solid #ccc; text-align:center;">TML-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
                             </tr>
                           </thead>
                           <tbody>${menuRows}</tbody>
@@ -465,62 +441,60 @@
 
                       <div style="margin-bottom: 16px; display:flex; gap:10px;">
                         <div style="width:50%;">
-                            <h3 style="background:#1e1e1e; color:#fff; padding:4px 8px; font-size:0.8rem; margin-bottom:0;">[B] ADD ON & OUT (SHIFT 1)</h3>
+                            <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[B] ADD ON EXPENSES & CASH (SHIFT 1)</h3>
                             <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.7rem;">
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Espr A</strong></td><td>CS: ${d.s1_addon.eas_c||0}</td><td>QR: ${d.s1_addon.eas_q||0}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Espr B</strong></td><td>CS: ${d.s1_addon.ebs_c||0}</td><td>QR: ${d.s1_addon.ebs_q||0}</td></tr>
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Cup+Ice</strong></td><td>CS: ${d.s1_addon.ice_c||0}</td><td>QR: ${d.s1_addon.ice_q||0}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Out 1</strong></td><td colspan="2">${d.s1_out[0].item||'-'} : Rp ${d.s1_out[0].nom.toLocaleString('id-ID')}</td></tr>
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Out 2</strong></td><td colspan="2">${d.s1_out[1].item||'-'} : Rp ${d.s1_out[1].nom.toLocaleString('id-ID')}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Cash Aktl</strong></td><td colspan="2" style="color:#10B981; font-weight:bold;">Rp ${d.s1_cash_aktual.toLocaleString('id-ID')} (Tip: Rp ${d.s1_tip.toLocaleString('id-ID')})</td></tr>
+                                <tr style="background:#f9f9f9;"><td style="padding:4px; width:35%;"><strong>Espr A / B</strong></td><td>CS: ${d.s1_addon.eas_c||0} | QR: ${d.s1_addon.eas_q||0}</td><td>CS: ${d.s1_addon.ebs_c||0} | QR: ${d.s1_addon.ebs_q||0}</td></tr>
+                                <tr><td style="padding:4px;"><strong>Cup + Ice</strong></td><td colspan="2">CS: ${d.s1_addon.ice_c||0} | QR: ${d.s1_addon.ice_q||0}</td></tr>
+                                <tr style="background:#f9f9f9;"><td style="padding:4px;"><strong>Out Item 1</strong></td><td colspan="2">${d.s1_out[0].item||'-'} : Rp ${d.s1_out[0].nom.toLocaleString('id-ID')}</td></tr>
+                                <tr><td style="padding:4px;"><strong>Out Item 2</strong></td><td colspan="2">${d.s1_out[1].item||'-'} : Rp ${d.s1_out[1].nom.toLocaleString('id-ID')}</td></tr>
+                                <tr style="background:#e8f5e9; font-weight:bold;"><td style="padding:6px; color:#10B981;">CASH AKTUAL</td><td colspan="2" style="color:#000;">Rp ${d.s1_cash_aktual.toLocaleString('id-ID')} (Tips: Rp ${d.s1_tip.toLocaleString('id-ID')})</td></tr>
                             </table>
                         </div>
                         <div style="width:50%;">
-                            <h3 style="background:#1e1e1e; color:#fff; padding:4px 8px; font-size:0.8rem; margin-bottom:0;">[C] ADD ON & OUT (SHIFT 2)</h3>
+                            <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[C] ADD ON EXPENSES & CASH (SHIFT 2)</h3>
                             <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.7rem;">
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Espr A</strong></td><td>CS: ${d.s2_addon.eas_c||0}</td><td>QR: ${d.s2_addon.eas_q||0}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Espr B</strong></td><td>CS: ${d.s2_addon.ebs_c||0}</td><td>QR: ${d.s2_addon.ebs_q||0}</td></tr>
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Cup+Ice</strong></td><td>CS: ${d.s2_addon.ice_c||0}</td><td>QR: ${d.s2_addon.ice_q||0}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Out 1</strong></td><td colspan="2">${d.s2_out[0].item||'-'} : Rp ${d.s2_out[0].nom.toLocaleString('id-ID')}</td></tr>
-                                <tr style="background:#f0f0f0;"><td style="padding:2px 4px;"><strong>Out 2</strong></td><td colspan="2">${d.s2_out[1].item||'-'} : Rp ${d.s2_out[1].nom.toLocaleString('id-ID')}</td></tr>
-                                <tr><td style="padding:2px 4px;"><strong>Cash Aktl</strong></td><td colspan="2" style="color:#10B981; font-weight:bold;">Rp ${d.s2_cash_aktual.toLocaleString('id-ID')} (Tip: Rp ${d.s2_tip.toLocaleString('id-ID')})</td></tr>
+                                <tr style="background:#f9f9f9;"><td style="padding:4px; width:35%;"><strong>Espr A / B</strong></td><td>CS: ${d.s2_addon.eas_c||0} | QR: ${d.s2_addon.eas_q||0}</td><td>CS: ${d.s2_addon.ebs_c||0} | QR: ${d.s2_addon.ebs_q||0}</td></tr>
+                                <tr><td style="padding:4px;"><strong>Cup + Ice</strong></td><td colspan="2">CS: ${d.s2_addon.ice_c||0} | QR: ${d.s2_addon.ice_q||0}</td></tr>
+                                <tr style="background:#f9f9f9;"><td style="padding:4px;"><strong>Out Item 1</strong></td><td colspan="2">${d.s2_out[0].item||'-'} : Rp ${d.s2_out[0].nom.toLocaleString('id-ID')}</td></tr>
+                                <tr><td style="padding:4px;"><strong>Out Item 2</strong></td><td colspan="2">${d.s2_out[1].item||'-'} : Rp ${d.s2_out[1].nom.toLocaleString('id-ID')}</td></tr>
+                                <tr style="background:#e3f2fd; font-weight:bold;"><td style="padding:6px; color:#3b82f6;">CASH AKTUAL</td><td colspan="2" style="color:#000;">Rp ${d.s2_cash_aktual.toLocaleString('id-ID')} (Tips: Rp ${d.s2_tip.toLocaleString('id-ID')})</td></tr>
                             </table>
                         </div>
                       </div>
 
                       <div style="margin-bottom: 16px;">
-                        <h3 style="background:#1e1e1e; color:#fff; padding:4px 8px; font-size:0.8rem; margin-bottom:0;">[D] LAPORAN LOGISTIK & BAHAN BAKU</h3>
-                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.7rem;">
+                        <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[D] DETAILED LOGISTIK & BAHAN BAKU REPORT</h3>
+                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc;">
                           <thead>
-                            <tr style="background:#f0f0f0; border-bottom:1px solid #ccc;">
-                              <th style="border:1px solid #ccc; padding:4px;">GRAMASI</th><th style="border:1px solid #ccc; text-align:center;">IN</th><th style="border:1px solid #ccc; text-align:center;">OUT</th>
-                              <th style="border:1px solid #ccc; padding:4px;">SYRUP</th><th style="border:1px solid #ccc; text-align:center;">BTL</th><th style="border:1px solid #ccc; text-align:center;">PCT(%)</th>
-                              <th style="border:1px solid #ccc; padding:4px;">WASTE</th><th style="border:1px solid #ccc; text-align:center;">S1</th><th style="border:1px solid #ccc; text-align:center;">S2</th>
+                            <tr style="background:#f0f0f0; border-bottom:1px solid #ccc; font-size:0.68rem;">
+                              <th style="border:1px solid #ccc; padding:5px;">GRAMASI UTAMA</th><th style="border:1px solid #ccc; text-align:center;">IN</th><th style="border:1px solid #ccc; text-align:center;">OUT</th>
+                              <th style="border:1px solid #ccc; padding:5px;">SYRUP FLAVOR</th><th style="border:1px solid #ccc; text-align:center;">BTL</th><th style="border:1px solid #ccc; text-align:center;">PCT(%)</th>
+                              <th style="border:1px solid #ccc; padding:5px;">WASTE STOCK</th><th style="border:1px solid #ccc; text-align:center;">S1</th><th style="border:1px solid #ccc; text-align:center;">S2</th>
                             </tr>
                           </thead>
                           <tbody>
                             ${bbRows}
-                            <tr style="background:#10B981; color:#fff; font-weight:bold;"><td colspan="9" style="padding:4px; text-align:center;">CUP LOGISTIK | Cek In: ${d.cup_in||0} | Cek Out: ${d.cup_out||0}</td></tr>
+                            <tr style="background:#10B981; color:#fff; font-weight:bold; font-size:0.75rem;"><td colspan="9" style="padding:6px; text-align:center; letter-spacing:0.5px;">MONITORING CUP LOGISTIK | CEK IN KASIR: ${d.cup_in||0} | CEK OUT KASIR: ${d.cup_out||0}</td></tr>
                           </tbody>
                         </table>
                       </div>
 
                       <div>
-                        <h3 style="background:#1e1e1e; color:#fff; padding:4px 8px; font-size:0.8rem; margin-bottom:0;">[E] AKUNTANSI KANTOR & CATATAN</h3>
-                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.75rem;">
+                        <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[E] REKAPITULASI AKUNTANSI KANTOR ALL</h3>
+                        <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.78rem;">
                           <tr>
-                            <td width="50%" style="padding: 6px; border-right:1px solid #ccc; vertical-align:top;">
-                                <strong>Saldo Awal :</strong> Rp ${Number(d.office_saldo || 0).toLocaleString('id-ID')}<br>
-                                <strong>Total QRIS :</strong> Rp ${Number(d.office_qris || 0).toLocaleString('id-ID')}<br>
-                                <strong>Cash Ksr (Bsk):</strong> Rp ${Number(d.cash_to_cashier || 0).toLocaleString('id-ID')}
+                            <td width="50%" style="padding: 8px; border-right:1px solid #ccc; vertical-align:top; line-height:1.5;">
+                                <strong>Saldo Awal Kantor :</strong> Rp ${Number(d.office_saldo || 0).toLocaleString('id-ID')}<br>
+                                <strong>Total QRIS Aktual All:</strong> Rp ${Number(d.office_qris || 0).toLocaleString('id-ID')}<br>
+                                <strong>Setoran Kasir Besok :</strong> Rp ${Number(d.cash_to_cashier || 0).toLocaleString('id-ID')}
                             </td>
-                            <td width="50%" style="padding: 6px; vertical-align:top; white-space:pre-wrap;"><strong>Notes:</strong><br>${d.notes || '-'}</td>
+                            <td width="50%" style="padding: 8px; vertical-align:top; white-space:pre-wrap; background:#fbfbfb; line-height:1.4;"><strong>Laporan Notes P.I.C:</strong><br>${d.notes || '-'}</td>
                           </tr>
                         </table>
                       </div>
 
-                      <div style="text-align: right; margin-top: 15px; font-size: 0.65rem; color: #888;">
-                        *Dokumen ini digenerate sah oleh Senada CreatLabs System.
+                      <div style="text-align: right; margin-top: 20px; font-size: 0.65rem; color: #999; font-weight:600;">
+                        *Dokumen ini diterbitkan secara sah via Cloud Database Server oleh Senada CreatLabs System.
                       </div>
                     </div>
                     `;
@@ -534,26 +508,22 @@
             })
             .catch(e => { 
                 document.getElementById('loadingOverlay').style.display = 'none'; 
-                alert("Error Transmisi Cloud: " + e); 
+                alert("Error Jaringan Transmisi Cloud: " + e); 
             });
         }
 
-        // AKSI PRINT KE PDF / PRINTER FISIK
         function executePrint() {
             const content = document.getElementById('previewContent').innerHTML; 
             const w = window.open('', '_blank');
-            w.document.write('<html><head><title>Print Full Report DSF</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">');
-            w.document.write('<style>body{margin:0; padding:20px; font-family:"Plus Jakarta Sans", sans-serif; background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact;}</style></head><body>');
+            w.document.write('<html><head><title>Print Full Report Document</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">');
+            w.document.write('<style>body{margin:0; padding:25px; font-family:"Plus Jakarta Sans", sans-serif; background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact;}</style></head><body>');
             w.document.write(content); 
             w.document.write('</body></html>'); 
             w.document.close();
-            
-            // Tunggu sebentar agar font selesai diload
-            setTimeout(() => { w.print(); w.close(); }, 500);
+            setTimeout(function() { w.print(); w.close(); }, 500);
         }
 
-        // PENGIRIMAN DATA FORM KE SPREADSHEET (POST)
-        toggleSec();
+        // AKSI POST SUBMIT FORM UTAMA KE CLOUD DATABASE SPREADSHEET
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -577,14 +547,14 @@
                 mode: 'no-cors', 
                 body: JSON.stringify(object) 
             })
-            .then(() => { 
+            .then(function() { 
                 document.getElementById('loadingOverlay').style.display = 'none'; 
-                alert("Data berhasil diproses ke Spreadsheet!"); 
+                alert("Data Laporan Berhasil Diproses Masuk Ke Spreadsheet!"); 
                 document.getElementById('mainForm').reset(); 
                 updateSt(); 
-                toggleSec(); 
+                adjustCupLabel(); 
             })
-            .catch(error => { 
+            .catch(function(error) { 
                 document.getElementById('loadingOverlay').style.display = 'none'; 
                 alert("Kendala Transmisi Jaringan: " + error); 
             });
