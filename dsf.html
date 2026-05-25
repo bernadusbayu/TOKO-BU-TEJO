@@ -7,76 +7,49 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #0f1115; 
-            color: #e2e8f0; 
-            padding: 20px 12px 100px 12px; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            position: relative; 
-            min-height: 100vh; 
-            overflow-x: hidden; 
-        }
+        body { background-color: #0f1115; color: #e2e8f0; padding: 20px 12px 100px 12px; font-family: 'Plus Jakarta Sans', sans-serif; position: relative; min-height: 100vh; overflow-x: hidden; }
         .title { color: #ffffff !important; font-weight: 800; letter-spacing: 1px; }
         .glow-bg { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: 0; pointer-events: none; }
-        .form-section { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 20px 16px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); position: relative; z-index: 10; }
-        .section-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 20px; color: #10B981; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
+        .form-section { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); padding: 20px 16px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); position: relative; z-index: 10; }
+        .section-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 20px; color: #10B981; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
         
         .input, .textarea, .select select { background-color: rgba(255, 255, 255, 0.04) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; color: #ffffff !important; border-radius: 10px !important; transition: all 0.3s ease !important; }
         .input::placeholder, .textarea::placeholder { color: #555861 !important; }
-        .input:focus, .textarea:focus, .select select:focus { border-color: #10B981 !important; background-color: rgba(255, 255, 255, 0.07) !important; box-shadow: 0 0 14px rgba(16, 185, 129, 0.25) !important; }
+        .input:focus, .textarea:focus, .select select:focus { border-color: #10B981 !important; box-shadow: 0 0 14px rgba(16, 185, 129, 0.25) !important; }
         .label { color: #94a3b8 !important; font-weight: 600; }
         
-        /* GRID KHUSUS SUB FORM INPUT PARALEL */
-        .grid-11-col { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 8px; }
+        .grid-6-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 10px; }
         .grid-3-col { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; }
         .grid-header-main { font-size: 0.6rem; font-weight: 800; text-align: center; color: #64748b; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 6px; margin-bottom: 10px; letter-spacing: 0.5px; }
         
         .highlight-input { background-color: rgba(245, 158, 11, 0.08) !important; color: #fbbf24 !important; border-color: rgba(245, 158, 11, 0.25) !important; font-weight: 700; }
-        .highlight-input:focus { border-color: #f59e0b !important; box-shadow: 0 0 14px rgba(245, 158, 11, 0.25) !important; }
         .input-hkp { background-color: rgba(16, 185, 129, 0.08) !important; color: #34d399 !important; border-color: rgba(16, 185, 129, 0.25) !important; font-weight: 700; }
         
-        /* PENGATURAN ACCORDION DROPDOWN (KEMBALI TERTUTUP DEFAULT) */
-        .acc-header { background-color: rgba(255, 255, 255, 0.02); color: #ffffff; padding: 14px 18px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #10B981; transition: all 0.3s ease; text-transform: uppercase; }
-        .acc-header:hover { background-color: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
-        .acc-icon { transition: transform 0.4s ease; color: #10B981; font-size: 0.65rem; }
-        .acc-content { display: none; padding: 8px 4px 18px 4px; animation: slideDown 0.3s ease forwards; }
-        .acc-content.is-active { display: block; }
+        /* TAB NAVIGASI TEMA GELAP */
+        .tabs a { border-bottom-color: rgba(255,255,255,0.1) !important; color: #64748b !important; font-weight:600; border-width: 2px; }
+        .tabs li.is-active a { border-bottom-color: #10B981 !important; color: #10B981 !important; font-weight: 800; }
+        .tabs li:hover a { background-color: rgba(255,255,255,0.02); color: #fff !important; }
+
+        /* ACCORDION MENU */
+        .acc-header { background-color: rgba(255, 255, 255, 0.02); color: #ffffff; padding: 14px 18px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #10B981; text-transform: uppercase; }
+        .acc-icon { color: #10B981; font-size: 0.65rem; transition: 0.3s; }
+        .acc-content { display: none; padding: 8px 4px 18px 4px; }
+        .acc-content.is-active { display: block; animation: slideDown 0.3s ease; }
         .acc-header.is-active .acc-icon { transform: rotate(180deg); }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* CSS KHUSUS UNTUK AREA BISA DI-GESER (SWIPEABLE) */
-        .swipe-container { 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; 
-            padding-bottom: 15px; 
-            margin-bottom: 5px; 
-        }
-        /* Custom Scrollbar untuk area geser */
-        .swipe-container::-webkit-scrollbar { height: 6px; }
-        .swipe-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        .swipe-container::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.5); border-radius: 10px; }
+        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.60); backdrop-filter: blur(20px); padding: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 100; }
+        .button.is-primary { background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; color: #ffffff !important; font-weight: 700; border: none; border-radius: 12px; }
         
-        /* Lebar Minimum agar tidak berantakan saat digeser */
-        .swipe-inner-menu { min-width: 800px; }
-        .swipe-inner-addon { min-width: 650px; }
-
-        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.60); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 100; }
-        .button.is-primary { background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; color: #ffffff !important; font-weight: 700; border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
-        
-        .home-btn, .print-trigger-btn { position: absolute; top: 20px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); padding: 10px 16px; border-radius: 12px; text-decoration: none; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05); z-index: 150; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .home-btn { left: 16px; color: #10B981; } 
+        .home-btn, .print-trigger-btn { position: absolute; top: 20px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); padding: 10px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05); z-index: 150; cursor: pointer; color: #10B981; text-decoration: none; }
         .print-trigger-btn { right: 16px; color: #3b82f6; }
-        .home-btn:hover, .print-trigger-btn:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
         
-        .title-spacing { margin-top: 55px !important; }
-        
+        /* LAYER TERDEPAN UNTUK LOADING & MODAL */
         #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 99999 !important; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
         .custom-loader { border: 4px solid rgba(16, 185, 129, 0.1); border-left-color: #10B981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .brand-footer { margin-top: 40px; margin-bottom: 30px; text-align: center; font-size: 0.7rem; color: #555; }
-        .brand-footer strong { color: #10B981; font-weight: 800; }
-        
         .modal-card { border-radius: 16px !important; overflow: hidden; border: 1px solid #333; background: #1e1e1e !important; }
         .modal-card-head { background-color: #252525 !important; border-bottom: 1px solid #333 !important; }
         .modal-card-foot { background-color: #252525 !important; border-top: 1px solid #333 !important; justify-content: flex-end; padding-bottom: 20px; }
@@ -86,16 +59,15 @@
 </head>
 <body>
     <div class="glow-bg"></div>
-
-    <a href="index.html" class="home-btn"><span>🏠</span> HOME</a>
-    <button type="button" class="print-trigger-btn" onclick="openPrintModal()"><span>🖨️</span> CETAK FULL DATA</button>
+    <a href="index.html" class="home-btn">🏠 HOME</a>
+    <button type="button" class="print-trigger-btn" onclick="openPrintModal()">🖨️ CETAK DATA</button>
 
     <div id="loadingOverlay">
         <div class="custom-loader mb-4"></div>
         <span>Memproses Transmisi Cloud Database...</span>
     </div>
 
-    <h1 class="title is-4 has-text-centered mb-5 title-spacing">📋 DAILY STATION RECORD</h1>
+    <h1 class="title is-4 has-text-centered mb-5" style="margin-top: 55px;">📋 DAILY STATION RECORD</h1>
 
     <form id="mainForm" class="content-wrapper">
         
@@ -119,73 +91,71 @@
                         <select id="st" name="station" required><option value="">-</option></select>
                     </div>
                 </div>
-                <div class="column is-6"><label class="label is-size-7">Nama Pilot (Shift 1)</label><input class="input is-small" type="text" name="pilot_s1" placeholder="Pilot Shift 1" required></div>
-                <div class="column is-6"><label class="label is-size-7">Nama Pilot (Shift 2)</label><input class="input is-small" type="text" name="pilot_s2" placeholder="Pilot Shift 2" required></div>
-                <div class="column is-6"><label class="label is-size-7">[*Office] P.I.C OFFICE</label><input class="input is-small" type="text" name="office" placeholder="Nama PIC Staff"></div>
-                <div class="column is-6"><label class="label is-size-7">Tanggal Laporan (1-31)</label><input class="input is-small highlight-input" type="number" name="tanggal" placeholder="Pilih Tgl" min="1" max="31" required></div>
+                <div class="column is-6"><label class="label is-size-7">Pilot (Shift 1)</label><input class="input is-small" type="text" name="pilot_s1" placeholder="Nama Pilot S1" required></div>
+                <div class="column is-6"><label class="label is-size-7">Pilot (Shift 2)</label><input class="input is-small" type="text" name="pilot_s2" placeholder="Nama Pilot S2" required></div>
+                <div class="column is-6"><label class="label is-size-7">P.I.C Office</label><input class="input is-small" type="text" name="office" placeholder="Staff Akunting"></div>
+                <div class="column is-6"><label class="label is-size-7">Tanggal (1-31)</label><input class="input is-small highlight-input" type="number" name="tanggal" min="1" max="31" required></div>
             </div>
         </div>
 
         <div id="sec-a" class="form-section">
             <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
             
-            <div class="acc-header" onclick="toggleAcc('acc-menu', this)">
-                <span>🛒 MATRIKS PENJUALAN MENU UTAMA</span><span class="acc-icon">▼</span>
+            <div class="tabs is-toggle is-fullwidth is-small mb-4">
+                <ul>
+                    <li id="tab-s1" class="is-active" onclick="switchShift('s1')"><a>SHIFT 1</a></li>
+                    <li id="tab-s2" onclick="switchShift('s2')"><a>SHIFT 2</a></li>
+                </ul>
             </div>
-            <div id="acc-menu" class="acc-content">
-                <div class="swipe-container">
-                    <div class="swipe-inner-menu">
-                        <div class="grid-11-col grid-header-main">
-                            <div>MENU UTAMA</div>
-                            <div style="background:#044c33; color:#fff; padding:3px; border-radius:4px;">S1 CS</div><div style="background:#044c33; color:#fff; padding:3px; border-radius:4px;">S1 QR</div><div style="background:#044c33; color:#fff; padding:3px; border-radius:4px;">S1 T-C</div><div style="background:#044c33; color:#fff; padding:3px; border-radius:4px;">S1 T-Q</div><div style="background:#044c33; color:#fff; padding:3px; border-radius:4px;">S1 HKP</div>
-                            <div style="background:#1d3557; color:#fff; padding:3px; border-radius:4px;">S2 CS</div><div style="background:#1d3557; color:#fff; padding:3px; border-radius:4px;">S2 QR</div><div style="background:#1d3557; color:#fff; padding:3px; border-radius:4px;">S2 T-C</div><div style="background:#1d3557; color:#fff; padding:3px; border-radius:4px;">S2 T-Q</div><div style="background:#1d3557; color:#fff; padding:3px; border-radius:4px;">S2 HKP</div>
-                        </div>
-                        <div id="menu-list"></div>
+
+            <div id="content-s1">
+                <div class="acc-header" onclick="toggleAcc('acc-menu-s1', this)"><span>🛒 MENU UTAMA (S1)</span><span class="acc-icon">▼</span></div>
+                <div id="acc-menu-s1" class="acc-content">
+                    <div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#10B981;">CS</div><div style="color:#10B981;">QR</div><div style="color:#10B981;">T-C</div><div style="color:#10B981;">T-Q</div><div style="color:#10B981;">HKP</div></div>
+                    <div id="menu-list-s1"></div>
+                </div>
+
+                <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s1', this)"><span>💸 ADD ON & EXPENSES (S1)</span><span class="acc-icon">▼</span></div>
+                <div id="acc-addon-s1" class="acc-content">
+                    <div class="columns is-mobile is-multiline">
+                        <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s1_espr_a_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s1_espr_b_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s1_cup_ice_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s1_espr_a_qr" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s1_espr_b_qr" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s1_cup_ice_qr" placeholder="0"></div>
+                        <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s1_item_out_1" placeholder="Item 1"></div>
+                        <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_1" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s1_item_out_2" placeholder="Item 2"></div>
+                        <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_2" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s1_cash_aktual" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_tip" placeholder="Rp"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="acc-header mt-3" onclick="toggleAcc('acc-addon', this)">
-                <span>💸 ADD ON & PENGELUARAN (S1 & S2)</span><span class="acc-icon">▼</span>
-            </div>
-            <div id="acc-addon" class="acc-content">
-                <div class="swipe-container">
-                    <div class="swipe-inner-addon columns is-mobile is-multiline m-0">
-                        <div class="column is-6" style="border-right: 1px dashed rgba(255,255,255,0.1);">
-                            <p class="is-size-7 has-text-centered mb-3" style="color:#10B981; font-weight:bold; background:rgba(16,185,129,0.1); padding:4px; border-radius:6px;">WADAH INPUT SHIFT 1</p>
-                            <div class="columns is-mobile is-multiline">
-                                <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s1_espr_a_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s1_espr_b_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s1_cup_ice_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s1_espr_a_qr" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s1_espr_b_qr" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s1_cup_ice_qr" placeholder="0"></div>
-                                <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s1_item_out_1" placeholder="Item 1"></div>
-                                <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_1" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s1_item_out_2" placeholder="Item 2"></div>
-                                <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_2" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s1_cash_aktual" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_tip" placeholder="Rp"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="column is-6">
-                            <p class="is-size-7 has-text-centered mb-3" style="color:#3b82f6; font-weight:bold; background:rgba(59,130,246,0.1); padding:4px; border-radius:6px;">WADAH INPUT SHIFT 2</p>
-                            <div class="columns is-mobile is-multiline">
-                                <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s2_espr_a_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s2_espr_b_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s2_cup_ice_cs" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s2_espr_a_qr" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s2_espr_b_qr" placeholder="0"></div>
-                                <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s2_cup_ice_qr" placeholder="0"></div>
-                                <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s2_item_out_1" placeholder="Item 1"></div>
-                                <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_1" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s2_item_out_2" placeholder="Item 2"></div>
-                                <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_2" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text inputmode="numeric" name="s2_cash_aktual" placeholder="Rp"></div>
-                                <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_tip" placeholder="Rp"></div>
-                            </div>
-                        </div>
+            <div id="content-s2" style="display:none;">
+                <div class="acc-header" onclick="toggleAcc('acc-menu-s2', this)"><span>🛒 MENU UTAMA (S2)</span><span class="acc-icon">▼</span></div>
+                <div id="acc-menu-s2" class="acc-content">
+                    <div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#3b82f6;">CS</div><div style="color:#3b82f6;">QR</div><div style="color:#3b82f6;">T-C</div><div style="color:#3b82f6;">T-Q</div><div style="color:#3b82f6;">HKP</div></div>
+                    <div id="menu-list-s2"></div>
+                </div>
+
+                <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s2', this)"><span>💸 ADD ON & EXPENSES (S2)</span><span class="acc-icon">▼</span></div>
+                <div id="acc-addon-s2" class="acc-content">
+                    <div class="columns is-mobile is-multiline">
+                        <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s2_espr_a_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s2_espr_b_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s2_cup_ice_cs" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s2_espr_a_qr" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s2_espr_b_qr" placeholder="0"></div>
+                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s2_cup_ice_qr" placeholder="0"></div>
+                        <div class="column is-6"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s2_item_out_1" placeholder="Item 1"></div>
+                        <div class="column is-6"><label class="label is-size-7">Nominal Rp 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_1" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s2_item_out_2" placeholder="Item 2"></div>
+                        <div class="column is-6"><label class="label is-size-7">Nominal Rp 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_2" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">CASH AKTUAL</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s2_cash_aktual" placeholder="Rp"></div>
+                        <div class="column is-6"><label class="label is-size-7">TIP PILOT</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_tip" placeholder="Rp"></div>
                     </div>
                 </div>
             </div>
@@ -194,41 +164,27 @@
         <div id="sec-b" class="form-section">
             <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
             
-            <div class="field mb-4" style="background: rgba(16,185,129,0.05); padding:12px; border-radius:10px; border:1px solid rgba(16,185,129,0.2);">
-                <label class="label is-size-7 has-text-success">KATEGORI PERGESERAN LOGISTIK (KONDISI INPUT):</label>
-                <div class="select is-fullwidth is-small">
-                    <select id="kat" name="kategori" onchange="adjustCupLabel()" required>
-                        <option value="CEK IN">CEK IN (Target Kolom W)</option>
-                        <option value="SD-1">SD-1 (Target Kolom X)</option>
-                        <option value="SD-2">SD-2 (Target Kolom Y)</option>
-                        <option value="SD-3">SD-3 (Target Kolom Z)</option>
-                        <option value="CEK OUT">CEK OUT (Target Kolom AA)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="columns is-mobile is-multiline">
-                <div class="column is-12"><label class="label is-size-7 id-label-cup" id="label-cup">Jumlah Cup (Awal - Cek In)</label><input class="input is-small highlight-input" type="number" name="input_cup" placeholder="0"></div>
-            </div>
-
-            <div class="acc-header mt-3" onclick="toggleAcc('acc-gramasi', this)">
-                <span>⚖️ GRAMASI UTAMA</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)"><span>⚖️ GRAMASI UTAMA & LOGISTIK CUP</span><span class="acc-icon">▼</span></div>
             <div id="acc-gramasi" class="acc-content">
-                <div id="gramasi-list" class="columns is-mobile is-multiline p-2"></div>
+                <div class="tabs is-toggle is-fullwidth is-small mb-4" style="font-size: 0.65rem;">
+                    <ul>
+                        <li id="tab-b-cekin" class="is-active" onclick="switchGramasi('cekin')"><a>CEK IN</a></li>
+                        <li id="tab-b-sd1" onclick="switchGramasi('sd1')"><a>SD-1</a></li>
+                        <li id="tab-b-sd2" onclick="switchGramasi('sd2')"><a>SD-2</a></li>
+                        <li id="tab-b-sd3" onclick="switchGramasi('sd3')"><a>SD-3</a></li>
+                        <li id="tab-b-cekout" onclick="switchGramasi('cekout')"><a>CEK OUT</a></li>
+                    </ul>
+                </div>
+                <div id="gramasi-containers"></div>
             </div>
             
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)">
-                <span>🍾 SYRUP REQUEST (FLAVOR MATRIKS)</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST (FLAVOR MATRIKS)</span><span class="acc-icon">▼</span></div>
             <div id="acc-syrup" class="acc-content">
                 <div class="grid-3-col grid-header-main"><div>FLAVOR INVENTORY</div><div>JUMLAH .BTL</div><div>PERSENTASE %</div></div>
                 <div id="syrup-list"></div>
             </div>
             
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)">
-                <span>🗑️ WASTE STOCK BLOCK (.GR)</span><span class="acc-icon">▼</span>
-            </div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK BLOCK (.GR)</span><span class="acc-icon">▼</span></div>
             <div id="acc-waste" class="acc-content">
                 <div class="grid-3-col grid-header-main"><div>ITEM INVENTORY</div><div>WASTE SHIFT 1</div><div>WASTE SHIFT 2</div></div>
                 <div id="waste-list"></div>
@@ -244,7 +200,7 @@
         </div>
 
         <div class="brand-footer">Powered by <strong>Senada CreatLabs</strong><br><span>Digital Harmony | Innovative Creation</span></div>
-        <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth">KIRIM DATA KE SPREADSHEET</button></div>
+        <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth">KIRIM SEMUA DATA KE SPREADSHEET</button></div>
     </form>
 
     <div id="printModal" class="modal">
@@ -256,38 +212,14 @@
             </header>
             <section class="modal-card-body" style="background:#1e1e1e; color:#fff;">
                 <div class="columns is-mobile is-multiline mb-2">
-                    <div class="column is-4">
-                        <label class="label is-size-7">Regional</label>
-                        <div class="select is-fullwidth is-small">
-                            <select id="print-reg" onchange="updatePrintSt()">
-                                <option value="">Pilih...</option>
-                                <option value="Banjarbaru">Banjarbaru</option>
-                                <option value="Banjarmasin">Banjarmasin</option>
-                                <option value="Martapura">Martapura</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="column is-4">
-                        <label class="label is-size-7">Station</label>
-                        <div class="select is-fullwidth is-small"><select id="print-st"><option value="">-</option></select></div>
-                    </div>
-                    <div class="column is-4">
-                        <label class="label is-size-7">Tanggal</label>
-                        <input id="print-tanggal" class="input is-small highlight-input" type="number" min="1" max="31" placeholder="Tgl">
-                    </div>
+                    <div class="column is-4"><label class="label is-size-7">Regional</label><div class="select is-fullwidth is-small"><select id="print-reg" onchange="updatePrintSt()"><option value="">Pilih...</option><option value="Banjarbaru">Banjarbaru</option><option value="Banjarmasin">Banjarmasin</option><option value="Martapura">Martapura</option></select></div></div>
+                    <div class="column is-4"><label class="label is-size-7">Station</label><div class="select is-fullwidth is-small"><select id="print-st"><option value="">-</option></select></div></div>
+                    <div class="column is-4"><label class="label is-size-7">Tanggal</label><input id="print-tanggal" class="input is-small highlight-input" type="number" min="1" max="31" placeholder="Tgl"></div>
                 </div>
                 <button type="button" class="button is-info is-small is-fullwidth" onclick="fetchDataLaporan()" style="font-weight:700;">🔍 BUAT DOKUMEN LAPORAN LENGKAP</button>
-
-                <div id="previewArea" class="mt-4" style="display:none; border-top:1px dashed #444; padding-top:15px;">
-                    <div style="padding: 10px; max-height: 52vh; overflow-y: auto; background:#fff; border-radius:10px;">
-                        <div id="previewContent"></div>
-                    </div>
-                </div>
+                <div id="previewArea" class="mt-4" style="display:none; border-top:1px dashed #444; padding-top:15px;"><div style="padding: 10px; max-height: 52vh; overflow-y: auto; background:#fff; border-radius:10px;"><div id="previewContent"></div></div></div>
             </section>
-            <footer class="modal-card-foot">
-                <button id="printBtn" type="button" class="button is-success is-small" onclick="executePrint()" style="display:none; font-weight:700;">🖨️ CETAK DOKUMEN</button>
-                <button type="button" class="button is-small is-dark" onclick="closePrintModal()">BATAL</button>
-            </footer>
+            <footer class="modal-card-foot"><button id="printBtn" type="button" class="button is-success is-small" onclick="executePrint()" style="display:none; font-weight:700;">🖨️ CETAK DOKUMEN</button><button type="button" class="button is-small is-dark" onclick="closePrintModal()">BATAL</button></footer>
         </div>
     </div>
 
@@ -309,33 +241,46 @@
             { label: ".SPRO", key: "_spro" }
         ];
 
-        // INJEKSI MATRIKS INPUT GRID
-        menus.forEach(function(m) { 
-            const safeName = m.toLowerCase().replace(/ /g, "_"); 
-            let htmlStr = '<div class="grid-11-col">';
-            htmlStr += '<div style="font-size:0.62rem; color:#f1f5f9; font-weight:600; line-height:1.2;">' + m + '</div>';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_cs" placeholder="CS">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_qr" placeholder="QR">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_tc" placeholder="C">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s1_tq" placeholder="Q">';
-            htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + safeName + '_s1_hkp" placeholder="HKP">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_cs" placeholder="CS">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_qr" placeholder="QR">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_tc" placeholder="C">';
-            htmlStr += '<input class="input is-small px-1" type="number" name="' + safeName + '_s2_tq" placeholder="Q">';
-            htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + safeName + '_s2_hkp" placeholder="HKP">';
-            htmlStr += '</div>';
-            document.getElementById('menu-list').innerHTML += htmlStr; 
+        // 1. GENERATOR TAB MENU (SHIFT 1 & SHIFT 2)
+        const shifts = ['s1', 's2'];
+        shifts.forEach(function(shift) {
+            let htmlStr = '';
+            menus.forEach(function(m) {
+                const sn = m.toLowerCase().replace(/ /g, "_");
+                htmlStr += '<div class="grid-6-col" style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:5px;">';
+                htmlStr += '<div style="font-size:0.62rem; color:#f1f5f9; font-weight:600; line-height:1.2;">' + m + '</div>';
+                htmlStr += '<input class="input is-small px-1" type="number" name="' + sn + '_' + shift + '_cs" placeholder="CS">';
+                htmlStr += '<input class="input is-small px-1" type="number" name="' + sn + '_' + shift + '_qr" placeholder="QR">';
+                htmlStr += '<input class="input is-small px-1" type="number" name="' + sn + '_' + shift + '_tc" placeholder="C">';
+                htmlStr += '<input class="input is-small px-1" type="number" name="' + sn + '_' + shift + '_tq" placeholder="Q">';
+                htmlStr += '<input class="input is-small px-1 input-hkp" type="number" name="' + sn + '_' + shift + '_hkp" placeholder="HKP">';
+                htmlStr += '</div>';
+            });
+            document.getElementById('menu-list-' + shift).innerHTML = htmlStr;
         });
 
-        gramasiList.forEach(function(g) { 
-            let htmlStr = '<div class="column is-4-tablet is-6-mobile py-1">';
-            htmlStr += '<label class="label is-size-7 mb-1">' + g.label + '</label>';
-            htmlStr += '<input class="input is-small" type="number" name="gramasi_' + g.key + '" placeholder="0">';
-            htmlStr += '</div>';
-            document.getElementById('gramasi-list').innerHTML += htmlStr; 
+        // 2. GENERATOR TAB GRAMASI & CUP (5 KONDISI SEKALIGUS)
+        const cats = [
+            { id: "cekin", title: "Awal - Cek In" }, { id: "sd1", title: "Add-On SD-1" },
+            { id: "sd2", title: "Add-On SD-2" }, { id: "sd3", title: "Add-On SD-3" }, { id: "cekout", title: "Kembali - Cek Out" }
+        ];
+        let gramasiContainerHtml = '';
+        cats.forEach(function(cat, idx) {
+            let displayState = idx === 0 ? 'block' : 'none';
+            gramasiContainerHtml += `<div id="content-b-${cat.id}" style="display:${displayState};">`;
+            gramasiContainerHtml += `<div class="field mb-3"><label class="label is-size-7" style="color:#10B981;">▶ Jumlah Cup (${cat.title})</label><input class="input is-small highlight-input" type="number" name="input_cup_${cat.id}" placeholder="0"></div>`;
+            gramasiContainerHtml += '<div class="columns is-mobile is-multiline m-0">';
+            gramasiList.forEach(function(g) {
+                gramasiContainerHtml += `<div class="column is-4-tablet is-6-mobile py-1 px-1">
+                    <label class="label is-size-7 mb-1">${g.label}</label>
+                    <input class="input is-small" type="number" name="gramasi_${cat.id}_${g.key}" placeholder="0">
+                </div>`;
+            });
+            gramasiContainerHtml += '</div></div>';
         });
+        document.getElementById('gramasi-containers').innerHTML = gramasiContainerHtml;
 
+        // 3. GENERATOR SYRUP & WASTE
         syrupList.forEach(function(s) { 
             let htmlStr = '<div class="grid-3-col">';
             htmlStr += '<div style="font-size:0.75rem; color:#e2e8f0; font-weight:500;">' + s.label + '</div>';
@@ -354,22 +299,34 @@
             document.getElementById('waste-list').innerHTML += htmlStr; 
         });
 
-        // FUNGSI TOGGLE ACCORDION / BUKA TUTUP
+        // 4. FUNGSI NAVIGASI TAB MENU S1/S2
+        function switchShift(shift) {
+            document.getElementById('content-s1').style.display = 'none';
+            document.getElementById('content-s2').style.display = 'none';
+            document.getElementById('tab-s1').classList.remove('is-active');
+            document.getElementById('tab-s2').classList.remove('is-active');
+            
+            document.getElementById('content-' + shift).style.display = 'block';
+            document.getElementById('tab-' + shift).classList.add('is-active');
+        }
+
+        // 5. FUNGSI NAVIGASI TAB KONDISI GRAMASI 
+        function switchGramasi(catId) {
+            cats.forEach(function(c) {
+                document.getElementById('content-b-' + c.id).style.display = 'none';
+                document.getElementById('tab-b-' + c.id).classList.remove('is-active');
+            });
+            document.getElementById('content-b-' + catId).style.display = 'block';
+            document.getElementById('tab-b-' + catId).classList.add('is-active');
+        }
+
+        // FUNGSI ACCORDION BUKA/TUTUP
         function toggleAcc(id, el) { 
             document.getElementById(id).classList.toggle('is-active'); 
             el.classList.toggle('is-active'); 
         }
 
-        // FUNGSI GANTI LABEL CUP
-        function adjustCupLabel() {
-            const k = document.getElementById('kat').value;
-            const l = document.getElementById('label-cup');
-            if (k === "CEK IN") l.innerText = "Jumlah Cup (Awal - Cek In)";
-            else if (k.indexOf("SD") > -1) l.innerText = "Jumlah Cup (Tambahan / Add-On " + k + ")";
-            else if (k === "CEK OUT") l.innerText = "Jumlah Cup (Kembali / Reject - Cek Out)";
-        }
-
-        // FUNGSI DROPDOWN STATION
+        // FUNGSI DROPDOWN REGIONAL-STATION
         function setupDropdown(regId, stId) { 
             const r = document.getElementById(regId).value; 
             const s = document.getElementById(stId); 
@@ -386,10 +343,7 @@
                 d.push({val: "", text: "-"}); 
             } 
             d.forEach(function(item) { 
-                let el = document.createElement("option"); 
-                el.value = item.val; 
-                el.text = item.text; 
-                s.appendChild(el); 
+                let el = document.createElement("option"); el.value = item.val; el.text = item.text; s.appendChild(el); 
             }); 
         }
 
@@ -414,10 +368,8 @@
         }
 
         function fetchDataLaporan() {
-            const st = document.getElementById('print-st').value; 
-            const tgl = document.getElementById('print-tanggal').value;
+            const st = document.getElementById('print-st').value; const tgl = document.getElementById('print-tanggal').value;
             if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
-            
             document.getElementById('loadingOverlay').style.display = 'flex';
             
             fetch(`${globalUrl}?station=${st}&tanggal=${tgl}`)
@@ -426,34 +378,25 @@
                 document.getElementById('loadingOverlay').style.display = 'none';
                 if(res.status === "Sukses") {
                     const d = res.data;
-                    
                     let menuRows = '';
                     d.menus.forEach(function(m) {
                         menuRows += '<tr style="border-bottom:1px solid #eee; font-size:0.68rem;">';
                         menuRows += '<td style="padding:5px; font-weight:600; border-right:1px solid #ddd;">' + m.name + '</td>';
                         menuRows += '<td style="text-align:center;">' + (m.s1_cs||'') + '</td><td style="text-align:center;">' + (m.s1_qr||'') + '</td><td style="text-align:center;">' + (m.s1_tc||'') + '</td><td style="text-align:center;">' + (m.s1_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; border-right:1px solid #ddd;">' + (m.s1_hkp||'') + '</td>';
-                        menuRows += '<td style="text-align:center; background:#fafafa;">' + (m.s2_cs||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_qr||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tc||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; background:#fafafa;">' + (m.s2_hkp||'') + '</td>';
-                        menuRows += '</tr>';
+                        menuRows += '<td style="text-align:center; background:#fafafa;">' + (m.s2_cs||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_qr||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tc||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; background:#fafafa;">' + (m.s2_hkp||'') + '</td></tr>';
                     });
 
                     let bbRows = '';
                     d.gramasi.forEach(function(g, i) {
-                        let syrName = d.syrup[i] ? d.syrup[i].name : '';
-                        let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : '';
-                        let syrPct = d.syrup[i] ? (d.syrup[i].pct||'') : '';
-                        let wstName = d.waste[i] ? d.waste[i].name : '';
-                        let wstS1 = d.waste[i] ? (d.waste[i].s1||'') : '';
-                        let wstS2 = d.waste[i] ? (d.waste[i].s2||'') : '';
-
+                        let syrName = d.syrup[i] ? d.syrup[i].name : ''; let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : ''; let syrPct = d.syrup[i] ? (d.syrup[i].pct||'') : '';
+                        let wstName = d.waste[i] ? d.waste[i].name : ''; let wstS1 = d.waste[i] ? (d.waste[i].s1||'') : ''; let wstS2 = d.waste[i] ? (d.waste[i].s2||'') : '';
                         bbRows += '<tr style="border-bottom:1px solid #eee; font-size:0.68rem;">';
                         bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + g.name + '</td><td style="text-align:center;">' + (g.in||'') + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + (g.out||'') + '</td>';
                         bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + syrName + '</td><td style="text-align:center;">' + syrBtl + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + syrPct + '</td>';
-                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + wstName + '</td><td style="text-align:center;">' + wstS1 + '</td><td style="text-align:center; background:#fafafa;">' + wstS2 + '</td>';
-                        bbRows += '</tr>';
+                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + wstName + '</td><td style="text-align:center;">' + wstS1 + '</td><td style="text-align:center; background:#fafafa;">' + wstS2 + '</td></tr>';
                     });
 
-                    let formatForm = `
-                    <div style="background-color: #ffffff; color: #1e1e1e; font-family: 'Plus Jakarta Sans', sans-serif; padding: 24px; border-radius: 12px; border: 1px solid #e0e0e0; max-width: 100%; margin: 0 auto; font-size:0.75rem;">
+                    let formatForm = `<div style="background-color: #ffffff; color: #1e1e1e; font-family: 'Plus Jakarta Sans', sans-serif; padding: 24px; border-radius: 12px; border: 1px solid #e0e0e0; font-size:0.75rem;">
                       <div style="text-align: center; border-bottom: 3px double #10B981; padding-bottom: 12px; margin-bottom: 16px;">
                         <h2 style="color: #10B981; font-weight: 800; font-size: 1.6rem; margin: 0; letter-spacing: 2px;">FEELING</h2>
                         <p style="color: #333333; font-weight: 700; font-size: 0.95rem; margin: 2px 0;">DAILY STATION RECORD (FULL COMPREHENSIVE REPORT)</p>
@@ -462,7 +405,6 @@
                             <tr><td>TANGGAL</td><td>: <span style="color:#000;">Tgl - ${d.tanggal}</span></td><td>PILOT S1 / S2</td><td>: <span style="color:#000;">${d.pilot_s1 || '-'} / ${d.pilot_s2 || '-'}</span></td></tr>
                         </table>
                       </div>
-
                       <div style="margin-bottom: 16px;">
                         <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[A] MATRIKS RINCIAN PENJUALAN MENU</h3>
                         <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc;">
@@ -473,14 +415,11 @@
                               <th colspan="5" style="border:1px solid #ccc; padding:4px; text-align:center; background:#e3f2fd;">SHIFT 2 (S2)</th>
                             </tr>
                             <tr style="background:#fafafa; border-bottom:1px solid #ccc; font-size:0.65rem;">
-                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">TML-C</th><th style="border:1px solid #ccc; text-align:center;">TML-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
-                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">TML-C</th><th style="border:1px solid #ccc; text-align:center;">TML-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
+                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">T-C</th><th style="border:1px solid #ccc; text-align:center;">T-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
+                              <th style="border:1px solid #ccc; text-align:center;">CS</th><th style="border:1px solid #ccc; text-align:center;">QR</th><th style="border:1px solid #ccc; text-align:center;">T-C</th><th style="border:1px solid #ccc; text-align:center;">T-Q</th><th style="border:1px solid #ccc; text-align:center;">HKP</th>
                             </tr>
-                          </thead>
-                          <tbody>${menuRows}</tbody>
-                        </table>
+                          </thead><tbody>${menuRows}</tbody></table>
                       </div>
-
                       <div style="margin-bottom: 16px; display:flex; gap:10px;">
                         <div style="width:50%;">
                             <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[B] ADD ON EXPENSES & CASH (SHIFT 1)</h3>
@@ -503,7 +442,6 @@
                             </table>
                         </div>
                       </div>
-
                       <div style="margin-bottom: 16px;">
                         <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[D] DETAILED LOGISTIK & BAHAN BAKU REPORT</h3>
                         <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc;">
@@ -514,13 +452,11 @@
                               <th style="border:1px solid #ccc; padding:5px;">WASTE STOCK</th><th style="border:1px solid #ccc; text-align:center;">S1</th><th style="border:1px solid #ccc; text-align:center;">S2</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            ${bbRows}
-                            <tr style="background:#10B981; color:#fff; font-weight:bold; font-size:0.75rem;"><td colspan="9" style="padding:6px; text-align:center; letter-spacing:0.5px;">MONITORING CUP LOGISTIK | CEK IN KASIR: ${d.cup_in||0} | CEK OUT KASIR: ${d.cup_out||0}</td></tr>
+                          <tbody>${bbRows}
+                            <tr style="background:#10B981; color:#fff; font-weight:bold; font-size:0.75rem;"><td colspan="9" style="padding:6px; text-align:center;">MONITORING CUP LOGISTIK | CEK IN KASIR: ${d.cup_in||0} | CEK OUT KASIR: ${d.cup_out||0}</td></tr>
                           </tbody>
                         </table>
                       </div>
-
                       <div>
                         <h3 style="background:#1e1e1e; color:#fff; padding:5px 8px; font-size:0.8rem; font-weight:bold; margin-bottom:0;">[E] REKAPITULASI AKUNTANSI KANTOR ALL</h3>
                         <table style="width: 100%; border-collapse: collapse; border:1px solid #ccc; font-size:0.78rem;">
@@ -530,79 +466,50 @@
                                 <strong>Total QRIS Aktual All:</strong> Rp ${Number(d.office_qris || 0).toLocaleString('id-ID')}<br>
                                 <strong>Setoran Kasir Besok :</strong> Rp ${Number(d.cash_to_cashier || 0).toLocaleString('id-ID')}
                             </td>
-                            <td width="50%" style="padding: 8px; vertical-align:top; white-space:pre-wrap; background:#fbfbfb; line-height:1.4;"><strong>Laporan Notes P.I.C:</strong><br>${d.notes || '-'}</td>
+                            <td width="50%" style="padding: 8px; vertical-align:top; white-space:pre-wrap; background:#fbfbfb;"><strong>Laporan Notes P.I.C:</strong><br>${d.notes || '-'}</td>
                           </tr>
                         </table>
                       </div>
-
-                      <div style="text-align: right; margin-top: 20px; font-size: 0.65rem; color: #999; font-weight:600;">
-                        *Dokumen ini diterbitkan secara sah via Cloud Database Server oleh Senada CreatLabs System.
-                      </div>
-                    </div>
-                    `;
-
+                      <div style="text-align: right; margin-top: 20px; font-size: 0.65rem; color: #999; font-weight:600;">*Dokumen ini diterbitkan secara sah via Cloud Database Server oleh Senada CreatLabs System.</div>
+                    </div>`;
                     document.getElementById('previewContent').innerHTML = formatForm;
                     document.getElementById('previewArea').style.display = 'block';
                     document.getElementById('printBtn').style.display = 'inline-block';
-                } else { 
-                    alert("Gagal menarik data: " + res.message); 
-                }
+                } else { alert("Gagal menarik data: " + res.message); }
             })
-            .catch(e => { 
-                document.getElementById('loadingOverlay').style.display = 'none'; 
-                alert("Error Jaringan Transmisi Cloud: " + e); 
-            });
+            .catch(e => { document.getElementById('loadingOverlay').style.display = 'none'; alert("Error Jaringan: " + e); });
         }
 
         function executePrint() {
-            const content = document.getElementById('previewContent').innerHTML; 
-            const w = window.open('', '_blank');
-            w.document.write('<html><head><title>Print Full Report Document</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">');
-            w.document.write('<style>body{margin:0; padding:25px; font-family:"Plus Jakarta Sans", sans-serif; background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact;}</style></head><body>');
-            w.document.write(content); 
-            w.document.write('</body></html>'); 
-            w.document.close();
+            const content = document.getElementById('previewContent').innerHTML; const w = window.open('', '_blank');
+            w.document.write('<html><head><title>Print Full Report Document</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0; padding:25px; font-family:"Plus Jakarta Sans", sans-serif; background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact;}</style></head><body>');
+            w.document.write(content); w.document.write('</body></html>'); w.document.close();
             setTimeout(function() { w.print(); w.close(); }, 500);
         }
 
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            var formData = new FormData(this); 
-            var object = {};
-            
+            var formData = new FormData(this); var object = {};
             formData.forEach(function(value, key) { 
                 if(value) { 
                     let inputElement = document.querySelector(`[name="${key}"]`); 
-                    if (inputElement && inputElement.classList.contains('input-uang')) { 
-                        object[key] = value.replace(/,/g, ''); 
-                    } else { 
-                        object[key] = value; 
-                    } 
+                    if (inputElement && inputElement.classList.contains('input-uang')) { object[key] = value.replace(/,/g, ''); } 
+                    else { object[key] = value; } 
                 } 
             });
-            
-            fetch(globalUrl, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: JSON.stringify(object) 
-            })
+            fetch(globalUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(object) })
             .then(function() { 
                 document.getElementById('loadingOverlay').style.display = 'none'; 
                 alert("Data Laporan Berhasil Diproses Masuk Ke Spreadsheet!"); 
                 document.getElementById('mainForm').reset(); 
                 updateSt(); 
-                adjustCupLabel(); 
                 
-                // Menutup semua accordion setelah submit berhasil
+                // Menutup semua tab accordion setelah submit
                 document.querySelectorAll('.acc-content').forEach(el => el.classList.remove('is-active'));
                 document.querySelectorAll('.acc-header').forEach(el => el.classList.remove('is-active'));
             })
-            .catch(function(error) { 
-                document.getElementById('loadingOverlay').style.display = 'none'; 
-                alert("Kendala Transmisi Jaringan: " + error); 
-            });
+            .catch(function(error) { document.getElementById('loadingOverlay').style.display = 'none'; alert("Kendala Jaringan: " + error); });
         });
     </script>
 </body>
