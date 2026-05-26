@@ -54,10 +54,9 @@
         .modal-card-title { color: #fff !important; font-weight: 800; font-size: 1rem; }
         .modal { z-index: 9999 !important; }
         
-        .val-box { border-radius: 10px; padding: 15px; margin-bottom: 15px; transition: all 0.3s; }
-        .val-text { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 5px; }
-        .val-num { font-weight: 700; color: #fff; float: right; }
-        .val-total { margin-top: 10px; padding-top: 10px; font-size: 1.1rem; font-weight: 800; }
+        .val-box-anomaly { border-radius: 10px; padding: 12px; margin-bottom: 10px; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .val-text { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 3px; }
+        .val-num { font-weight: 800; float: right; }
     </style>
 </head>
 <body>
@@ -177,26 +176,17 @@
 
     <div id="validationModal" class="modal">
         <div class="modal-background"></div>
-        <div class="modal-card px-3 py-5 mx-2" style="max-width:500px; width:100%; top:20%;">
+        <div class="modal-card px-3 py-5 mx-2" style="max-width:400px; width:100%; top:15%;">
             <header class="modal-card-head" style="background-color: #1e1e1e !important;">
-                <p class="modal-card-title" id="modal-title-text" style="font-size: 1.1rem; font-weight:800;">📊 KONFIRMASI DATA KEUANGAN</p>
+                <p class="modal-card-title" style="font-size: 1rem; font-weight:800; color:#f43f5e !important;">⚠️ DATA KASIR BUTUH PERHATIAN</p>
             </header>
             <section class="modal-card-body" style="background:#1e1e1e;">
-                <div class="val-box" id="val-box-bg">
-                    <div class="val-text">Target Penjualan Sistem: <span class="val-num" id="val-sys">Rp 0</span></div>
-                    <div class="val-text">Uang Aktual Kasir (Cash+QRIS): <span class="val-num" id="val-act">Rp 0</span></div>
-                    <div class="val-total" style="border-top: 1px dashed rgba(255,255,255,0.2);">Status Global: <span class="val-num" id="val-diff">Rp 0</span></div>
-                </div>
-                <p class="is-size-7 has-text-grey-light mb-4" id="val-message">Memeriksa sinkronisasi data kasir Anda...</p>
+                <p class="is-size-7 has-text-grey-light mb-3">Sistem Spreadsheet mendeteksi ada anomali atau selisih pada bagian berikut:</p>
                 
-                <div id="btn-group-minus" style="display:none;">
-                    <button type="button" class="button is-warning is-fullwidth mb-2" onclick="closeValidation()" style="font-weight:700;">🔍 CEK KEMBALI INPUTAN KASIR</button>
-                    <button type="button" class="button is-danger is-outlined is-fullwidth" onclick="forceSubmit()" style="font-weight:700;">⚠️ KIRIM LAPORAN (ADA MINUS)</button>
-                </div>
-                <div id="btn-group-safe" style="display:none;">
-                    <button type="button" class="button is-light is-outlined is-fullwidth mb-2" onclick="closeValidation()" style="font-weight:700;">🔍 CEK KEMBALI</button>
-                    <button type="button" class="button is-primary is-fullwidth" onclick="safeSubmit()" style="font-weight:700;">🚀 DATA AMAN, LANJUT KIRIM</button>
-                </div>
+                <div id="dynamic-anomalies"></div>
+                
+                <button type="button" class="button is-warning is-outlined is-fullwidth mb-2 mt-4" onclick="closeValidation()" style="font-weight:700;">🔍 PERIKSA KEMBALI (EDIT DATA)</button>
+                <button type="button" class="button is-danger is-fullwidth" onclick="confirmAndClear()" style="font-weight:700;">🚀 DATA SUDAH DI KONFIRMASI (SELESAI)</button>
             </section>
         </div>
     </div>
@@ -223,21 +213,14 @@
 
     <script>
         const menus = [
-            { id: "our_feeling", name: "OUR FEELING", price: 13000 },
-            { id: "be_carefeels", name: "BE CAREFEELS", price: 15000 },
-            { id: "happy_feals", name: "HAPPY FEALS", price: 15000 },
-            { id: "chocofeels", name: "CHOCOFEELS", price: 13000 },
-            { id: "greenfeels", name: "GREENFEELS", price: 15000 },
-            { id: "red_deveels", name: "RED DEVEELS", price: 13000 },
-            { id: "peace_fuels", name: "PEACE FUELS", price: 18000 },
-            { id: "larafeels", name: "LARAFEELS", price: 13000 },
-            { id: "nutfeels", name: "NUTFEELS", price: 13000 },
-            { id: "vanfeels", name: "VANFEELS", price: 13000 },
-            { id: "moccafeels", name: "MOCCAFEELS", price: 13000 },
-            { id: "blackfeels", name: "BLACKFEELS", price: 11000 },
-            { id: "renfeels", name: "RENFEELS", price: 13000 },
-            { id: "green_ivy", name: "GREEN IVY", price: 13000 },
-            { id: "passion_splash", name: "PASSION SPLASH", price: 15000 }
+            { id: "our_feeling", name: "OUR FEELING"}, { id: "be_carefeels", name: "BE CAREFEELS"},
+            { id: "happy_feals", name: "HAPPY FEALS"}, { id: "chocofeels", name: "CHOCOFEELS"},
+            { id: "greenfeels", name: "GREENFEELS"}, { id: "red_deveels", name: "RED DEVEELS"},
+            { id: "peace_fuels", name: "PEACE FUELS"}, { id: "larafeels", name: "LARAFEELS"},
+            { id: "nutfeels", name: "NUTFEELS"}, { id: "vanfeels", name: "VANFEELS"},
+            { id: "moccafeels", name: "MOCCAFEELS"}, { id: "blackfeels", name: "BLACKFEELS"},
+            { id: "renfeels", name: "RENFEELS"}, { id: "green_ivy", name: "GREEN IVY"},
+            { id: "passion_splash", name: "PASSION SPLASH"}
         ];
 
         const gramasiList = [
@@ -247,7 +230,6 @@
             {label:"MILO (.Pcs)",key:"milo_pcs"},{label:"ES BATU (%)",key:"es_batu_"},{label:"CLEO (%)",key:"cleo_"}
         ];
         
-        // 10 Item Syrup & Log Atribut Digabung Sesuai Urutan Baru
         const syrupList = [
             {label:"FL. CAR",key:"fl__car"},{label:"FL. BSC",key:"fl__bsc"},{label:"FL. IRS",key:"fl__irs"},
             {label:"FL. HAZ",key:"fl__haz"},{label:"FL. VAN",key:"fl__van"},{label:"FL. PIS",key:"fl__pis"},
@@ -280,9 +262,7 @@
         });
         document.getElementById('gramasi-containers').innerHTML = gHtml;
 
-        // Render 10 Item Syrup dengan Placeholder (Pcs, Btl)
         syrupList.forEach(s => document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${s.label}</div><input class="input is-small px-1" type="number" name="syrup_${s.key}_pcs" placeholder="Pcs"><input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl"></div>`);
-        
         wasteList.forEach(w => document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${w.label}</div><input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1"><input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2"></div>`);
 
         function switchShift(s) { ['s1','s2'].forEach(x => { document.getElementById('content-'+x).style.display='none'; document.getElementById('tab-'+x).classList.remove('is-active'); }); document.getElementById('content-'+s).style.display='block'; document.getElementById('tab-'+s).classList.add('is-active'); }
@@ -303,116 +283,90 @@
         function updateSt() { setupDropdown('reg', 'st'); } function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
         document.querySelectorAll('.input-uang').forEach(i => i.addEventListener('input', function() { let v=this.value.replace(/[^0-9]/g,''); this.value = v!==''?parseInt(v,10).toLocaleString('en-US'):''; }));
 
-        // URL GOOGLE APPS SCRIPT ANDA
+        // MASUKKAN URL DEPLOYMENT BARU ANDA DI SINI !!!
         const globalUrl = "https://script.google.com/macros/s/AKfycbxCmvHXxSdF5BkW1J3qoHtO5UZEZFBXuhpla7Ju4gfFUOLD1rAFkPPbcien9Ro2dvqv/exec";
-
-        function getVal(name) { let el = document.querySelector(`[name="${name}"]`); return el && el.value ? parseInt(el.value.replace(/,/g, '')) || 0 : 0; }
-        
-        let savedObjectToSubmit = null; let finalShortageNote = ""; 
 
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
+            document.getElementById('loadingOverlay').style.display = 'flex';
             
-            let totalMenuCash = 0; let totalMenuQris = 0;
-            menus.forEach(m => {
-                ['s1','s2'].forEach(s => { 
-                    totalMenuCash += ((getVal(`${m.id}_${s}_cs`) + getVal(`${m.id}_${s}_tc`)) * m.price) + (getVal(`${m.id}_${s}_hkp`) * 7000);
-                    totalMenuQris += (getVal(`${m.id}_${s}_qr`) + getVal(`${m.id}_${s}_tq`)) * m.price;
-                });
-            });
-
-            let totalAddonCash = 0; let totalAddonQris = 0;
-            ['s1','s2'].forEach(s => {
-                totalAddonCash += getVal(`${s}_espr_a_cs`)*2000 + getVal(`${s}_espr_b_cs`)*4000 + getVal(`${s}_cup_ice_cs`)*3000;
-                totalAddonQris += getVal(`${s}_espr_a_qr`)*2000 + getVal(`${s}_espr_b_qr`)*4000 + getVal(`${s}_cup_ice_qr`)*3000;
-            });
-
-            let totalExpenseCash = 0;
-            ['s1','s2'].forEach(s => {
-                [1,2].forEach(n => {
-                    let typeEl = document.querySelector(`[name="${s}_tipe_out_${n}"]`);
-                    if(typeEl && typeEl.value === 'Potong Kasir') totalExpenseCash += getVal(`${s}_nom_out_${n}`);
-                });
-            });
-
-            let expectedCash = totalMenuCash + totalAddonCash - totalExpenseCash;
-            let expectedQris = totalMenuQris + totalAddonQris;
-            let expectedGrandTotal = expectedCash + expectedQris;
-
-            let actualCash = getVal('s1_cash_aktual') + getVal('s2_cash_aktual');
-            let actualQris = getVal('office_total_qris_all');
-            let actualGrandTotal = actualCash + actualQris;
-
-            let selisihCash = actualCash - expectedCash;
-            let selisihQris = actualQris - expectedQris;
-            let totalSelisihGlobal = actualGrandTotal - expectedGrandTotal;
-
             var formData = new FormData(this); var object = {};
             formData.forEach(function(value, key) { 
                 let inputElement = document.querySelector(`[name="${key}"]`); 
                 if (inputElement && inputElement.classList.contains('input-uang')) object[key] = value.replace(/,/g, ''); 
                 else object[key] = value; 
             });
-            savedObjectToSubmit = object;
 
-            document.getElementById('val-sys').innerText = "Rp " + expectedGrandTotal.toLocaleString('id-ID');
-            document.getElementById('val-act').innerText = "Rp " + actualGrandTotal.toLocaleString('id-ID');
+            fetch(globalUrl, { 
+                method: 'POST', 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(object) 
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                if(data.status === "Sukses") {
+                    let v = data.validation;
+                    let anomalies = [];
+                    
+                    // Fungsi untuk mengecek tulisan CLEAR, jika BUKAN clear, masukkan ke keranjang anomali
+                    function checkAnomaly(labelName, obj) {
+                        let st = String(obj.stat).toUpperCase().trim();
+                        // Filter cerdas: Abaikan jika kosong atau bertuliskan CLEAR
+                        if(st !== "" && st.indexOf("CLEAR") === -1) { 
+                            anomalies.push({ label: labelName, stat: obj.stat, nom: obj.nom });
+                        }
+                    }
 
-            let diffEl = document.getElementById('val-diff');
-            let boxBg = document.getElementById('val-box-bg');
-            let titleText = document.getElementById('modal-title-text');
-            let msgText = document.getElementById('val-message');
+                    checkAnomaly("Laporan Shift 1", v.s1);
+                    checkAnomaly("Laporan Shift 2", v.s2);
+                    checkAnomaly("Total Uang Cash (In)", v.tc);
+                    checkAnomaly("Total Uang QRIS (In)", v.tq);
 
-            if (totalSelisihGlobal < 0) {
-                diffEl.innerText = "- Rp " + Math.abs(totalSelisihGlobal).toLocaleString('id-ID');
-                diffEl.style.color = "#f43f5e"; boxBg.style.background = "rgba(244, 63, 94, 0.1)"; boxBg.style.borderColor = "rgba(244, 63, 94, 0.3)";
-                titleText.innerHTML = "⚠️ PERINGATAN GLOBAL TEKOR"; titleText.style.color = "#f43f5e";
-                msgText.innerHTML = `Sistem mendeteksi <strong>Total Uang Aktual LEBIH KECIL</strong> dari Target Penjualan.<br><br>Rincian Lapangan:<br>• Selisih Murni Cash: Rp ${selisihCash.toLocaleString('id-ID')}<br>• Selisih Murni QRIS: Rp ${selisihQris.toLocaleString('id-ID')}`;
-                document.getElementById('btn-group-minus').style.display = "block"; document.getElementById('btn-group-safe').style.display = "none";
-                finalShortageNote = `\n[SISTEM AUTO-NOTE]: Minus Global! Selisih Cash: Rp ${selisihCash.toLocaleString('id-ID')} | QRIS: Rp ${selisihQris.toLocaleString('id-ID')}.`;
-            } else {
-                diffEl.innerText = "+ Rp " + totalSelisihGlobal.toLocaleString('id-ID');
-                diffEl.style.color = "#10B981"; boxBg.style.background = "rgba(16, 185, 129, 0.1)"; boxBg.style.borderColor = "rgba(16, 185, 129, 0.3)";
-                titleText.innerHTML = "📊 DOKUMEN FINANSIAL BALANCE"; titleText.style.color = "#ffffff";
-                
-                if (selisihCash < 0 || selisihQris < 0) {
-                    msgText.innerHTML = `Total Uang Global AMAN (Surplus/Pas). Namun salah satu pilar tidak balance:<br>• Cash: Rp ${selisihCash.toLocaleString('id-ID')}<br>• QRIS: Rp ${selisihQris.toLocaleString('id-ID')}`;
-                    finalShortageNote = `\n[SISTEM AUTO-NOTE]: Global Aman, rincian Cash: Rp ${selisihCash.toLocaleString('id-ID')} | QRIS: Rp ${selisihQris.toLocaleString('id-ID')}.`;
+                    if(anomalies.length === 0) {
+                        // Jika keranjang anomali kosong = Semua CLEAR
+                        alert("Data Berhasil Disimpan & Status Seluruh Laporan Sempurna (CLEAR)!");
+                        document.getElementById('mainForm').reset();
+                        updateSt();
+                    } else {
+                        // Jika ada yang Minus / Plus / Miss, buat kotak HTML dinamis
+                        let htmlContent = "";
+                        anomalies.forEach(item => {
+                            htmlContent += `
+                            <div class="val-box-anomaly">
+                                <div style="font-weight:700; color:#fff; border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom:5px;">${item.label}</div>
+                                <div class="val-text">Status: <span class="val-num" style="color:#fbbf24;">${item.stat}</span></div>
+                                <div class="val-text">Nominal: <span class="val-num" style="color:#fff;">${item.nom}</span></div>
+                            </div>`;
+                        });
+                        document.getElementById('dynamic-anomalies').innerHTML = htmlContent;
+                        document.getElementById('validationModal').classList.add('is-active');
+                    }
                 } else {
-                    msgText.innerText = "Data Finansial Sempurna (Balance/Surplus). Laporan siap dikirim.";
-                    finalShortageNote = "";
+                    alert("Gagal memproses data: " + data.message);
                 }
-                document.getElementById('btn-group-minus').style.display = "none"; document.getElementById('btn-group-safe').style.display = "block";
-            }
-            document.getElementById('validationModal').classList.add('is-active');
+            })
+            .catch(error => { 
+                document.getElementById('loadingOverlay').style.display = 'none'; 
+                alert("Kendala Jaringan: " + error); 
+            });
         });
 
-        function closeValidation() { document.getElementById('validationModal').classList.remove('is-active'); }
-        function forceSubmit() { processSubmit(); }
-        function safeSubmit() { processSubmit(); }
-
-        function processSubmit() {
+        function closeValidation() { 
+            document.getElementById('validationModal').classList.remove('is-active'); 
+        }
+        
+        function confirmAndClear() { 
             document.getElementById('validationModal').classList.remove('is-active');
-            let currentNotes = savedObjectToSubmit["notes"] || "";
-            savedObjectToSubmit["notes"] = currentNotes + finalShortageNote;
-            document.getElementById('notesField').value = savedObjectToSubmit["notes"]; 
-            
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            fetch(globalUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(savedObjectToSubmit) })
-            .then(function() { 
-                document.getElementById('loadingOverlay').style.display = 'none'; 
-                alert("Data Laporan Berhasil Diproses Masuk Ke Spreadsheet!"); 
-                document.getElementById('mainForm').reset(); 
-                updateSt(); 
-                document.querySelectorAll('.acc-content').forEach(el => el.classList.remove('is-active'));
-                document.querySelectorAll('.acc-header').forEach(el => el.classList.remove('is-active'));
-            })
-            .catch(function(error) { document.getElementById('loadingOverlay').style.display = 'none'; alert("Kendala Jaringan: " + error); });
+            alert("Laporan Status Minus/Plus Telah Diizinkan (Confirmed). Form dikosongkan.");
+            document.getElementById('mainForm').reset();
+            updateSt();
         }
 
         function openPrintModal() { document.getElementById('printModal').classList.add('is-active'); }
         function closePrintModal() { document.getElementById('printModal').classList.remove('is-active'); document.getElementById('previewArea').style.display='none'; document.getElementById('printBtn').style.display='none'; }
 
+        // Fetch Data Laporan
         function fetchDataLaporan() {
             const st = document.getElementById('print-st').value; const tgl = document.getElementById('print-tanggal').value;
             if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
