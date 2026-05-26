@@ -150,7 +150,11 @@
                 <div class="tabs is-toggle is-fullwidth is-small mb-4" style="font-size: 0.65rem;">
                     <ul><li id="tab-b-cekin" class="is-active" onclick="switchGramasi('cekin')"><a>CEK IN</a></li><li id="tab-b-sd1" onclick="switchGramasi('sd1')"><a>SD-1</a></li><li id="tab-b-sd2" onclick="switchGramasi('sd2')"><a>SD-2</a></li><li id="tab-b-sd3" onclick="switchGramasi('sd3')"><a>SD-3</a></li><li id="tab-b-cekout" onclick="switchGramasi('cekout')"><a>CEK OUT</a></li></ul>
                 </div>
-                
+                <div id="gramasi-containers"></div>
+            </div>
+            
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST & LOG ATRIBUT</span><span class="acc-icon">▼</span></div>
+            <div id="acc-syrup" class="acc-content">
                 <div class="columns is-mobile is-multiline mb-3 px-1 border-bottom" style="border-bottom:1px dashed rgba(255,255,255,0.08); padding-bottom:10px;">
                     <div class="column is-12"><label class="label is-size-7" style="color:#fbbf24;">📝 LOG ATRIBUT KHUSUS (KOLOM AC)</label></div>
                     <div class="column is-3"><label class="label is-size-7">POW. AREN</label><input class="input is-small" type="number" name="ac_pow_aren" placeholder="0"></div>
@@ -158,11 +162,9 @@
                     <div class="column is-3"><label class="label is-size-7">M. GIVY</label><input class="input is-small" type="number" name="ac_m_givy" placeholder="0"></div>
                     <div class="column is-3"><label class="label is-size-7">M. PSP</label><input class="input is-small" type="number" name="ac_m_psp" placeholder="0"></div>
                 </div>
-                <div id="gramasi-containers"></div>
+                <div class="grid-3-col grid-header-main"><div>FLAVOR INVENTORY</div><div>JUMLAH .BTL</div><div>PERSENTASE %</div></div>
+                <div id="syrup-list"></div>
             </div>
-            
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST (FLAVOR MATRIKS)</span><span class="acc-icon">▼</span></div>
-            <div id="acc-syrup" class="acc-content"><div class="grid-3-col grid-header-main"><div>FLAVOR INVENTORY</div><div>JUMLAH .BTL</div><div>PERSENTASE %</div></div><div id="syrup-list"></div></div>
             
             <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK BLOCK (.GR)</span><span class="acc-icon">▼</span></div>
             <div id="acc-waste" class="acc-content"><div class="grid-3-col grid-header-main"><div>ITEM INVENTORY</div><div>WASTE SHIFT 1</div><div>WASTE SHIFT 2</div></div><div id="waste-list"></div></div>
@@ -245,11 +247,17 @@
             { id: "passion_splash", name: "PASSION SPLASH", price: 15000 }
         ];
 
-        const gramasiList = [{label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},{label:"M-RE",key:"m-re"},{label:"UHT",key:"uht"},{label:"ESPRESSO",key:"espresso"},{label:"KR-G (%)",key:"kr-g_"},{label:"KR-S (%)",key:"kr-s_"},{label:"S-CAR (.Btl)",key:"s-car_btl"},{label:"AREN (.Pck)",key:"aren_pck"},{label:"MILO (.Pcs)",key:"milo_pcs"},{label:"ES BATU (%)",key:"es_batu_"},{label:"CLEO (%)",key:"cleo_"}];
+        // 14 Item Gramasi Baru Sesuai Instruksi (Ditambah SPRITE)
+        const gramasiList = [
+            {label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},
+            {label:"M-RE",key:"m-re"},{label:"UHT",key:"uht"},{label:"ESPRESSO",key:"espresso"},{label:"SPRITE",key:"sprite"},
+            {label:"KR-G (%)",key:"kr-g_"},{label:"KR-S (%)",key:"kr-s_"},{label:"S-CAR (.Btl)",key:"s-car_btl"},
+            {label:"MILO (.Pcs)",key:"milo_pcs"},{label:"ES BATU (%)",key:"es_batu_"},{label:"CLEO (%)",key:"cleo_"}
+        ];
+        
         const syrupList = [{label:"FL. CAR",key:"fl__car"},{label:"FL. BSC",key:"fl__bsc"},{label:"FL. IRS",key:"fl__irs"},{label:"FL. HAZ",key:"fl__haz"},{label:"FL. VAN",key:"fl__van"},{label:"FL. PIS",key:"fl__pis"}];
         const wasteList = [{label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},{label:"M-RE",key:"m-re"},{label:"KR-G",key:"kr-g"},{label:"KR-S",key:"kr-s"},{label:"UHT",key:"uht"},{label:".SPRO",key:"_spro"}];
 
-        // RENDER MENU (DENGAN 5 KOLOM)
         ['s1', 's2'].forEach(shift => {
             let htmlStr = '';
             menus.forEach(m => {
@@ -264,7 +272,6 @@
             document.getElementById('menu-list-' + shift).innerHTML = htmlStr;
         });
 
-        // RENDER GRAMASI TABS
         const cats = [{id:"cekin", title:"Awal - Cek In"},{id:"sd1", title:"Add-On SD-1"},{id:"sd2", title:"Add-On SD-2"},{id:"sd3", title:"Add-On SD-3"},{id:"cekout", title:"Kembali - Cek Out"}];
         let gHtml = '';
         cats.forEach((cat, idx) => {
@@ -275,16 +282,13 @@
         });
         document.getElementById('gramasi-containers').innerHTML = gHtml;
 
-        // RENDER SYRUP & WASTE
         syrupList.forEach(s => document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${s.label}</div><input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl"><input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%"></div>`);
         wasteList.forEach(w => document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${w.label}</div><input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1"><input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2"></div>`);
 
-        // NAVIGATION LOGICS
         function switchShift(s) { ['s1','s2'].forEach(x => { document.getElementById('content-'+x).style.display='none'; document.getElementById('tab-'+x).classList.remove('is-active'); }); document.getElementById('content-'+s).style.display='block'; document.getElementById('tab-'+s).classList.add('is-active'); }
         function switchGramasi(id) { cats.forEach(c => { document.getElementById('content-b-'+c.id).style.display='none'; document.getElementById('tab-b-'+c.id).classList.remove('is-active'); }); document.getElementById('content-b-'+id).style.display='block'; document.getElementById('tab-b-'+id).classList.add('is-active'); }
         function toggleAcc(id, el) { document.getElementById(id).classList.toggle('is-active'); el.classList.toggle('is-active'); }
 
-        // SETUP DROPDOWN STATION ASLI MILIK ANDA
         function setupDropdown(regId, stId) { 
             const r = document.getElementById(regId).value; const s = document.getElementById(stId); s.innerHTML = ""; let d = []; 
             if(r==="Banjarbaru") {
@@ -299,12 +303,9 @@
         function updateSt() { setupDropdown('reg', 'st'); } function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
         document.querySelectorAll('.input-uang').forEach(i => i.addEventListener('input', function() { let v=this.value.replace(/[^0-9]/g,''); this.value = v!==''?parseInt(v,10).toLocaleString('en-US'):''; }));
 
-        // GANTI DENGAN URL APPS SCRIPT ANDA
+        // URL GOOGLE APPS SCRIPT ANDA
         const globalUrl = "https://script.google.com/macros/s/AKfycbxCmvHXxSdF5BkW1J3qoHtO5UZEZFBXuhpla7Ju4gfFUOLD1rAFkPPbcien9Ro2dvqv/exec";
 
-        // =======================================================
-        // ALGORITMA KALKULATOR VALIDASI (TERBARU)
-        // =======================================================
         function getVal(name) { let el = document.querySelector(`[name="${name}"]`); return el && el.value ? parseInt(el.value.replace(/,/g, '')) || 0 : 0; }
         
         let savedObjectToSubmit = null; let finalShortageNote = ""; 
@@ -315,7 +316,8 @@
             let totalMenuCash = 0; let totalMenuQris = 0;
             menus.forEach(m => {
                 ['s1','s2'].forEach(s => { 
-                    totalMenuCash += (getVal(`${m.id}_${s}_cs`) + getVal(`${m.id}_${s}_tc`)) * m.price;
+                    // PERHITUNGAN BARU: HKP dikali rata Rp 7.000
+                    totalMenuCash += ((getVal(`${m.id}_${s}_cs`) + getVal(`${m.id}_${s}_tc`)) * m.price) + (getVal(`${m.id}_${s}_hkp`) * 7000);
                     totalMenuQris += (getVal(`${m.id}_${s}_qr`) + getVal(`${m.id}_${s}_tq`)) * m.price;
                 });
             });
@@ -409,9 +411,6 @@
             .catch(function(error) { document.getElementById('loadingOverlay').style.display = 'none'; alert("Kendala Jaringan: " + error); });
         }
 
-        // =======================================================
-        // FUNGSI GET LAPORAN & CETAK
-        // =======================================================
         function openPrintModal() { document.getElementById('printModal').classList.add('is-active'); }
         function closePrintModal() { document.getElementById('printModal').classList.remove('is-active'); document.getElementById('previewArea').style.display='none'; document.getElementById('printBtn').style.display='none'; }
 
