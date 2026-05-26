@@ -40,8 +40,11 @@
         
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.60); backdrop-filter: blur(20px); padding: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 100; }
         .button.is-primary { background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; color: #ffffff !important; font-weight: 700; border: none; border-radius: 12px; }
-        .home-btn, .print-trigger-btn { position: absolute; top: 20px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); padding: 10px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05); z-index: 150; cursor: pointer; color: #10B981; text-decoration: none; }
-        .print-trigger-btn { right: 16px; color: #3b82f6; }
+        .home-btn, .print-trigger-btn, .logout-btn { position: absolute; top: 20px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); padding: 10px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05); z-index: 150; cursor: pointer; text-decoration: none; }
+        .home-btn { left: 12px; color: #10B981; }
+        .print-trigger-btn { right: 12px; color: #3b82f6; }
+        .logout-btn { right: 145px; color: #f43f5e; }
+        @media screen and (max-width: 768px) { .logout-btn { top: 65px; right: 12px; } .home-btn { top: 20px; } .print-trigger-btn { top: 20px; } h1.title { margin-top: 110px !important; } }
         
         #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 99999 !important; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
         .custom-loader { border: 4px solid rgba(16, 185, 129, 0.1); border-left-color: #10B981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
@@ -57,134 +60,154 @@
         .val-box-anomaly { border-radius: 10px; padding: 12px; margin-bottom: 10px; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); }
         .val-text { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 3px; }
         .val-num { font-weight: 800; float: right; }
+
+        /* Login Overlay Styling */
+        #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 17, 21, 0.95); backdrop-filter: blur(15px); z-index: 999999; display: flex; justify-content: center; align-items: center; }
+        .login-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; }
+        .login-card h2 { color: #10B981; font-weight: 800; font-size: 1.5rem; margin-bottom: 5px; letter-spacing: 2px; }
+        .login-card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 25px; }
     </style>
 </head>
 <body>
     <div class="glow-bg"></div>
-    <a href="index.html" class="home-btn">🏠 HOME</a>
-    <button type="button" class="print-trigger-btn" onclick="openPrintModal()">🖨️ CETAK DATA</button>
-
-    <div id="loadingOverlay"><div class="custom-loader mb-4"></div><span>Memproses Transmisi Cloud Database...</span></div>
-
-    <h1 class="title is-4 has-text-centered mb-5" style="margin-top: 55px;">📋 DAILY STATION RECORD</h1>
-
-    <form id="mainForm" class="content-wrapper">
-        <div class="form-section">
-            <p class="section-title"><span>📝</span> INFO OPERASIONAL</p>
-            <div class="columns is-mobile is-multiline">
-                <div class="column is-6"><label class="label is-size-7">Regional</label><div class="select is-fullwidth is-small"><select id="reg" name="regional" onchange="updateSt()" required><option value="">Pilih...</option><option value="Banjarbaru">Banjarbaru</option><option value="Banjarmasin">Banjarmasin</option><option value="Martapura">Martapura</option></select></div></div>
-                <div class="column is-6"><label class="label is-size-7">Station</label><div class="select is-fullwidth is-small"><select id="st" name="station" required><option value="">-</option></select></div></div>
-                <div class="column is-6"><label class="label is-size-7">Pilot (Shift 1)</label><input class="input is-small" type="text" name="pilot_s1" placeholder="Nama Pilot S1" required></div>
-                <div class="column is-6"><label class="label is-size-7">Pilot (Shift 2)</label><input class="input is-small" type="text" name="pilot_s2" placeholder="Nama Pilot S2" required></div>
-                <div class="column is-6"><label class="label is-size-7">P.I.C Office</label><input class="input is-small" type="text" name="office" placeholder="Staff Akunting"></div>
-                <div class="column is-6"><label class="label is-size-7">Tanggal (1-31)</label><input class="input is-small highlight-input" type="number" name="tanggal" min="1" max="31" required></div>
-            </div>
+    
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>SENADA SYSTEM</h2>
+            <p>Otentikasi P.I.C Office</p>
+            <form id="loginForm">
+                <div class="field"><input class="input is-medium mb-3" type="text" id="loginUser" placeholder="Username" required></div>
+                <div class="field"><input class="input is-medium mb-4" type="password" id="loginPass" placeholder="Password" required></div>
+                <button type="submit" class="button is-primary is-fullwidth" style="height: 50px; font-weight:800;">AUTORISASI MASUK</button>
+            </form>
         </div>
+    </div>
 
-        <div id="sec-a" class="form-section">
-            <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
-            <div class="tabs is-toggle is-fullwidth is-small mb-4"><ul><li id="tab-s1" class="is-active" onclick="switchShift('s1')"><a>SHIFT 1</a></li><li id="tab-s2" onclick="switchShift('s2')"><a>SHIFT 2</a></li></ul></div>
+    <div id="appContent" style="display: none;">
+        <a href="index.html" class="home-btn">🏠 HOME</a>
+        <button type="button" class="print-trigger-btn" onclick="openPrintModal()">🖨️ CETAK DATA</button>
+        <button type="button" class="logout-btn" onclick="doLogout()">🚪 KELUAR (<span id="picDisplay"></span>)</button>
 
-            <div id="content-s1">
-                <div class="acc-header" onclick="toggleAcc('acc-menu-s1', this)"><span>🛒 MENU UTAMA (S1)</span><span class="acc-icon">▼</span></div>
-                <div id="acc-menu-s1" class="acc-content"><div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#10B981;">CS</div><div style="color:#10B981;">QR</div><div style="color:#10B981;">T-C</div><div style="color:#10B981;">T-Q</div><div style="color:#10B981;">HKP</div></div><div id="menu-list-s1"></div></div>
+        <div id="loadingOverlay"><div class="custom-loader mb-4"></div><span>Memproses Transmisi Cloud Database...</span></div>
 
-                <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s1', this)"><span>💸 ADD ON & PENGELUARAN (S1)</span><span class="acc-icon">▼</span></div>
-                <div id="acc-addon-s1" class="acc-content">
-                    <div class="columns is-mobile is-multiline">
-                        <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s1_espr_a_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s1_espr_b_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s1_cup_ice_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s1_espr_a_qr" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s1_espr_b_qr" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s1_cup_ice_qr" placeholder="0"></div>
-                        
-                        <div class="column is-4"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s1_item_out_1" placeholder="Nama"></div>
-                        <div class="column is-4"><label class="label is-size-7">Nominal 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_1" placeholder="Rp"></div>
-                        <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s1_tipe_out_1"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
-                        
-                        <div class="column is-4"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s1_item_out_2" placeholder="Nama"></div>
-                        <div class="column is-4"><label class="label is-size-7">Nominal 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_2" placeholder="Rp"></div>
-                        <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s1_tipe_out_2"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
-                        
-                        <div class="column is-6 mt-2"><label class="label is-size-7">CASH AKTUAL S1</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s1_cash_aktual" placeholder="Rp 0"></div>
-                        <div class="column is-6 mt-2"><label class="label is-size-7">TIP PILOT S1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_tip" placeholder="Rp 0"></div>
+        <h1 class="title is-4 has-text-centered mb-5" style="margin-top: 55px;">📋 DAILY STATION RECORD</h1>
+
+        <form id="mainForm" class="content-wrapper">
+            <input type="hidden" id="picOfficeHidden" name="office">
+
+            <div class="form-section">
+                <p class="section-title"><span>📝</span> INFO OPERASIONAL</p>
+                <div class="columns is-mobile is-multiline">
+                    <div class="column is-4"><label class="label is-size-7">Regional</label><div class="select is-fullwidth is-small"><select id="reg" name="regional" onchange="updateSt()" required><option value="">Pilih...</option><option value="Banjarbaru">Banjarbaru</option><option value="Banjarmasin">Banjarmasin</option><option value="Martapura">Martapura</option></select></div></div>
+                    <div class="column is-4"><label class="label is-size-7">Station</label><div class="select is-fullwidth is-small"><select id="st" name="station" required><option value="">-</option></select></div></div>
+                    <div class="column is-4"><label class="label is-size-7">Tanggal</label><input class="input is-small highlight-input" type="number" name="tanggal" min="1" max="31" placeholder="Tgl (1-31)" required></div>
+                    
+                    <div class="column is-6"><label class="label is-size-7">Pilot (Shift 1)</label><input class="input is-small" type="text" name="pilot_s1" placeholder="Nama Pilot S1" required></div>
+                    <div class="column is-6"><label class="label is-size-7">Pilot (Shift 2)</label><input class="input is-small" type="text" name="pilot_s2" placeholder="Nama Pilot S2" required></div>
+                </div>
+            </div>
+
+            <div id="sec-a" class="form-section">
+                <p class="section-title"><span>📊</span> PENJUALAN PILOT [A]</p>
+                <div class="tabs is-toggle is-fullwidth is-small mb-4"><ul><li id="tab-s1" class="is-active" onclick="switchShift('s1')"><a>SHIFT 1</a></li><li id="tab-s2" onclick="switchShift('s2')"><a>SHIFT 2</a></li></ul></div>
+
+                <div id="content-s1">
+                    <div class="acc-header" onclick="toggleAcc('acc-menu-s1', this)"><span>🛒 MENU UTAMA (S1)</span><span class="acc-icon">▼</span></div>
+                    <div id="acc-menu-s1" class="acc-content"><div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#10B981;">CS</div><div style="color:#10B981;">QR</div><div style="color:#10B981;">T-C</div><div style="color:#10B981;">T-Q</div><div style="color:#10B981;">HKP</div></div><div id="menu-list-s1"></div></div>
+
+                    <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s1', this)"><span>💸 ADD ON & PENGELUARAN (S1)</span><span class="acc-icon">▼</span></div>
+                    <div id="acc-addon-s1" class="acc-content">
+                        <div class="columns is-mobile is-multiline">
+                            <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s1_espr_a_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s1_espr_b_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s1_cup_ice_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s1_espr_a_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s1_espr_b_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s1_cup_ice_qr" placeholder="0"></div>
+                            
+                            <div class="column is-4"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s1_item_out_1" placeholder="Nama"></div>
+                            <div class="column is-4"><label class="label is-size-7">Nominal 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_1" placeholder="Rp"></div>
+                            <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s1_tipe_out_1"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
+                            
+                            <div class="column is-4"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s1_item_out_2" placeholder="Nama"></div>
+                            <div class="column is-4"><label class="label is-size-7">Nominal 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_nom_out_2" placeholder="Rp"></div>
+                            <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s1_tipe_out_2"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
+                            
+                            <div class="column is-6 mt-2"><label class="label is-size-7">CASH AKTUAL S1</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s1_cash_aktual" placeholder="Rp 0"></div>
+                            <div class="column is-6 mt-2"><label class="label is-size-7">TIP PILOT S1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s1_tip" placeholder="Rp 0"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-s2" style="display:none;">
+                    <div class="acc-header" onclick="toggleAcc('acc-menu-s2', this)"><span>🛒 MENU UTAMA (S2)</span><span class="acc-icon">▼</span></div>
+                    <div id="acc-menu-s2" class="acc-content"><div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#3b82f6;">CS</div><div style="color:#3b82f6;">QR</div><div style="color:#3b82f6;">T-C</div><div style="color:#3b82f6;">T-Q</div><div style="color:#3b82f6;">HKP</div></div><div id="menu-list-s2"></div></div>
+
+                    <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s2', this)"><span>💸 ADD ON & PENGELUARAN (S2)</span><span class="acc-icon">▼</span></div>
+                    <div id="acc-addon-s2" class="acc-content">
+                        <div class="columns is-mobile is-multiline">
+                            <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s2_espr_a_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s2_espr_b_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s2_cup_ice_cs" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s2_espr_a_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s2_espr_b_qr" placeholder="0"></div>
+                            <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s2_cup_ice_qr" placeholder="0"></div>
+                            
+                            <div class="column is-4"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s2_item_out_1" placeholder="Nama"></div>
+                            <div class="column is-4"><label class="label is-size-7">Nominal 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_1" placeholder="Rp"></div>
+                            <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s2_tipe_out_1"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
+                            
+                            <div class="column is-4"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s2_item_out_2" placeholder="Nama"></div>
+                            <div class="column is-4"><label class="label is-size-7">Nominal 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_2" placeholder="Rp"></div>
+                            <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s2_tipe_out_2"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
+                            
+                            <div class="column is-6 mt-2"><label class="label is-size-7">CASH AKTUAL S2</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s2_cash_aktual" placeholder="Rp 0"></div>
+                            <div class="column is-6 mt-2"><label class="label is-size-7">TIP PILOT S2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_tip" placeholder="Rp 0"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="content-s2" style="display:none;">
-                <div class="acc-header" onclick="toggleAcc('acc-menu-s2', this)"><span>🛒 MENU UTAMA (S2)</span><span class="acc-icon">▼</span></div>
-                <div id="acc-menu-s2" class="acc-content"><div class="grid-6-col grid-header-main"><div>MENU</div><div style="color:#3b82f6;">CS</div><div style="color:#3b82f6;">QR</div><div style="color:#3b82f6;">T-C</div><div style="color:#3b82f6;">T-Q</div><div style="color:#3b82f6;">HKP</div></div><div id="menu-list-s2"></div></div>
-
-                <div class="acc-header mt-2" onclick="toggleAcc('acc-addon-s2', this)"><span>💸 ADD ON & PENGELUARAN (S2)</span><span class="acc-icon">▼</span></div>
-                <div id="acc-addon-s2" class="acc-content">
-                    <div class="columns is-mobile is-multiline">
-                        <div class="column is-4"><label class="label is-size-7">Espr A (CS)</label><input class="input is-small" type="number" name="s2_espr_a_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr B (CS)</label><input class="input is-small" type="number" name="s2_espr_b_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(CS)</label><input class="input is-small" type="number" name="s2_cup_ice_cs" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr A (QR)</label><input class="input is-small" type="number" name="s2_espr_a_qr" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Espr B (QR)</label><input class="input is-small" type="number" name="s2_espr_b_qr" placeholder="0"></div>
-                        <div class="column is-4"><label class="label is-size-7">Cup+Ice(QR)</label><input class="input is-small" type="number" name="s2_cup_ice_qr" placeholder="0"></div>
-                        
-                        <div class="column is-4"><label class="label is-size-7">Item Keluar 1</label><input class="input is-small" type="text" name="s2_item_out_1" placeholder="Nama"></div>
-                        <div class="column is-4"><label class="label is-size-7">Nominal 1</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_1" placeholder="Rp"></div>
-                        <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s2_tipe_out_1"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
-                        
-                        <div class="column is-4"><label class="label is-size-7">Item Keluar 2</label><input class="input is-small" type="text" name="s2_item_out_2" placeholder="Nama"></div>
-                        <div class="column is-4"><label class="label is-size-7">Nominal 2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_nom_out_2" placeholder="Rp"></div>
-                        <div class="column is-4"><label class="label is-size-7">Sumber Dana</label><div class="select is-fullwidth is-small"><select name="s2_tipe_out_2"><option value="Potong Kasir">Potong Kasir</option><option value="Non-Kasir">Non-Kasir</option></select></div></div>
-                        
-                        <div class="column is-6 mt-2"><label class="label is-size-7">CASH AKTUAL S2</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="s2_cash_aktual" placeholder="Rp 0"></div>
-                        <div class="column is-6 mt-2"><label class="label is-size-7">TIP PILOT S2</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="s2_tip" placeholder="Rp 0"></div>
+            <div id="sec-b" class="form-section">
+                <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
+                <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)"><span>⚖️ GRAMASI UTAMA & LOGISTIK CUP</span><span class="acc-icon">▼</span></div>
+                <div id="acc-gramasi" class="acc-content">
+                    <div class="tabs is-toggle is-fullwidth is-small mb-4" style="font-size: 0.65rem;">
+                        <ul><li id="tab-b-cekin" class="is-active" onclick="switchGramasi('cekin')"><a>CEK IN</a></li><li id="tab-b-sd1" onclick="switchGramasi('sd1')"><a>SD-1</a></li><li id="tab-b-sd2" onclick="switchGramasi('sd2')"><a>SD-2</a></li><li id="tab-b-sd3" onclick="switchGramasi('sd3')"><a>SD-3</a></li><li id="tab-b-cekout" onclick="switchGramasi('cekout')"><a>CEK OUT</a></li></ul>
                     </div>
+                    <div id="gramasi-containers"></div>
                 </div>
-            </div>
-        </div>
-
-        <div id="sec-b" class="form-section">
-            <p class="section-title"><span>📦</span> LAPORAN BAHAN BAKU [B]</p>
-            <div class="acc-header" onclick="toggleAcc('acc-gramasi', this)"><span>⚖️ GRAMASI UTAMA & LOGISTIK CUP</span><span class="acc-icon">▼</span></div>
-            <div id="acc-gramasi" class="acc-content">
-                <div class="tabs is-toggle is-fullwidth is-small mb-4" style="font-size: 0.65rem;">
-                    <ul><li id="tab-b-cekin" class="is-active" onclick="switchGramasi('cekin')"><a>CEK IN</a></li><li id="tab-b-sd1" onclick="switchGramasi('sd1')"><a>SD-1</a></li><li id="tab-b-sd2" onclick="switchGramasi('sd2')"><a>SD-2</a></li><li id="tab-b-sd3" onclick="switchGramasi('sd3')"><a>SD-3</a></li><li id="tab-b-cekout" onclick="switchGramasi('cekout')"><a>CEK OUT</a></li></ul>
+                
+                <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST & INVENTORY</span><span class="acc-icon">▼</span></div>
+                <div id="acc-syrup" class="acc-content">
+                    <div class="grid-3-col grid-header-main"><div>FLAVOR & ATRIBUT</div><div>JUMLAH .PCS</div><div>JUMLAH .BTL</div></div>
+                    <div id="syrup-list"></div>
                 </div>
-                <div id="gramasi-containers"></div>
+                
+                <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK BLOCK (.GR)</span><span class="acc-icon">▼</span></div>
+                <div id="acc-waste" class="acc-content"><div class="grid-3-col grid-header-main"><div>ITEM INVENTORY</div><div>WASTE SHIFT 1</div><div>WASTE SHIFT 2</div></div><div id="waste-list"></div></div>
             </div>
-            
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST & INVENTORY</span><span class="acc-icon">▼</span></div>
-            <div id="acc-syrup" class="acc-content">
-                <div class="grid-3-col grid-header-main"><div>FLAVOR & ATRIBUT</div><div>JUMLAH .PCS</div><div>JUMLAH .BTL</div></div>
-                <div id="syrup-list"></div>
+
+            <div id="sec-c" class="form-section">
+                <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
+                <div class="field mb-3"><label class="label is-size-7">[*Office] SALDO AWAL KASIR</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0"></div>
+                <div class="field mb-3"><label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0"></div>
+                <div class="field mb-3"><label class="label is-size-7">CASH TO CASHIER (Setoran Esok Hari)</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0"></div>
+                <div class="field"><label class="label is-size-7">NOTES / CATATAN KHUSUS LAPORAN</label><textarea class="textarea is-small" id="notesField" name="notes" placeholder="Tulis rincian catatan kasir harian..."></textarea></div>
             </div>
-            
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-waste', this)"><span>🗑️ WASTE STOCK BLOCK (.GR)</span><span class="acc-icon">▼</span></div>
-            <div id="acc-waste" class="acc-content"><div class="grid-3-col grid-header-main"><div>ITEM INVENTORY</div><div>WASTE SHIFT 1</div><div>WASTE SHIFT 2</div></div><div id="waste-list"></div></div>
-        </div>
 
-        <div id="sec-c" class="form-section">
-            <p class="section-title"><span>💰</span> LAPORAN KEUANGAN [C]</p>
-            <div class="field mb-3"><label class="label is-size-7">[*Office] SALDO AWAL KASIR</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="office_saldo_awal" placeholder="Rp 0"></div>
-            <div class="field mb-3"><label class="label is-size-7">[*Office] TOTAL QRIS AKTUAL ALL (Gopay App)</label><input class="input is-small highlight-input input-uang" type="text" inputmode="numeric" name="office_total_qris_all" placeholder="Rp 0"></div>
-            <div class="field mb-3"><label class="label is-size-7">CASH TO CASHIER (Setoran Esok Hari)</label><input class="input is-small input-uang" type="text" inputmode="numeric" name="cash_to_cashier" placeholder="Rp 0"></div>
-            <div class="field"><label class="label is-size-7">NOTES / CATATAN KHUSUS LAPORAN</label><textarea class="textarea is-small" id="notesField" name="notes" placeholder="Tulis rincian catatan kasir harian..."></textarea></div>
-        </div>
-
-        <div class="brand-footer">Powered by <strong>Senada CreatLabs</strong></div>
-        <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth" style="height:45px; font-size:1rem;">KIRIM DATA LAPORAN KE SISTEM</button></div>
-    </form>
-
-    <div id="validationModal" class="modal">
+            <div class="brand-footer">Powered by <strong>Senada CreatLabs</strong></div>
+            <div class="sticky-footer"><button type="submit" class="button is-primary is-fullwidth" style="height:45px; font-size:1rem;">KIRIM DATA LAPORAN KE SISTEM</button></div>
+        </form>
+    </div> <div id="validationModal" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card px-3 py-5 mx-2" style="max-width:400px; width:100%; top:15%;">
             <header class="modal-card-head" style="background-color: #1e1e1e !important;">
                 <p class="modal-card-title" style="font-size: 1rem; font-weight:800; color:#f43f5e !important;">⚠️ DATA KASIR BUTUH PERHATIAN</p>
             </header>
             <section class="modal-card-body" style="background:#1e1e1e;">
-                <p class="is-size-7 has-text-grey-light mb-3">Sistem Spreadsheet mendeteksi ada anomali atau selisih pada bagian berikut:</p>
-                
+                <p class="is-size-7 has-text-grey-light mb-3">Sistem mendeteksi selisih pada bagian berikut:</p>
                 <div id="dynamic-anomalies"></div>
-                
                 <button type="button" class="button is-warning is-outlined is-fullwidth mb-2 mt-4" onclick="closeValidation()" style="font-weight:700;">🔍 PERIKSA KEMBALI (EDIT DATA)</button>
                 <button type="button" class="button is-danger is-fullwidth" onclick="confirmAndClear()" style="font-weight:700;">🚀 DATA SUDAH DI KONFIRMASI (SELESAI)</button>
             </section>
@@ -212,6 +235,9 @@
     </div>
 
     <script>
+        // MASUKKAN URL APP SCRIPT DEPLOYMENT TERBARU ANDA DI SINI !!!
+        const globalUrl = "https://script.google.com/macros/s/AKfycbxCmvHXxSdF5BkW1J3qoHtO5UZEZFBXuhpla7Ju4gfFUOLD1rAFkPPbcien9Ro2dvqv/exec";
+
         const menus = [
             { id: "our_feeling", name: "OUR FEELING"}, { id: "be_carefeels", name: "BE CAREFEELS"},
             { id: "happy_feals", name: "HAPPY FEALS"}, { id: "chocofeels", name: "CHOCOFEELS"},
@@ -238,6 +264,7 @@
         
         const wasteList = [{label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},{label:"M-RE",key:"m-re"},{label:"KR-G",key:"kr-g"},{label:"KR-S",key:"kr-s"},{label:"UHT",key:"uht"},{label:".SPRO",key:"_spro"}];
 
+        // SETUP UI GENERATION
         ['s1', 's2'].forEach(shift => {
             let htmlStr = '';
             menus.forEach(m => {
@@ -283,9 +310,57 @@
         function updateSt() { setupDropdown('reg', 'st'); } function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
         document.querySelectorAll('.input-uang').forEach(i => i.addEventListener('input', function() { let v=this.value.replace(/[^0-9]/g,''); this.value = v!==''?parseInt(v,10).toLocaleString('en-US'):''; }));
 
-        // MASUKKAN URL DEPLOYMENT BARU ANDA DI SINI !!!
-        const globalUrl = "https://script.google.com/macros/s/AKfycbxCmvHXxSdF5BkW1J3qoHtO5UZEZFBXuhpla7Ju4gfFUOLD1rAFkPPbcien9Ro2dvqv/exec";
+        // --- SISTEM LOGIN (SESSION PERSISTENCE) ---
+        window.onload = function() {
+            var activePic = localStorage.getItem("dsf_pic");
+            if (activePic) {
+                document.getElementById("loginOverlay").style.display = "none";
+                document.getElementById("appContent").style.display = "block";
+                document.getElementById("picOfficeHidden").value = activePic;
+                document.getElementById("picDisplay").innerText = activePic;
+            }
+        };
 
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            let u = document.getElementById('loginUser').value;
+            let p = document.getElementById('loginPass').value;
+            
+            fetch(globalUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: "login", username: u, password: p })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                if(data.status === "Sukses") {
+                    localStorage.setItem("dsf_pic", data.pic);
+                    document.getElementById("loginOverlay").style.display = "none";
+                    document.getElementById("appContent").style.display = "block";
+                    document.getElementById("picOfficeHidden").value = data.pic;
+                    document.getElementById("picDisplay").innerText = data.pic;
+                    document.getElementById('loginForm').reset();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert("Kendala koneksi internet!");
+            });
+        });
+
+        function doLogout() {
+            if(confirm("Apakah Anda yakin ingin Keluar (Logout)?")) {
+                localStorage.removeItem("dsf_pic");
+                document.getElementById("appContent").style.display = "none";
+                document.getElementById("loginOverlay").style.display = "flex";
+                document.getElementById("picOfficeHidden").value = "";
+            }
+        }
+
+        // --- SISTEM SUBMIT LAPORAN DSF ---
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -297,11 +372,7 @@
                 else object[key] = value; 
             });
 
-            fetch(globalUrl, { 
-                method: 'POST', 
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(object) 
-            })
+            fetch(globalUrl, { method: 'POST', body: JSON.stringify(object) })
             .then(res => res.json())
             .then(data => {
                 document.getElementById('loadingOverlay').style.display = 'none';
@@ -309,10 +380,8 @@
                     let v = data.validation;
                     let anomalies = [];
                     
-                    // Fungsi untuk mengecek tulisan CLEAR, jika BUKAN clear, masukkan ke keranjang anomali
                     function checkAnomaly(labelName, obj) {
                         let st = String(obj.stat).toUpperCase().trim();
-                        // Filter cerdas: Abaikan jika kosong atau bertuliskan CLEAR
                         if(st !== "" && st.indexOf("CLEAR") === -1) { 
                             anomalies.push({ label: labelName, stat: obj.stat, nom: obj.nom });
                         }
@@ -324,12 +393,10 @@
                     checkAnomaly("Total Uang QRIS (In)", v.tq);
 
                     if(anomalies.length === 0) {
-                        // Jika keranjang anomali kosong = Semua CLEAR
                         alert("Data Berhasil Disimpan & Status Seluruh Laporan Sempurna (CLEAR)!");
                         document.getElementById('mainForm').reset();
                         updateSt();
                     } else {
-                        // Jika ada yang Minus / Plus / Miss, buat kotak HTML dinamis
                         let htmlContent = "";
                         anomalies.forEach(item => {
                             htmlContent += `
@@ -352,10 +419,7 @@
             });
         });
 
-        function closeValidation() { 
-            document.getElementById('validationModal').classList.remove('is-active'); 
-        }
-        
+        function closeValidation() { document.getElementById('validationModal').classList.remove('is-active'); }
         function confirmAndClear() { 
             document.getElementById('validationModal').classList.remove('is-active');
             alert("Laporan Status Minus/Plus Telah Diizinkan (Confirmed). Form dikosongkan.");
@@ -363,10 +427,10 @@
             updateSt();
         }
 
+        // Print Functions Unchanged
         function openPrintModal() { document.getElementById('printModal').classList.add('is-active'); }
         function closePrintModal() { document.getElementById('printModal').classList.remove('is-active'); document.getElementById('previewArea').style.display='none'; document.getElementById('printBtn').style.display='none'; }
-
-        // Fetch Data Laporan
+        
         function fetchDataLaporan() {
             const st = document.getElementById('print-st').value; const tgl = document.getElementById('print-tanggal').value;
             if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
@@ -385,7 +449,6 @@
                         menuRows += '<td style="text-align:center;">' + (m.s1_cs||'') + '</td><td style="text-align:center;">' + (m.s1_qr||'') + '</td><td style="text-align:center;">' + (m.s1_tc||'') + '</td><td style="text-align:center;">' + (m.s1_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; border-right:1px solid #ddd;">' + (m.s1_hkp||'') + '</td>';
                         menuRows += '<td style="text-align:center; background:#fafafa;">' + (m.s2_cs||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_qr||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tc||'') + '</td><td style="text-align:center; background:#fafafa;">' + (m.s2_tq||'') + '</td><td style="text-align:center; color:#10B981; font-weight:bold; background:#fafafa;">' + (m.s2_hkp||'') + '</td></tr>';
                     });
-
                     let bbRows = '';
                     d.gramasi.forEach(function(g, i) {
                         let syrName = d.syrup[i] ? d.syrup[i].name : ''; let syrPcs = d.syrup[i] ? (d.syrup[i].pcs||'') : ''; let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : '';
