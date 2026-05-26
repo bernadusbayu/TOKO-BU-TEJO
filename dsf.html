@@ -153,16 +153,9 @@
                 <div id="gramasi-containers"></div>
             </div>
             
-            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST & LOG ATRIBUT</span><span class="acc-icon">▼</span></div>
+            <div class="acc-header mt-2" onclick="toggleAcc('acc-syrup', this)"><span>🍾 SYRUP REQUEST & INVENTORY</span><span class="acc-icon">▼</span></div>
             <div id="acc-syrup" class="acc-content">
-                <div class="columns is-mobile is-multiline mb-3 px-1 border-bottom" style="border-bottom:1px dashed rgba(255,255,255,0.08); padding-bottom:10px;">
-                    <div class="column is-12"><label class="label is-size-7" style="color:#fbbf24;">📝 LOG ATRIBUT KHUSUS (KOLOM AC)</label></div>
-                    <div class="column is-3"><label class="label is-size-7">POW. AREN</label><input class="input is-small" type="number" name="ac_pow_aren" placeholder="0"></div>
-                    <div class="column is-3"><label class="label is-size-7">SQ. ORG</label><input class="input is-small" type="number" name="ac_sq_org" placeholder="0"></div>
-                    <div class="column is-3"><label class="label is-size-7">M. GIVY</label><input class="input is-small" type="number" name="ac_m_givy" placeholder="0"></div>
-                    <div class="column is-3"><label class="label is-size-7">M. PSP</label><input class="input is-small" type="number" name="ac_m_psp" placeholder="0"></div>
-                </div>
-                <div class="grid-3-col grid-header-main"><div>FLAVOR INVENTORY</div><div>JUMLAH .BTL</div><div>PERSENTASE %</div></div>
+                <div class="grid-3-col grid-header-main"><div>FLAVOR & ATRIBUT</div><div>JUMLAH .PCS</div><div>JUMLAH .BTL</div></div>
                 <div id="syrup-list"></div>
             </div>
             
@@ -247,7 +240,6 @@
             { id: "passion_splash", name: "PASSION SPLASH", price: 15000 }
         ];
 
-        // 14 Item Gramasi Baru Sesuai Instruksi (Ditambah SPRITE)
         const gramasiList = [
             {label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},
             {label:"M-RE",key:"m-re"},{label:"UHT",key:"uht"},{label:"ESPRESSO",key:"espresso"},{label:"SPRITE",key:"sprite"},
@@ -255,7 +247,13 @@
             {label:"MILO (.Pcs)",key:"milo_pcs"},{label:"ES BATU (%)",key:"es_batu_"},{label:"CLEO (%)",key:"cleo_"}
         ];
         
-        const syrupList = [{label:"FL. CAR",key:"fl__car"},{label:"FL. BSC",key:"fl__bsc"},{label:"FL. IRS",key:"fl__irs"},{label:"FL. HAZ",key:"fl__haz"},{label:"FL. VAN",key:"fl__van"},{label:"FL. PIS",key:"fl__pis"}];
+        // 10 Item Syrup & Log Atribut Digabung Sesuai Urutan Baru
+        const syrupList = [
+            {label:"FL. CAR",key:"fl__car"},{label:"FL. BSC",key:"fl__bsc"},{label:"FL. IRS",key:"fl__irs"},
+            {label:"FL. HAZ",key:"fl__haz"},{label:"FL. VAN",key:"fl__van"},{label:"FL. PIS",key:"fl__pis"},
+            {label:"POW. AREN",key:"pow_aren"},{label:"SQ. ORG",key:"sq_org"},{label:"M. GIVY",key:"m_givy"},{label:"M. PSP",key:"m_psp"}
+        ];
+        
         const wasteList = [{label:"M-GE",key:"m-ge"},{label:"M-AR",key:"m-ar"},{label:"M-CO",key:"m-co"},{label:"M-MA",key:"m-ma"},{label:"M-RE",key:"m-re"},{label:"KR-G",key:"kr-g"},{label:"KR-S",key:"kr-s"},{label:"UHT",key:"uht"},{label:".SPRO",key:"_spro"}];
 
         ['s1', 's2'].forEach(shift => {
@@ -282,7 +280,9 @@
         });
         document.getElementById('gramasi-containers').innerHTML = gHtml;
 
-        syrupList.forEach(s => document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${s.label}</div><input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl"><input class="input is-small px-1" type="number" name="syrup_${s.key}_pct" placeholder="%"></div>`);
+        // Render 10 Item Syrup dengan Placeholder (Pcs, Btl)
+        syrupList.forEach(s => document.getElementById('syrup-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${s.label}</div><input class="input is-small px-1" type="number" name="syrup_${s.key}_pcs" placeholder="Pcs"><input class="input is-small px-1" type="number" name="syrup_${s.key}_btl" placeholder="Btl"></div>`);
+        
         wasteList.forEach(w => document.getElementById('waste-list').innerHTML += `<div class="grid-3-col"><div style="font-size:0.75rem; font-weight:500;">${w.label}</div><input class="input is-small px-1" type="number" name="waste_${w.key}_s1" placeholder="S1"><input class="input is-small px-1" type="number" name="waste_${w.key}_s2" placeholder="S2"></div>`);
 
         function switchShift(s) { ['s1','s2'].forEach(x => { document.getElementById('content-'+x).style.display='none'; document.getElementById('tab-'+x).classList.remove('is-active'); }); document.getElementById('content-'+s).style.display='block'; document.getElementById('tab-'+s).classList.add('is-active'); }
@@ -316,7 +316,6 @@
             let totalMenuCash = 0; let totalMenuQris = 0;
             menus.forEach(m => {
                 ['s1','s2'].forEach(s => { 
-                    // PERHITUNGAN BARU: HKP dikali rata Rp 7.000
                     totalMenuCash += ((getVal(`${m.id}_${s}_cs`) + getVal(`${m.id}_${s}_tc`)) * m.price) + (getVal(`${m.id}_${s}_hkp`) * 7000);
                     totalMenuQris += (getVal(`${m.id}_${s}_qr`) + getVal(`${m.id}_${s}_tq`)) * m.price;
                 });
@@ -435,11 +434,11 @@
 
                     let bbRows = '';
                     d.gramasi.forEach(function(g, i) {
-                        let syrName = d.syrup[i] ? d.syrup[i].name : ''; let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : ''; let syrPct = d.syrup[i] ? (d.syrup[i].pct||'') : '';
+                        let syrName = d.syrup[i] ? d.syrup[i].name : ''; let syrPcs = d.syrup[i] ? (d.syrup[i].pcs||'') : ''; let syrBtl = d.syrup[i] ? (d.syrup[i].btl||'') : '';
                         let wstName = d.waste[i] ? d.waste[i].name : ''; let wstS1 = d.waste[i] ? (d.waste[i].s1||'') : ''; let wstS2 = d.waste[i] ? (d.waste[i].s2||'') : '';
                         bbRows += '<tr style="border-bottom:1px solid #eee; font-size:0.68rem;">';
                         bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + g.name + '</td><td style="text-align:center;">' + (g.in||'') + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + (g.out||'') + '</td>';
-                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + syrName + '</td><td style="text-align:center;">' + syrBtl + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + syrPct + '</td>';
+                        bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + syrName + '</td><td style="text-align:center;">' + syrPcs + '</td><td style="text-align:center; background:#fafafa; border-right:1px solid #ddd;">' + syrBtl + '</td>';
                         bbRows += '<td style="padding:4px; font-weight:600; border-right:1px solid #ddd;">' + wstName + '</td><td style="text-align:center;">' + wstS1 + '</td><td style="text-align:center; background:#fafafa;">' + wstS2 + '</td></tr>';
                     });
 
@@ -495,7 +494,7 @@
                           <thead>
                             <tr style="background:#f0f0f0; border-bottom:1px solid #ccc; font-size:0.68rem;">
                               <th style="border:1px solid #ccc; padding:5px;">GRAMASI UTAMA</th><th style="border:1px solid #ccc; text-align:center;">IN</th><th style="border:1px solid #ccc; text-align:center;">OUT</th>
-                              <th style="border:1px solid #ccc; padding:5px;">SYRUP FLAVOR</th><th style="border:1px solid #ccc; text-align:center;">BTL</th><th style="border:1px solid #ccc; text-align:center;">PCT(%)</th>
+                              <th style="border:1px solid #ccc; padding:5px;">SYRUP & ATRIBUT</th><th style="border:1px solid #ccc; text-align:center;">PCS</th><th style="border:1px solid #ccc; text-align:center;">BTL</th>
                               <th style="border:1px solid #ccc; padding:5px;">WASTE STOCK</th><th style="border:1px solid #ccc; text-align:center;">S1</th><th style="border:1px solid #ccc; text-align:center;">S2</th>
                             </tr>
                           </thead>
