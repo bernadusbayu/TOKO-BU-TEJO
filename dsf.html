@@ -321,9 +321,31 @@
             }
         };
 
+        // --- SISTEM LOGIN (SESSION PERSISTENCE) ---
+        window.onload = function() {
+            var activePic = localStorage.getItem("dsf_pic");
+            if (activePic) {
+                document.getElementById("loginOverlay").style.display = "none";
+                document.getElementById("appContent").style.display = "block";
+                document.getElementById("picOfficeHidden").value = activePic;
+                document.getElementById("picDisplay").innerText = activePic;
+            }
+        };
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            // 1. Ubah tombol jadi "MEMPROSES..." dan nonaktifkan agar tidak di-klik 2x
+            let submitBtn = this.querySelector('button[type="submit"]');
+            let originalText = submitBtn.innerText;
+            submitBtn.innerText = "⏳ MEMPROSES...";
+            submitBtn.disabled = true;
+            
+            // 2. Paksa loading animasi maju ke lapisan paling depan (z-index tinggi)
+            let loader = document.getElementById('loadingOverlay');
+            loader.style.zIndex = "9999999"; 
+            loader.style.display = 'flex';
+            
             let u = document.getElementById('loginUser').value;
             let p = document.getElementById('loginPass').value;
             
@@ -333,7 +355,10 @@
             })
             .then(res => res.json())
             .then(data => {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                loader.style.display = 'none';
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+                
                 if(data.status === "Sukses") {
                     localStorage.setItem("dsf_pic", data.pic);
                     document.getElementById("loginOverlay").style.display = "none";
@@ -346,7 +371,9 @@
                 }
             })
             .catch(err => {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                loader.style.display = 'none';
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
                 alert("Kendala koneksi internet!");
             });
         });
