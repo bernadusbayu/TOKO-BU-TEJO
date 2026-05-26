@@ -46,7 +46,7 @@
         .logout-btn { right: 145px; color: #f43f5e; }
         @media screen and (max-width: 768px) { .logout-btn { top: 65px; right: 12px; } .home-btn { top: 20px; } .print-trigger-btn { top: 20px; } h1.title { margin-top: 110px !important; } }
         
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 99999 !important; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 13, 16, 0.85); backdrop-filter: blur(10px); z-index: 9999999 !important; justify-content: center; align-items: center; flex-direction: column; color: #10B981; font-weight: 700; }
         .custom-loader { border: 4px solid rgba(16, 185, 129, 0.1); border-left-color: #10B981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -76,8 +76,11 @@
             <h2>SENADA SYSTEM</h2>
             <p>Otentikasi P.I.C Office</p>
             <form id="loginForm">
-                <div class="field"><input class="input is-medium mb-3" type="text" id="loginUser" placeholder="Username" required></div>
-                <div class="field"><input class="input is-medium mb-4" type="password" id="loginPass" placeholder="Password" required></div>
+                <div class="field mb-3"><input class="input is-medium" type="text" id="loginUser" placeholder="Username" required></div>
+                <div class="field mb-4" style="position: relative;">
+                    <input class="input is-medium" type="password" id="loginPass" placeholder="Password" required style="padding-right: 45px;">
+                    <span id="togglePassword" style="position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 1.2rem; user-select: none;">👁️</span>
+                </div>
                 <button type="submit" class="button is-primary is-fullwidth" style="height: 50px; font-weight:800;">AUTORISASI MASUK</button>
             </form>
         </div>
@@ -310,18 +313,19 @@
         function updateSt() { setupDropdown('reg', 'st'); } function updatePrintSt() { setupDropdown('print-reg', 'print-st'); }
         document.querySelectorAll('.input-uang').forEach(i => i.addEventListener('input', function() { let v=this.value.replace(/[^0-9]/g,''); this.value = v!==''?parseInt(v,10).toLocaleString('en-US'):''; }));
 
-        // --- SISTEM LOGIN (SESSION PERSISTENCE) ---
-        window.onload = function() {
-            var activePic = localStorage.getItem("dsf_pic");
-            if (activePic) {
-                document.getElementById("loginOverlay").style.display = "none";
-                document.getElementById("appContent").style.display = "block";
-                document.getElementById("picOfficeHidden").value = activePic;
-                document.getElementById("picDisplay").innerText = activePic;
+        // --- SISTEM TOGGLE PASSWORD MATA ---
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passInput = document.getElementById('loginPass');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                this.innerText = '🙈'; // Icon tutup mata saat sandi terlihat
+            } else {
+                passInput.type = 'password';
+                this.innerText = '👁️'; // Icon mata terbuka saat sandi tertutup
             }
-        };
+        });
 
-        // --- SISTEM LOGIN (SESSION PERSISTENCE) ---
+        // --- SISTEM LOGIN & SESI ---
         window.onload = function() {
             var activePic = localStorage.getItem("dsf_pic");
             if (activePic) {
@@ -335,13 +339,12 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // 1. Ubah tombol jadi "MEMPROSES..." dan nonaktifkan agar tidak di-klik 2x
+            // Mengubah tombol jadi status memproses & memunculkan loading di layer terdepan
             let submitBtn = this.querySelector('button[type="submit"]');
             let originalText = submitBtn.innerText;
             submitBtn.innerText = "⏳ MEMPROSES...";
             submitBtn.disabled = true;
             
-            // 2. Paksa loading animasi maju ke lapisan paling depan (z-index tinggi)
             let loader = document.getElementById('loadingOverlay');
             loader.style.zIndex = "9999999"; 
             loader.style.display = 'flex';
@@ -366,6 +369,9 @@
                     document.getElementById("picOfficeHidden").value = data.pic;
                     document.getElementById("picDisplay").innerText = data.pic;
                     document.getElementById('loginForm').reset();
+                    // Kembalikan kotak sandi ke tipe rahasia
+                    document.getElementById('loginPass').type = 'password';
+                    document.getElementById('togglePassword').innerText = '👁️';
                 } else {
                     alert(data.message);
                 }
@@ -390,7 +396,9 @@
         // --- SISTEM SUBMIT LAPORAN DSF ---
         document.getElementById('mainForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            let loader = document.getElementById('loadingOverlay');
+            loader.style.zIndex = "9999999";
+            loader.style.display = 'flex';
             
             var formData = new FormData(this); var object = {};
             formData.forEach(function(value, key) { 
@@ -402,7 +410,7 @@
             fetch(globalUrl, { method: 'POST', body: JSON.stringify(object) })
             .then(res => res.json())
             .then(data => {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                loader.style.display = 'none';
                 if(data.status === "Sukses") {
                     let v = data.validation;
                     let anomalies = [];
@@ -441,7 +449,7 @@
                 }
             })
             .catch(error => { 
-                document.getElementById('loadingOverlay').style.display = 'none'; 
+                loader.style.display = 'none'; 
                 alert("Kendala Jaringan: " + error); 
             });
         });
@@ -461,12 +469,15 @@
         function fetchDataLaporan() {
             const st = document.getElementById('print-st').value; const tgl = document.getElementById('print-tanggal').value;
             if(!st || !tgl) { alert("Pilih parameter stasiun dan tanggal dengan lengkap!"); return; }
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            let loader = document.getElementById('loadingOverlay');
+            loader.style.zIndex = "9999999";
+            loader.style.display = 'flex';
             
             fetch(`${globalUrl}?station=${st}&tanggal=${tgl}`)
             .then(res => res.json())
             .then(res => {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                loader.style.display = 'none';
                 if(res.status === "Sukses") {
                     const d = res.data;
                     let menuRows = '';
@@ -567,7 +578,7 @@
                     document.getElementById('printBtn').style.display = 'inline-block';
                 } else { alert("Gagal menarik data: " + res.message); }
             })
-            .catch(e => { document.getElementById('loadingOverlay').style.display = 'none'; alert("Error Jaringan: " + e); });
+            .catch(e => { loader.style.display = 'none'; alert("Error Jaringan: " + e); });
         }
 
         function executePrint() {
