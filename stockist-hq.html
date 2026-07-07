@@ -244,8 +244,18 @@
 
         function setWaktuOtomatis(tipe) {
             const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            const timeStr = now.toTimeString().split(' ')[0].substring(0,5);
+            
+            // Format Tanggal: YYYY-MM-DD
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
+            // Format Jam: HH:MM
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}`;
+            
             document.getElementById(`${tipe}-tanggal`).value = dateStr;
             document.getElementById(`${tipe}-jam`).value = timeStr;
         }
