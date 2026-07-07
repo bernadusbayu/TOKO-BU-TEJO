@@ -62,6 +62,7 @@
                 <li id="tab-baru" onclick="switchTab('baru')"><a>➕ Item Baru</a></li>
                 <li id="tab-masuk" onclick="switchTab('masuk')"><a>📥 Barang Masuk</a></li>
                 <li id="tab-keluar" onclick="switchTab('keluar')"><a>📤 Barang Keluar</a></li>
+                <li id="tab-riwayat" onclick="switchTab('riwayat')"><a>🕒 Riwayat</a></li>
             </ul>
         </div>
 
@@ -154,6 +155,27 @@
             </div>
             <button class="button is-danger is-fullwidth mt-4" onclick="prosesTransaksi('keluar')">Proses Barang Keluar</button>
         </div>
+        
+        <div id="view-riwayat" class="view-section" style="display: none;">
+            <button class="button is-small is-info is-outlined mb-3" onclick="fetchData()">🔄 Muat Ulang Riwayat</button>
+            <div class="table-container">
+                <table class="table is-fullwidth is-hoverable is-narrow text-sm">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Tipe</th>
+                            <th>Barang</th>
+                            <th class="has-text-centered">Jml</th>
+                            <th>PIC</th>
+                            <th>Dokumentasi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-riwayat">
+                        <tr><td colspan="6" class="has-text-centered">Mengambil data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <div id="camera-container">
             <video id="video" autoplay playsinline></video>
@@ -167,11 +189,17 @@
         // ==========================================
         // GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA
         // ==========================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLQ8L6mJL8IgbHKykqpCK6SVqxVpIfsnw5bLzqUfkqFw6pqO39aT9mfGgy_5Ek6bEH/exec";
+        const SCRIPT_URL = "TARUH_URL_WEB_APP_ANDA_DI_SINI";
         
         let inventory = [];
+        let transactionLog = [];
         let modeKameraAktif = ''; 
         let stream = null; 
+        
+        // Variabel untuk Watermark
+        let currentLocation = "Lokasi: Mencari titik GPS...";
+        const logoImg = new Image();
+        logoImg.src = 'logo-header.png'; // Pastikan file logo-header.png ada di folder yang sama
 
         // Fungsi Loading UI
         function showLoading(text = "Memproses...") {
@@ -182,19 +210,21 @@
             document.getElementById('loading-overlay').style.display = 'none';
         }
 
-        // Ambil Data dari Google Sheets
+        // Ambil Data dari Google Sheets (Stok & Riwayat)
         async function fetchData() {
             if(SCRIPT_URL === "TARUH_URL_WEB_APP_ANDA_DI_SINI") {
                 alert("URL Web App belum dimasukkan di kode script!");
                 return;
             }
-            showLoading("Mengambil data stok terbaru...");
+            showLoading("Mengambil data terbaru...");
             try {
                 const response = await fetch(SCRIPT_URL);
                 const result = await response.json();
                 if(result.status === "success") {
-                    inventory = result.data;
+                    inventory = result.data.stok;
+                    transactionLog = result.data.log;
                     renderTabelStok();
+                    renderTabelRiwayat();
                     updateDropdowns();
                 } else {
                     alert("Error: " + result.message);
@@ -205,7 +235,24 @@
             hideLoading();
         }
 
-        // Navigasi
+        // Dapatkan Titik GPS
+        function initLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLocation = `Lat: ${position.coords.latitude.toFixed(5)}, Lon: ${position.coords.longitude.toFixed(5)}`;
+                    },
+                    (error) => {
+                        currentLocation = "Lokasi GPS tidak diizinkan/tersedia";
+                    },
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                );
+            } else {
+                currentLocation = "Browser tidak mendukung GPS";
+            }
+        }
+
+        // Navigasi Tab
         function switchTab(tabName) {
             document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.tabs li').forEach(el => el.classList.remove('is-active'));
@@ -232,6 +279,31 @@
                     </tr>`;
             });
         }
+        
+        function renderTabelRiwayat() {
+            const tbody = document.getElementById('table-body-riwayat');
+            tbody.innerHTML = '';
+            if(transactionLog.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="has-text-centered">Belum ada riwayat transaksi.</td></tr>';
+                return;
+            }
+            
+            transactionLog.forEach(log => {
+                let badgeClass = log.tipe === 'masuk' ? 'is-success' : 'is-danger';
+                let tipeTeks = log.tipe === 'masuk' ? 'Masuk' : 'Keluar';
+                let fotoBtn = log.foto ? `<a href="${log.foto}" target="_blank" class="button is-small is-link is-light">Lihat</a>` : '-';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-size: 0.85em;">${log.tanggal}<br>${log.jam}</td>
+                        <td><span class="tag ${badgeClass} is-light">${tipeTeks}</span></td>
+                        <td style="font-size: 0.9em;"><strong>${log.kode}</strong><br>${log.nama}</td>
+                        <td class="has-text-centered has-text-weight-bold">${log.jumlah}</td>
+                        <td>${log.pic}</td>
+                        <td>${fotoBtn}</td>
+                    </tr>`;
+            });
+        }
 
         function updateDropdowns() {
             const selectIn = document.getElementById('in-barang');
@@ -242,22 +314,19 @@
             selectOut.innerHTML = options;
         }
 
+        // Set Waktu Format Sesuai Standar Input Browser
         function setWaktuOtomatis(tipe) {
             const now = new Date();
             
-            // Format Tanggal: YYYY-MM-DD
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
             
-            // Format Jam: HH:MM
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            const timeStr = `${hours}:${minutes}`;
             
-            document.getElementById(`${tipe}-tanggal`).value = dateStr;
-            document.getElementById(`${tipe}-jam`).value = timeStr;
+            document.getElementById(`${tipe}-tanggal`).value = `${year}-${month}-${day}`;
+            document.getElementById(`${tipe}-jam`).value = `${hours}:${minutes}`;
         }
 
         // POST Data: Tambah Barang
@@ -280,7 +349,7 @@
                     alert("Barang berhasil ditambahkan!");
                     document.getElementById('new-kode').value = '';
                     document.getElementById('new-nama').value = '';
-                    await fetchData(); // Refresh data
+                    await fetchData(); 
                     switchTab('stok');
                 } else {
                     alert("Gagal: " + result.message);
@@ -301,8 +370,8 @@
             const jumlah = parseInt(document.getElementById(`${prefix}-jumlah`).value);
             const photoSrc = document.getElementById(`${prefix}-photo-preview`).src;
 
-            if (itemIndex === "" || !pic || isNaN(jumlah) || jumlah <= 0) {
-                return alert("Lengkapi semua data! (Pilih barang, PIC, dan Jumlah > 0)");
+            if (itemIndex === "" || !pic || !tanggal || !jam || isNaN(jumlah) || jumlah <= 0) {
+                return alert("Lengkapi semua data! (Pilih barang, PIC, Tanggal, Jam, dan Jumlah > 0)");
             }
             if (!photoSrc || photoSrc === window.location.href) {
                 return alert("Wajib melampirkan foto barang!");
@@ -313,7 +382,7 @@
                 return alert(`Gagal: Stok tidak cukup! Stok saat ini hanya ${item.stok}.`);
             }
 
-            const id_transaksi = "TX-" + Date.now(); // Generate ID unik
+            const id_transaksi = "TX-" + Date.now();
 
             showLoading("Memproses Transaksi & Mengunggah Foto...");
             try {
@@ -327,13 +396,12 @@
                 
                 if(result.status === "success") {
                     alert("Transaksi berhasil dicatat!");
-                    // Reset Form
                     document.getElementById(`${prefix}-pic`).value = '';
                     document.getElementById(`${prefix}-jumlah`).value = '';
                     document.getElementById(`${prefix}-photo-preview`).style.display = 'none';
                     document.getElementById(`${prefix}-photo-preview`).src = '';
                     
-                    await fetchData(); // Refresh data
+                    await fetchData(); 
                     switchTab('stok');
                 } else {
                     alert("Gagal memproses transaksi: " + result.message);
@@ -344,7 +412,7 @@
             hideLoading();
         }
 
-        // KAMERA API
+        // KAMERA API DENGAN WATERMARK
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const cameraContainer = document.getElementById('camera-container');
@@ -352,6 +420,9 @@
         async function bukaKamera(tipe) {
             modeKameraAktif = tipe; 
             cameraContainer.style.display = 'flex';
+            
+            initLocation(); 
+
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 video.srcObject = stream;
@@ -364,11 +435,42 @@
         document.getElementById('snap-btn').addEventListener('click', () => {
             if (!stream) return;
             const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth; 
+            canvas.height = video.videoHeight;
+            
+            // 1. Gambar Video Dasar
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // Konversi ke base64 dengan kompresi agar tidak terlalu berat saat dikirim
-            const photoDataUrl = canvas.toDataURL('image/jpeg', 0.6); 
+            // 2. Tempel Logo di Kanan Atas
+            if (logoImg.complete && logoImg.naturalHeight !== 0) {
+                const logoWidth = canvas.width * 0.20; 
+                const logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth;
+                const padding = 15;
+                context.drawImage(logoImg, canvas.width - logoWidth - padding, padding, logoWidth, logoHeight);
+            }
+
+            // 3. Teks Waktu & Lokasi
+            const now = new Date();
+            const timeStr = now.toLocaleString('id-ID'); 
+            const textL1 = `Waktu: ${timeStr}`;
+            const textL2 = currentLocation;
+
+            const fontSize = Math.max(14, Math.floor(canvas.width * 0.03)); 
+            context.font = `bold ${fontSize}px Arial`;
+
+            context.fillStyle = "rgba(0, 0, 0, 0.6)"; 
+            const boxPadding = 10;
+            const textWidth1 = context.measureText(textL1).width;
+            const textWidth2 = context.measureText(textL2).width;
+            const maxTextWidth = Math.max(textWidth1, textWidth2);
+            
+            context.fillRect(10, canvas.height - (fontSize * 2) - 30, maxTextWidth + (boxPadding * 2), (fontSize * 2) + 20);
+
+            context.fillStyle = "#ffffff"; 
+            context.fillText(textL1, 10 + boxPadding, canvas.height - fontSize - 20);
+            context.fillText(textL2, 10 + boxPadding, canvas.height - 10);
+            
+            const photoDataUrl = canvas.toDataURL('image/jpeg', 0.7); 
             
             const previewImg = document.getElementById(`${modeKameraAktif}-photo-preview`);
             previewImg.src = photoDataUrl;
@@ -382,7 +484,10 @@
         }
 
         // Jalankan saat pertama kali dibuka
-        window.onload = fetchData;
+        window.onload = () => {
+            fetchData();
+            initLocation(); 
+        };
     </script>
 </body>
 </html>
