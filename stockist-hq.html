@@ -3,150 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STOCKIST HQ - Stok Opname</title>
+    <title>STOCKIST HQ - Sistem Manajemen Inventory</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
         body { 
-            background-color: #121212; 
-            color: #e0e0e0; 
-            min-height: 100vh;
-            padding: 40px 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; color: #e0e0e0; min-height: 100vh;
+            padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        .container-app {
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #333;
-            border-top: 5px solid #3b82f6;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            max-width: 900px; /* Diperlebar untuk mengakomodasi tabel */
-            margin: 0 auto;
+        .app-container {
+            background: #1e1e1e; padding: 30px; border-radius: 12px;
+            border: 1px solid #333; border-top: 5px solid #3b82f6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); max-width: 1000px;
+            margin: 0 auto; position: relative;
         }
-
-        .title, .subtitle, th, td { color: #ffffff !important; }
-        td { vertical-align: middle !important; }
-        
-        .home-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            background: #1e1e1e;
-            color: #10B981;
-            padding: 8px 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid #333;
-            transition: all 0.3s ease;
-        }
-        .home-btn:hover { 
-            background: #252525; 
-            color: #ffffff; 
-            border-color: #10B981; 
-        }
-
-        /* Styling kustom untuk input dan tabel di mode gelap */
-        .input { background-color: #2a2a2a; border-color: #444; color: #fff; }
-        .input:focus { border-color: #3b82f6; }
+        .title, .subtitle, th, td, .label { color: #ffffff !important; }
+        .input, .select select { background-color: #2a2a2a; border-color: #444; color: #fff; }
+        .input:focus, .select select:focus { border-color: #3b82f6; }
         .table { background-color: transparent; }
         .table th { border-bottom: 2px solid #444; }
-        .table td { border-bottom: 1px solid #333; }
+        .table td { border-bottom: 1px solid #333; vertical-align: middle; }
+        .tabs ul { border-bottom-color: #444; }
+        .tabs li.is-active a { border-bottom-color: #3b82f6; color: #3b82f6; }
+        .tabs a { color: #888; } .tabs a:hover { color: #fff; border-bottom-color: #fff; }
+        
+        #camera-container {
+            display: none; flex-direction: column; align-items: center;
+            margin-top: 15px; background: #000; padding: 10px; border-radius: 8px;
+        }
+        video, canvas { max-width: 100%; border-radius: 8px; }
+        .photo-preview { display: none; margin-top: 10px; max-width: 200px; border-radius: 8px; border: 2px solid #3b82f6; }
+
+        #loading-overlay {
+            display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(18, 18, 18, 0.85); z-index: 1000;
+            justify-content: center; align-items: center; border-radius: 12px; flex-direction: column;
+        }
+        .loader-spinner {
+            border: 5px solid #333; border-top: 5px solid #3b82f6;
+            border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div style="max-width: 900px; margin: 0 auto;">
-        <a href="index.html" class="home-btn">
-            <span>🏠</span> KEMBALI KE PORTAL
-        </a>
-    </div>
+    <div class="app-container">
+        <div id="loading-overlay">
+            <div class="loader-spinner"></div>
+            <p class="mt-3 has-text-weight-bold has-text-info" id="loading-text">Memproses...</p>
+        </div>
 
-    <div class="container-app">
-        <h1 class="title is-4">📦 Form Stok Opname</h1>
-        <p class="subtitle is-6">STOCKIST HQ - Pencatatan Fisik Gudang</p>
-        <hr style="background-color: #333;">
+        <h1 class="title is-4">🏢 STOCKIST HQ</h1>
+        <p class="subtitle is-6">Sistem Manajemen Inventory Terpadu</p>
 
-        <div class="table-container">
+        <div class="tabs is-centered">
+            <ul>
+                <li class="is-active" id="tab-stok" onclick="switchTab('stok')"><a>📦 Data Stok</a></li>
+                <li id="tab-baru" onclick="switchTab('baru')"><a>➕ Item Baru</a></li>
+                <li id="tab-masuk" onclick="switchTab('masuk')"><a>📥 Barang Masuk</a></li>
+                <li id="tab-keluar" onclick="switchTab('keluar')"><a>📤 Barang Keluar</a></li>
+            </ul>
+        </div>
+
+        <div id="view-stok" class="view-section">
+            <button class="button is-small is-info is-outlined mb-3" onclick="fetchData()">🔄 Muat Ulang Data</button>
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
                         <th>Kode</th>
                         <th>Nama Barang</th>
-                        <th class="has-text-centered">Stok Sistem</th>
-                        <th class="has-text-centered" style="width: 150px;">Stok Fisik</th>
-                        <th class="has-text-centered">Selisih</th>
-                        <th>Status</th>
+                        <th class="has-text-centered">Total Stok</th>
                     </tr>
                 </thead>
-                <tbody id="inventory-body">
-                    <tr>
-                        <td>BRG-001</td>
-                        <td>Kopi Arabica Blend 1kg</td>
-                        <td class="has-text-centered system-stock">15</td>
-                        <td>
-                            <input class="input is-small physical-stock" type="number" placeholder="Hitung..." oninput="calculateVariance(this)">
-                        </td>
-                        <td class="has-text-centered variance">-</td>
-                        <td class="status-cell">-</td>
-                    </tr>
-                    <tr>
-                        <td>BRG-002</td>
-                        <td>Paper Cup 8oz (Slop)</td>
-                        <td class="has-text-centered system-stock">40</td>
-                        <td>
-                            <input class="input is-small physical-stock" type="number" placeholder="Hitung..." oninput="calculateVariance(this)">
-                        </td>
-                        <td class="has-text-centered variance">-</td>
-                        <td class="status-cell">-</td>
-                    </tr>
+                <tbody id="table-body-stok">
+                    <tr><td colspan="3" class="has-text-centered">Mengambil data dari Server...</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="buttons is-right mt-5">
-            <button class="button is-dark" onclick="window.location.reload()">Reset</button>
-            <button class="button is-link" style="background-color: #3b82f6;" onclick="saveData()">Simpan Opname</button>
+        <div id="view-baru" class="view-section" style="display: none;">
+            <div class="columns is-centered mt-4">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label">Kode Barang</label>
+                        <div class="control"><input class="input" type="text" id="new-kode" placeholder="Contoh: BRG-003"></div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Nama Barang</label>
+                        <div class="control"><input class="input" type="text" id="new-nama" placeholder="Contoh: Gula Pasir 1kg"></div>
+                    </div>
+                    <button class="button is-link is-fullwidth mt-4" onclick="tambahBarangBaru()">Simpan Master Barang</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-masuk" class="view-section" style="display: none;">
+            <div class="columns mt-4">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label">Pilih Barang</label>
+                        <div class="control"><div class="select is-fullwidth"><select id="in-barang"></select></div></div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Nama PIC</label>
+                        <div class="control"><input class="input" type="text" id="in-pic" placeholder="Nama Staff"></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column"><label class="label">Tanggal</label><input class="input" type="date" id="in-tanggal"></div>
+                        <div class="column"><label class="label">Jam</label><input class="input" type="time" id="in-jam" disabled></div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Jumlah Masuk</label>
+                        <div class="control"><input class="input" type="number" id="in-jumlah" min="1" placeholder="0"></div>
+                    </div>
+                </div>
+                <div class="column is-half has-text-centered">
+                    <label class="label">Dokumentasi Foto</label>
+                    <button class="button is-info is-light" onclick="bukaKamera('in')">📷 Buka Kamera</button>
+                    <img id="in-photo-preview" class="photo-preview mx-auto">
+                </div>
+            </div>
+            <button class="button is-success is-fullwidth mt-4" onclick="prosesTransaksi('masuk')">Proses Barang Masuk</button>
+        </div>
+
+        <div id="view-keluar" class="view-section" style="display: none;">
+            <div class="columns mt-4">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label">Pilih Barang</label>
+                        <div class="control"><div class="select is-fullwidth"><select id="out-barang"></select></div></div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Nama PIC</label>
+                        <div class="control"><input class="input" type="text" id="out-pic" placeholder="Nama Staff"></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column"><label class="label">Tanggal</label><input class="input" type="date" id="out-tanggal"></div>
+                        <div class="column"><label class="label">Jam</label><input class="input" type="time" id="out-jam" disabled></div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Jumlah Keluar</label>
+                        <div class="control"><input class="input" type="number" id="out-jumlah" min="1" placeholder="0"></div>
+                    </div>
+                </div>
+                <div class="column is-half has-text-centered">
+                    <label class="label">Dokumentasi Foto</label>
+                    <button class="button is-danger is-light" onclick="bukaKamera('out')">📷 Buka Kamera</button>
+                    <img id="out-photo-preview" class="photo-preview mx-auto">
+                </div>
+            </div>
+            <button class="button is-danger is-fullwidth mt-4" onclick="prosesTransaksi('keluar')">Proses Barang Keluar</button>
+        </div>
+
+        <div id="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <button class="button is-warning mt-3" id="snap-btn">📸 Ambil Foto</button>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <button class="button is-dark mt-2" onclick="tutupKamera()">Batal / Tutup Kamera</button>
         </div>
     </div>
 
     <script>
-        // Logika untuk menghitung selisih secara otomatis
-        function calculateVariance(inputElement) {
-            const row = inputElement.closest('tr');
-            const systemStock = parseInt(row.querySelector('.system-stock').innerText);
-            const physicalStock = parseInt(inputElement.value);
-            const varianceCell = row.querySelector('.variance');
-            const statusCell = row.querySelector('.status-cell');
+        // ==========================================
+        // GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLQ8L6mJL8IgbHKykqpCK6SVqxVpIfsnw5bLzqUfkqFw6pqO39aT9mfGgy_5Ek6bEH/exec";
+        
+        let inventory = [];
+        let modeKameraAktif = ''; 
+        let stream = null; 
 
-            // Jika input kosong atau bukan angka
-            if (isNaN(physicalStock)) {
-                varianceCell.innerText = '-';
-                statusCell.innerHTML = '-';
+        // Fungsi Loading UI
+        function showLoading(text = "Memproses...") {
+            document.getElementById('loading-text').innerText = text;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // Ambil Data dari Google Sheets
+        async function fetchData() {
+            if(SCRIPT_URL === "TARUH_URL_WEB_APP_ANDA_DI_SINI") {
+                alert("URL Web App belum dimasukkan di kode script!");
                 return;
             }
+            showLoading("Mengambil data stok terbaru...");
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const result = await response.json();
+                if(result.status === "success") {
+                    inventory = result.data;
+                    renderTabelStok();
+                    updateDropdowns();
+                } else {
+                    alert("Error: " + result.message);
+                }
+            } catch (error) {
+                alert("Gagal terhubung ke server. Pastikan koneksi internet aktif.");
+            }
+            hideLoading();
+        }
 
-            const variance = physicalStock - systemStock;
-            varianceCell.innerText = variance > 0 ? `+${variance}` : variance;
+        // Navigasi
+        function switchTab(tabName) {
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tabs li').forEach(el => el.classList.remove('is-active'));
+            document.getElementById(`view-${tabName}`).style.display = 'block';
+            document.getElementById(`tab-${tabName}`).classList.add('is-active');
 
-            // Logika pewarnaan status berdasarkan selisih
-            if (variance === 0) {
-                varianceCell.style.color = '#10B981'; // Hijau (Cocok)
-                statusCell.innerHTML = '<span class="tag is-success is-light">Sesuai</span>';
-            } else if (variance < 0) {
-                varianceCell.style.color = '#EF4444'; // Merah (Kurang/Hilang)
-                statusCell.innerHTML = '<span class="tag is-danger is-light">Kurang</span>';
-            } else {
-                varianceCell.style.color = '#F59E0B'; // Kuning (Lebih)
-                statusCell.innerHTML = '<span class="tag is-warning is-light">Lebih</span>';
+            if (tabName === 'masuk' || tabName === 'keluar') setWaktuOtomatis(tabName);
+            tutupKamera(); 
+        }
+
+        function renderTabelStok() {
+            const tbody = document.getElementById('table-body-stok');
+            tbody.innerHTML = '';
+            if(inventory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="has-text-centered">Belum ada data barang.</td></tr>';
+                return;
+            }
+            inventory.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.kode}</strong></td>
+                        <td>${item.nama}</td>
+                        <td class="has-text-centered"><span class="tag is-info is-medium">${item.stok}</span></td>
+                    </tr>`;
+            });
+        }
+
+        function updateDropdowns() {
+            const selectIn = document.getElementById('in-barang');
+            const selectOut = document.getElementById('out-barang');
+            const options = '<option value="">-- Pilih Barang --</option>' + 
+                inventory.map((item, index) => `<option value="${index}">${item.kode} - ${item.nama}</option>`).join('');
+            selectIn.innerHTML = options;
+            selectOut.innerHTML = options;
+        }
+
+        function setWaktuOtomatis(tipe) {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0].substring(0,5);
+            document.getElementById(`${tipe}-tanggal`).value = dateStr;
+            document.getElementById(`${tipe}-jam`).value = timeStr;
+        }
+
+        // POST Data: Tambah Barang
+        async function tambahBarangBaru() {
+            const kode = document.getElementById('new-kode').value.trim();
+            const nama = document.getElementById('new-nama').value.trim();
+
+            if (!kode || !nama) return alert("Kode dan Nama barang wajib diisi!");
+            if (inventory.some(item => item.kode === kode)) return alert("Kode barang ini sudah terdaftar!");
+
+            showLoading("Menyimpan Master Barang...");
+            try {
+                const payload = { action: "tambah_barang", kode: kode, nama: nama };
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if(result.status === "success") {
+                    alert("Barang berhasil ditambahkan!");
+                    document.getElementById('new-kode').value = '';
+                    document.getElementById('new-nama').value = '';
+                    await fetchData(); // Refresh data
+                    switchTab('stok');
+                } else {
+                    alert("Gagal: " + result.message);
+                }
+            } catch (err) {
+                alert("Gagal mengirim data.");
+            }
+            hideLoading();
+        }
+
+        // POST Data: Transaksi
+        async function prosesTransaksi(tipe) {
+            const prefix = tipe === 'masuk' ? 'in' : 'out';
+            const itemIndex = document.getElementById(`${prefix}-barang`).value;
+            const pic = document.getElementById(`${prefix}-pic`).value.trim();
+            const tanggal = document.getElementById(`${prefix}-tanggal`).value;
+            const jam = document.getElementById(`${prefix}-jam`).value;
+            const jumlah = parseInt(document.getElementById(`${prefix}-jumlah`).value);
+            const photoSrc = document.getElementById(`${prefix}-photo-preview`).src;
+
+            if (itemIndex === "" || !pic || isNaN(jumlah) || jumlah <= 0) {
+                return alert("Lengkapi semua data! (Pilih barang, PIC, dan Jumlah > 0)");
+            }
+            if (!photoSrc || photoSrc === window.location.href) {
+                return alert("Wajib melampirkan foto barang!");
+            }
+
+            const item = inventory[itemIndex];
+            if (tipe === 'keluar' && item.stok < jumlah) {
+                return alert(`Gagal: Stok tidak cukup! Stok saat ini hanya ${item.stok}.`);
+            }
+
+            const id_transaksi = "TX-" + Date.now(); // Generate ID unik
+
+            showLoading("Memproses Transaksi & Mengunggah Foto...");
+            try {
+                const payload = {
+                    action: "transaksi", id_transaksi: id_transaksi, tanggal: tanggal, jam: jam,
+                    tipe: tipe, kode: item.kode, nama: item.nama, jumlah: jumlah, pic: pic, fotoBase64: photoSrc
+                };
+                
+                const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+                const result = await response.json();
+                
+                if(result.status === "success") {
+                    alert("Transaksi berhasil dicatat!");
+                    // Reset Form
+                    document.getElementById(`${prefix}-pic`).value = '';
+                    document.getElementById(`${prefix}-jumlah`).value = '';
+                    document.getElementById(`${prefix}-photo-preview`).style.display = 'none';
+                    document.getElementById(`${prefix}-photo-preview`).src = '';
+                    
+                    await fetchData(); // Refresh data
+                    switchTab('stok');
+                } else {
+                    alert("Gagal memproses transaksi: " + result.message);
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan jaringan.");
+            }
+            hideLoading();
+        }
+
+        // KAMERA API
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const cameraContainer = document.getElementById('camera-container');
+
+        async function bukaKamera(tipe) {
+            modeKameraAktif = tipe; 
+            cameraContainer.style.display = 'flex';
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+            } catch (err) {
+                alert("Tidak dapat mengakses kamera. Pastikan browser memberikan izin.");
+                tutupKamera();
             }
         }
 
-        // Simulasi fungsi simpan data
-        function saveData() {
-            alert("Data stok opname sedang diproses! (Sistem backend belum terhubung)");
+        document.getElementById('snap-btn').addEventListener('click', () => {
+            if (!stream) return;
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Konversi ke base64 dengan kompresi agar tidak terlalu berat saat dikirim
+            const photoDataUrl = canvas.toDataURL('image/jpeg', 0.6); 
+            
+            const previewImg = document.getElementById(`${modeKameraAktif}-photo-preview`);
+            previewImg.src = photoDataUrl;
+            previewImg.style.display = 'block';
+            tutupKamera();
+        });
+
+        function tutupKamera() {
+            if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
+            cameraContainer.style.display = 'none';
         }
+
+        // Jalankan saat pertama kali dibuka
+        window.onload = fetchData;
     </script>
 </body>
 </html>
