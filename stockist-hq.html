@@ -3,42 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STOCKIST HQ - Under Construction</title>
+    <title>STOCKIST HQ - Stok Opname</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
         body { 
             background-color: #121212; 
             color: #e0e0e0; 
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
         }
         
-        .box-container {
+        .container-app {
             background: #1e1e1e;
-            padding: 40px 30px;
+            padding: 30px;
             border-radius: 12px;
             border: 1px solid #333;
-            border-top: 5px solid #3b82f6; /* Warna biru khas HQ */
+            border-top: 5px solid #3b82f6;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 100%;
+            max-width: 900px; /* Diperlebar untuk mengakomodasi tabel */
+            margin: 0 auto;
         }
 
-        .title { color: #ffffff !important; margin-bottom: 10px; font-weight: bold; }
-        .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 30px; }
-        .icon-large { font-size: 4rem; margin-bottom: 20px; }
-
-        /* TOMBOL HOME KEMBALI */
+        .title, .subtitle, th, td { color: #ffffff !important; }
+        td { vertical-align: middle !important; }
+        
         .home-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
+            display: inline-block;
+            margin-bottom: 20px;
             background: #1e1e1e;
             color: #10B981;
             padding: 8px 14px;
@@ -47,34 +39,114 @@
             font-size: 0.8rem;
             font-weight: bold;
             border: 1px solid #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
         }
-        .home-btn:hover {
-            background: #252525;
-            color: #ffffff;
-            border-color: #10B981;
+        .home-btn:hover { 
+            background: #252525; 
+            color: #ffffff; 
+            border-color: #10B981; 
         }
+
+        /* Styling kustom untuk input dan tabel di mode gelap */
+        .input { background-color: #2a2a2a; border-color: #444; color: #fff; }
+        .input:focus { border-color: #3b82f6; }
+        .table { background-color: transparent; }
+        .table th { border-bottom: 2px solid #444; }
+        .table td { border-bottom: 1px solid #333; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="home-btn">
-        <span>🏠</span> HOME
-    </a>
-
-    <div class="box-container">
-        <div class="icon-large">🏢 🚧</div>
-        <h1 class="title is-4">STOCKIST HQ</h1>
-        <p class="subtitle">Headquarters Inventory Management</p>
-        
-        <div class="notification is-warning is-light" style="background-color: #383800; color: #ffeb3b; border: 1px solid #666;">
-            <strong>SEGERA HADIR!</strong><br>
-            Halaman sistem operasional ini sedang dalam tahap pengembangan dan desain.
-        </div>
-        
-        <a href="index.html" class="button is-link is-fullwidth mt-4" style="background-color: #3b82f6;">KEMBALI KE PORTAL</a>
+    <div style="max-width: 900px; margin: 0 auto;">
+        <a href="index.html" class="home-btn">
+            <span>🏠</span> KEMBALI KE PORTAL
+        </a>
     </div>
 
+    <div class="container-app">
+        <h1 class="title is-4">📦 Form Stok Opname</h1>
+        <p class="subtitle is-6">STOCKIST HQ - Pencatatan Fisik Gudang</p>
+        <hr style="background-color: #333;">
+
+        <div class="table-container">
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Barang</th>
+                        <th class="has-text-centered">Stok Sistem</th>
+                        <th class="has-text-centered" style="width: 150px;">Stok Fisik</th>
+                        <th class="has-text-centered">Selisih</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-body">
+                    <tr>
+                        <td>BRG-001</td>
+                        <td>Kopi Arabica Blend 1kg</td>
+                        <td class="has-text-centered system-stock">15</td>
+                        <td>
+                            <input class="input is-small physical-stock" type="number" placeholder="Hitung..." oninput="calculateVariance(this)">
+                        </td>
+                        <td class="has-text-centered variance">-</td>
+                        <td class="status-cell">-</td>
+                    </tr>
+                    <tr>
+                        <td>BRG-002</td>
+                        <td>Paper Cup 8oz (Slop)</td>
+                        <td class="has-text-centered system-stock">40</td>
+                        <td>
+                            <input class="input is-small physical-stock" type="number" placeholder="Hitung..." oninput="calculateVariance(this)">
+                        </td>
+                        <td class="has-text-centered variance">-</td>
+                        <td class="status-cell">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="buttons is-right mt-5">
+            <button class="button is-dark" onclick="window.location.reload()">Reset</button>
+            <button class="button is-link" style="background-color: #3b82f6;" onclick="saveData()">Simpan Opname</button>
+        </div>
+    </div>
+
+    <script>
+        // Logika untuk menghitung selisih secara otomatis
+        function calculateVariance(inputElement) {
+            const row = inputElement.closest('tr');
+            const systemStock = parseInt(row.querySelector('.system-stock').innerText);
+            const physicalStock = parseInt(inputElement.value);
+            const varianceCell = row.querySelector('.variance');
+            const statusCell = row.querySelector('.status-cell');
+
+            // Jika input kosong atau bukan angka
+            if (isNaN(physicalStock)) {
+                varianceCell.innerText = '-';
+                statusCell.innerHTML = '-';
+                return;
+            }
+
+            const variance = physicalStock - systemStock;
+            varianceCell.innerText = variance > 0 ? `+${variance}` : variance;
+
+            // Logika pewarnaan status berdasarkan selisih
+            if (variance === 0) {
+                varianceCell.style.color = '#10B981'; // Hijau (Cocok)
+                statusCell.innerHTML = '<span class="tag is-success is-light">Sesuai</span>';
+            } else if (variance < 0) {
+                varianceCell.style.color = '#EF4444'; // Merah (Kurang/Hilang)
+                statusCell.innerHTML = '<span class="tag is-danger is-light">Kurang</span>';
+            } else {
+                varianceCell.style.color = '#F59E0B'; // Kuning (Lebih)
+                statusCell.innerHTML = '<span class="tag is-warning is-light">Lebih</span>';
+            }
+        }
+
+        // Simulasi fungsi simpan data
+        function saveData() {
+            alert("Data stok opname sedang diproses! (Sistem backend belum terhubung)");
+        }
+    </script>
 </body>
 </html>
