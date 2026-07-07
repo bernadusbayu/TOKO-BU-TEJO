@@ -47,6 +47,8 @@
 </head>
 <body>
 
+    <img id="watermark-logo" src="logo-header.png" style="display: none;" crossorigin="anonymous">
+
     <div class="app-container">
         <div id="loading-overlay">
             <div class="loader-spinner"></div>
@@ -196,10 +198,8 @@
         let modeKameraAktif = ''; 
         let stream = null; 
         
-        // Variabel untuk Watermark
-        let currentLocation = "Lokasi: Mencari titik GPS...";
-        const logoImg = new Image();
-        logoImg.src = 'logo-header.png'; // Pastikan file logo-header.png ada di folder yang sama
+        // Variabel untuk Lokasi Alamat
+        let currentLocation = "Lokasi: Mencari alamat GPS...";
 
         // Fungsi Loading UI
         function showLoading(text = "Memproses...") {
@@ -235,12 +235,27 @@
             hideLoading();
         }
 
-        // Dapatkan Titik GPS
+        // Dapatkan Titik GPS & Terjemahkan ke Nama Jalan
         function initLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        currentLocation = `Lat: ${position.coords.latitude.toFixed(5)}, Lon: ${position.coords.longitude.toFixed(5)}`;
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        currentLocation = `Lat: ${lat.toFixed(5)}, Lon: ${lon.toFixed(5)}`; // Fallback awal
+
+                        try {
+                            // Mengubah Kordinat menjadi nama jalan (Reverse Geocoding OpenStreetMap API)
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                            const data = await response.json();
+                            if(data && data.display_name) {
+                                // Ambil 3 bagian pertama saja agar teks tidak terlalu panjang memenuhi layar
+                                const addressParts = data.display_name.split(', ');
+                                currentLocation = addressParts.slice(0, 3).join(', ');
+                            }
+                        } catch (err) {
+                            console.log("Geocoding gagal, menggunakan titik koordinat.");
+                        }
                     },
                     (error) => {
                         currentLocation = "Lokasi GPS tidak diizinkan/tersedia";
@@ -416,6 +431,7 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const cameraContainer = document.getElementById('camera-container');
+        const logoImg = document.getElementById('watermark-logo'); // Ambil dari tag HTML
 
         async function bukaKamera(tipe) {
             modeKameraAktif = tipe; 
@@ -441,15 +457,15 @@
             // 1. Gambar Video Dasar
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // 2. Tempel Logo di Kanan Atas
-            if (logoImg.complete && logoImg.naturalHeight !== 0) {
-                const logoWidth = canvas.width * 0.20; 
+            // 2. Tempel Logo di Kanan Atas (15% dari Lebar Layar)
+            if (logoImg && logoImg.complete && logoImg.naturalHeight !== 0) {
+                const logoWidth = canvas.width * 0.15; 
                 const logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth;
-                const padding = 15;
+                const padding = 20;
                 context.drawImage(logoImg, canvas.width - logoWidth - padding, padding, logoWidth, logoHeight);
             }
 
-            // 3. Teks Waktu & Lokasi
+            // 3. Teks Waktu & Alamat Lokasi
             const now = new Date();
             const timeStr = now.toLocaleString('id-ID'); 
             const textL1 = `Waktu: ${timeStr}`;
@@ -459,17 +475,20 @@
             context.font = `bold ${fontSize}px Arial`;
 
             context.fillStyle = "rgba(0, 0, 0, 0.6)"; 
-            const boxPadding = 10;
+            const boxPadding = 12;
             const textWidth1 = context.measureText(textL1).width;
             const textWidth2 = context.measureText(textL2).width;
             const maxTextWidth = Math.max(textWidth1, textWidth2);
             
-            context.fillRect(10, canvas.height - (fontSize * 2) - 30, maxTextWidth + (boxPadding * 2), (fontSize * 2) + 20);
+            // Gambar kotak background hitam transparan
+            context.fillRect(10, canvas.height - (fontSize * 2) - 35, maxTextWidth + (boxPadding * 2), (fontSize * 2) + 25);
 
+            // Tulis Teks putih di atasnya
             context.fillStyle = "#ffffff"; 
             context.fillText(textL1, 10 + boxPadding, canvas.height - fontSize - 20);
             context.fillText(textL2, 10 + boxPadding, canvas.height - 10);
             
+            // Konversi menjadi gambar JPEG dengan kompresi 70%
             const photoDataUrl = canvas.toDataURL('image/jpeg', 0.7); 
             
             const previewImg = document.getElementById(`${modeKameraAktif}-photo-preview`);
